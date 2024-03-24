@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v6.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3plus@2"></script>
+<div class="navbar">
+    <a href="/what-is-aqi.html">What is AQI</a>
+    <a href="/visualizing-aqi.html">Visualizing AQI</a>
+    <a href="/index.html">Breaking Down AQI</a>
+    <a href="/calender.html"class = 'active'>AQI Timeline</a>
+</div>
+<div class = 'container' id = 'content' style ='height: 90vh;'>
+  <div class="left-div" style="height: 100%;">
+    <div id = 'daily_chart'  style="position: relative;width: 100%;height: 100%;">
+
+    <div class="floating-legend-left">
+
+    <div class="color-box green"></div><span>Good </span>
+      <div class="color-box yellow"></div><span>Moderate </span>
+      <div class="color-box orange"></div><span>Unhealthy for Sensitive Groups </span>
+      <div class="color-box red"></div><span>Unhealthy </span>
+      <div class="color-box purple"></div><span>Very Unhealthy </span>
+      <div class="color-box maroon"></div><span>Hazardous </span>
+    </div>
+    </div>
+</div>
+<div class="right-div">
+  <div class="calendar-header">
+  <button id="prev-month-btn">❮</button>
+  <span id="calendar-title">August 2023</span>
+  <button id="next-month-btn">❯</button>
+</div>
+  <div id = 'calender'>
+  </div>
+  <!-- Content for right div -->
+</div>
+
+</div>
+<script src = "set_up_calender.js"></script>
+<script src = "calendar.js"></script>
