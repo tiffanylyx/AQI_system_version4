@@ -22,12 +22,12 @@ const barHeight = outerRadius - innerRadius;
 const buttun_line_padding = 80
 // Sample data
 const data = [
-  { Type: 'CO', Value: 78 },
-  { Type: 'PM2.5', Value: 94 },
-  { Type: 'NO2', Value: 117 },
-  { Type: 'SO2', Value: 50 },
-  { Type: 'PM10', Value: 117 },
-  { Type: 'O3', Value: 195 },
+  { Type: 'NO2', Value: 78 },
+  { Type: 'O3', Value: 94 },
+  { Type: 'CO', Value: 117 },
+  { Type: 'PM10', Value: 50 },
+  { Type: 'PM2.5', Value: 117 },
+  { Type: 'SO2', Value: 195 },
 ];
 const rank = [0,50,100,150,200,300,500]
 // Create a scale for the angles
@@ -108,22 +108,52 @@ Promise.all([
   var bars
   var labels1, labels2
   var arrow
+  var barGroups
+  var AQI_line_0
+  var AQI_text_0
+  var AQI_y
+  var circle_bar
+  // Store the functions in an array
+  const functionsArray = [
+      { func: create_number, args: [date,data_for_day,info] },
+      { func: create_bar, args: [date,data_for_day,info] },
+      { func: move_bar, args: [date, data_for_day, info,150] },
+      { func: stack, args: [150] },
+      { func: add_rosa, args: [date,data_for_day,info] },
+  ];
+
+  // Initialize the current index
+  let currentIndex = -1;
+
+  // Function to run the function at the current index
+  function runFunctionAtIndex() {
+      const functionObject = functionsArray[currentIndex];
+      functionObject.func.apply(null, functionObject.args);
+  }
+
+  // Attach event listeners to the buttons
+  document.getElementById('nextButton').addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % functionsArray.length; // Move to next function, loop back to start if at the end
+      runFunctionAtIndex();
+  });
+
+  document.getElementById('previousButton').addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + functionsArray.length) % functionsArray.length; // Move to previous function, loop back to end if at the start
+      runFunctionAtIndex();
+    })
 
 
-  create_number(date,data_for_day,info)
-  create_bar(date,data_for_day,info)
-  move_bar(date, data, info,150)
   // The scaling factor, e.g., 2 would double size, 0.5 would halve it
 
 
   // Apply the scaling transform to a group element that contains all other elements
-  svg.attr('transform', `translate(${width / 2}, ${height / 2}) scale(${scaleFactor})`)
+
 })
 
 function create_number(date, data, info){
   console.log(data)
   // Create the enter selection for the groups
-  const barGroups = bars_group
+  barGroups = bars_group
     .selectAll('g')
     .data(data)
     .enter()
@@ -163,7 +193,7 @@ function create_number(date, data, info){
   // Now append a text element to each group
   labels1 = barGroups.append('text')
     .attr("x", barwidth / 2) // Position the text in the center of the rect
-    .attr("y", -15) // Adjust the position accordingly
+    .attr("y", -8) // Adjust the position accordingly
     .attr("text-anchor", "middle") // Center the text
     .attr("dominant-baseline", "central") // Vertically center the text
     .text(function(d) {
@@ -182,7 +212,7 @@ function create_number(date, data, info){
   // Now append a text element to each group
   labels2 = barGroups.append('text')
     .attr("x", barwidth / 2) // Position the text in the center of the rect
-    .attr("y",15) // Adjust the position accordingly
+    .attr("y",20) // Adjust the position accordingly
     .attr("text-anchor", "middle") // Center the text
     .attr("dominant-baseline", "central") // Vertically center the text
     .text(function(d) {
@@ -201,50 +231,201 @@ function create_number(date, data, info){
 
 function create_bar(date, data, info){
   bars
-  .attr('height',d => bar_height(d.Value, outerRadius, innerRadius ))
-  .attr('y',d => 50-bar_height(d.Value, outerRadius, innerRadius ))
+  .transition()
+  .duration(1000)
+  .style('opacity',1)
+  .attr('height',d => bar_height_bar(d.Value, outerRadius, innerRadius ))
+  .attr('y',d => 50-bar_height_bar(d.Value, outerRadius, innerRadius ))
 }
 function move_bar(date, data, info,distance){
   bars
-  .attr('y',d => distance+50-bar_height(d.Value, outerRadius, innerRadius ))
+  .transition()
+  .delay(function(d,i) {
+    return i * 100; // Delay each subsequent bar by an additional 100ms
+  })
+  .duration(800)
+  .attr('y',d => distance+50-bar_height_bar(d.Value, outerRadius, innerRadius ))
 
-  labels1.attr('y', function() {
+
+
+  labels1
+  .transition()
+  .delay(function(d,i) {
+    return i * 100; // Delay each subsequent bar by an additional 100ms
+  })
+  .duration(800)
+  .attr('y', function() {
     // Get the current 'y' value and parse it to an integer, then add 50
     return parseInt(d3.select(this).attr('y')) + distance;
 })
-labels2.attr('y', function() {
+labels2
+.transition()
+.delay(function(d,i) {
+  return i * 100; // Delay each subsequent bar by an additional 100ms
+})
+.duration(800)
+.attr('y', function() {
   // Get the current 'y' value and parse it to an integer, then add 50
   return parseInt(d3.select(this).attr('y')) + distance;})
+
 arrow= d3.arrow1()
    .id("my-arrow-9")
 info_group.call(arrow);
+AQI_y = 200-bar_height_bar(AQI_value, outerRadius, innerRadius )
 AQI_line_0 = info_group
 .append("polyline")
       .attr("marker-end", `url(#${arrow.id()})`)
-      .attr("points", [[(5/2)*(padding_bar+barwidth)-50+barwidth, 200-bar_height(AQI_value, outerRadius, innerRadius )],
-      [(-5/2)*(padding_bar+barwidth)-75, 200-bar_height(AQI_value, outerRadius, innerRadius )]])
+      .attr("points", [[(5/2)*(padding_bar+barwidth)-50+barwidth, AQI_y],
+      [(-5/2)*(padding_bar+barwidth)-75, AQI_y]])
       .attr("stroke", color_fill(AQI_value)) // arrow.attr can also be used as a getter
       .attr("fill", color_fill(AQI_value))
       .attr("stroke-width", 5)
       .attr("opacity",1)
+
 AQI_text_0 = info_group.append("text")
 .attr("class","sub_title")
 .attr("x",0)
-.attr("y",200-20-bar_height(AQI_value, outerRadius, innerRadius ))
+.attr("y",AQI_y-20 )
 .attr("text-anchor", "middle")
 .text("AQI = "+AQI_value)
 .attr('fill',color_fill(AQI_value))
+.attr("opacity",1)
+info_group
+.attr('opacity',0)
+.transition()
+  .delay(1000)
+  .duration(800)
+  .attr('opacity',1)
+
+}
+
+function stack(distance){
+  barwidth = 50
+  padding_bar = 20
+  move_x = 350
 
 
+  barGroups
+  .transition()
+  .delay(function(d,i) {
+    return i * 100; // Delay each subsequent bar by an additional 100ms
+  })
+  .duration(800)
+  .attr('y', function() {
+    // Get the current 'y' value and parse it to an integer, then add 50
+    return parseInt(d3.select(this).attr('y')) + distance;})
+  .attr("transform", function(d,i) {
+      return `translate(${(i-5/2)*(padding_bar+barwidth)-move_x},0)`;
+    })
 
+
+  bars
+  .attr('width',barwidth)
+  .attr('rx', barwidth / 5) // Rounded corners
+  .attr('ry', barwidth / 5) // Rounded corners
+
+  labels1.attr("x", barwidth / 2) .attr("y", 156).style('font-size',16)
+  labels2.attr("x", barwidth / 2) .attr("y", 176).style('font-size',16)
+
+  AQI_line_0
+  .transition()
+  .duration(800)
+  .attr("points", [[(5/2)*(padding_bar+barwidth)-move_x+barwidth, AQI_y],
+  [(-5/2)*(padding_bar+barwidth)-move_x, AQI_y]])
+
+  AQI_text_0
+  .transition()
+  .duration(800)
+  .attr("x",barwidth/2-move_x)
+  // Define the blink function
+}
+
+function add_rosa(date,data,info){
+  function blinkBar(index,blinkCount) {
+    blinkDuration = 500
+    const numberOfBlinks = 3;
+    // Check if the current index exceeds the number of bars
+    if (index >= bars.size()) {
+      return; // Stop the recursion if we've blinked all bars
+    }
+    // Select the current bar using the index
+    const currentBar = bars.filter((d, i) => i === index);
+    const currentlabel1 = labels1.filter((d, i) => i === index);
+    const currentlabel2 = labels2.filter((d, i) => i === index);
+
+    // Perform a single blink cycle (fade out and in)
+    currentBar.transition()
+      .duration(blinkDuration)
+      .attr('opacity', 0) // Fade to transparent
+      .transition()
+      .duration(blinkDuration)
+      .attr('opacity', 1) // Fade back to original color
+      .on('end', () => {
+        if (blinkCount < numberOfBlinks - 1) {
+          // If we haven't reached the desired number of blinks, blink again
+          blinkBar(index, blinkCount + 1);
+        } else {
+          // Move to the next bar once we've reached the desired number of blinks
+          blinkBar(index + 1, 0);
+        }
+      });
+    // Perform a single blink cycle (fade out and in)
+    currentlabel1.transition()
+      .duration(blinkDuration)
+      .attr('opacity', 0) // Fade to transparent
+      .transition()
+      .duration(blinkDuration)
+      .attr('opacity', 1) // Fade back to original color
+      .on('end', () => {
+        if (blinkCount < numberOfBlinks - 1) {
+          // If we haven't reached the desired number of blinks, blink again
+          blinkBar(index, blinkCount + 1);
+        } else {
+          // Move to the next bar once we've reached the desired number of blinks
+          blinkBar(index + 1, 0);
+        }
+      });
+  // Perform a single blink cycle (fade out and in)
+  currentlabel2.transition()
+    .duration(blinkDuration)
+    .attr('opacity', 0) // Fade to transparent
+    .transition()
+    .duration(blinkDuration)
+    .attr('opacity', 1) // Fade back to original color
+    .on('end', () => {
+      if (blinkCount < numberOfBlinks - 1) {
+        // If we haven't reached the desired number of blinks, blink again
+        blinkBar(index, blinkCount + 1);
+      } else {
+        // Move to the next bar once we've reached the desired number of blinks
+        blinkBar(index + 1, 0);
+      }
+    });
+  }
+
+  // Start the blinking effect with the first bar and initial blink count of 0
+  blinkBar(0, 0);
+  AQI_line_0.transition()
+    .delay(6*3000) // Initial delay of 6000ms
+    .duration(500) // Duration of the color change
+    .style('opacity', 0) // Change color to blinkColor
+    .transition() // Chain another transition to return to the original color
+    .duration(500) // Duration of the return transition
+    .style('opacity', 1) // Change the color back to originalColor
+    .transition() // Chain another transition to return to the original color
+    .duration(500) // Duration of the return transition
+    .style('opacity', 0) // Change the color back to originalColor
+    .transition() // Chain another transition to return to the original color
+    .duration(500) // Duration of the return transition
+    .style('opacity', 1) // Change the color back to originalColor
+  create_rosa(date,data,info)
 
 
 }
 //create_rosa(data)
 function create_rosa(date,data,info){
-svg.selectAll("*").remove()
 
-const circle_bar = svg.append('g').attr("id",'circle_bar')
+circle_bar = d3.select('#bar_chart').select('svg').append('g').attr("id",'circle_bar').attr("transform",`translate(${width*3/4}, ${height / 2})`)
 var layer1 = circle_bar.append('g').attr("id",'layer1');
 var layer2 = circle_bar.append('g').attr("id",'layer2');
 var layer3 = circle_bar.append('g').attr("id",'layer3');
@@ -279,7 +460,15 @@ const bars = layer3
     else{ return 0}
   })
   // First translate to the bottom center, then rotate
-  .attr('transform', d => `rotate(${calculateRotation(d)})`);
+  .attr('transform', d => `rotate(${calculateRotation(d)})`)
+  .style('opacity',0)
+  .transition()
+  .delay(function(d, i) {
+    return i * 3000; // Delay each subsequent bar by an additional 100ms
+  })
+  .duration(800)
+  .style('opacity',1)
+
 const circle = layer3.append('circle')
 .attr('cx', 0)
 .attr('cy', 0)
@@ -293,7 +482,13 @@ const AQI_mark =  layer2.append('circle')
 .attr("fill","none")
 .attr("stroke",color_fill(AQI_value))
 .attr("stroke-width",6)
-
+.style('opacity',0)
+.transition()
+.delay(function() {
+  return 6 * 3000; // Delay each subsequent bar by an additional 100ms
+})
+.duration(800)
+.style('opacity',1)
 const lines = layer1.append("g")
   .selectAll("line")
   .data(data)
@@ -307,6 +502,13 @@ const lines = layer1.append("g")
   .attr('stroke', d => color_fill(d.Value))
   .attr("stroke-width",3)
   .style("stroke-dasharray", ("5, 5"))
+  .style('opacity',0)
+  .transition()
+  .delay(function(d,i) {
+    return i * 3000; // Delay each subsequent bar by an additional 100ms
+  })
+  .duration(800)
+  .style('opacity',1)
   var yAxis = layer3
       .attr("text-anchor", "middle");
 
@@ -361,11 +563,12 @@ for (i in data){
       return `translate(${60*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
       ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
     })
+
   text = text_group.append("text")
         .text(function(){
           for(j in info){
             if(data[i].Type==info[j].Name){
-              return info[j].Full+' '+data[i].Value + ' ⓘ'}
+              return info[j].Name+' '+data[i].Value}
             }
           }
         )
@@ -382,6 +585,13 @@ for (i in data){
             return 'Black'
           }
         })
+        .style('opacity',0)
+        .transition()
+        .delay(function() {
+          return i * 3000; // Delay each subsequent bar by an additional 100ms
+        })
+        .duration(800)
+        .style('opacity',1)
 
   // Calculate text dimensions
   const bbox = text.node().getBBox();
@@ -445,6 +655,14 @@ for (i in data){
 
       } )
       .style('stroke-width', '3')
+      .style('opacity',0)
+      .transition()
+      .delay(function() {
+        return i * 3000; // Delay each subsequent bar by an additional 100ms
+      })
+      .duration(800)
+      .style('opacity',1)
+
   .style('filter', 'url(#drop-shadow)');
       text_group.on('click',function(){
         text = d3.select(this).select('text').text().split(' ')
@@ -461,8 +679,6 @@ for (i in data){
       })
 
 
-  // Move text to the front if needed (for browsers that don't support 'insert')
-  text.raise();
 
 
       const points = [
@@ -481,17 +697,25 @@ for (i in data){
             .attr("fill", "black")
             .attr("stroke", "black")
             .attr("stroke-width", 2)
-            .attr('transform', `rotate(${calculateRotation(data[i])})`);}
+            .attr('transform', `rotate(${calculateRotation(data[i])})`)
+            .style('opacity',0)
+            .transition()
+            .delay(function() {
+              return 6 * 3000; // Delay each subsequent bar by an additional 100ms
+            })
+            .duration(800)
+            .style('opacity',1)
+
+          }
 }
 
-date_text.text(text_to_display(date));
 
-AQI_text.text('AQI: '+AQI_value);
-
-DP_text.text('Driver Pollutant: '+DP);
+circle_bar.attr('transform', `translate(${width*3 / 4-60}, ${height / 2}) scale(${0.9})`)
 }
 
-
+function bar_height_bar(d, max, min){
+  return 9*Math.sqrt(d)+barwidth/2
+}
 function bar_height(d, max, min){
   return 9*Math.sqrt(d)+barwidth
 }

@@ -22,12 +22,12 @@ const barHeight = outerRadius - innerRadius;
 const buttun_line_padding = 80
 // Sample data
 const data = [
-  { Type: 'CO', Value: 78 },
-  { Type: 'PM2.5', Value: 94 },
-  { Type: 'NO2', Value: 117 },
-  { Type: 'SO2', Value: 50 },
-  { Type: 'PM10', Value: 117 },
-  { Type: 'O3', Value: 195 },
+  { Type: 'NO2', Value: 78 },
+  { Type: 'O3', Value: 94 },
+  { Type: 'CO', Value: 117 },
+  { Type: 'PM10', Value: 50 },
+  { Type: 'PM2.5', Value: 117 },
+  { Type: 'SO2', Value: 195 },
 ];
 const rank = [0,50,100,150,200,300,500]
 // Create a scale for the angles
@@ -54,7 +54,23 @@ var layer2 = circle_bar.append('g');
 var layer3 = circle_bar.append('g');
 const csvFile1 = 'Data2.csv';
 const csvFile2 = 'info.csv';
-
+const points = [
+        [0,8*Math.sqrt(3)], // 顶点A
+        [16,-8*Math.sqrt(3)], // 顶点B
+        [-16,-8*Math.sqrt(3)] // 顶点C
+    ]
+var overlay_DP = d3.select('#DP')
+    .append('svg')
+    .attr('width', 750)
+    .attr('height', 100)
+    .append('g')
+    .attr('transform', `translate(375,50)`)
+    .attr("text-anchor", "middle")
+    .append("polygon")
+              .attr("points", points.join(" "))
+              .attr("fill", "black")
+              .attr("stroke", "black")
+              .attr("stroke-width", 2)
 // Load both files concurrently
 Promise.all([
   d3.csv(csvFile1),
@@ -351,7 +367,7 @@ for (i in data){
   text.raise();
 
 
-      const points = [
+  const points = [
           [0,8*Math.sqrt(3)], // 顶点A
           [16,-8*Math.sqrt(3)], // 顶点B
           [-16,-8*Math.sqrt(3)] // 顶点C
@@ -371,10 +387,17 @@ for (i in data){
 }
 
 date_text.text(text_to_display(date));
+AQI_text.text('AQI: '+AQI_value).style('fill',color_fill(AQI_value));
 
-AQI_text.text('AQI: '+AQI_value);
+DP_text.text('Driver Pollutant: '+DP).style('fill',color_fill(AQI_value));
+floatingDiv.on('click',function(){
+  var overlay_DP = document.getElementById('overlay_DP');
+  // Show the overlay
+  overlay_DP.style.display = 'block';
 
-DP_text.text('Driver Pollutant: '+DP);
+
+          })
+
 }
 
 
@@ -457,9 +480,13 @@ function openOverlay(buttonText,info) {
 document.addEventListener('DOMContentLoaded', function() {
   // Function to close the overlay
   function closeOverlay() {
+    console.log('clos')
     document.getElementById('overlay').style.display = 'none';
+    document.getElementById('overlay_DP').style.display = 'none';
   }
 
   // Set up the close icon event listener
   document.getElementById('close-icon').addEventListener('click', closeOverlay);
+  document.getElementById('close-icon-DP').addEventListener('click', closeOverlay);
+
 });

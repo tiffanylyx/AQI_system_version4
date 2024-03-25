@@ -404,3 +404,14 @@ body {
   font-size:28px;
   font-weight:500;
 }
+.center-container {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    justify-content: center; /* Center items vertically */
+    align-items: center; /* Center items horizontally */
+    text-align: center; /* Center text inside each <p> */
+    margin: 0; /* Remove default margin */
+}
+p {
+    margin: 10px 0; /* Add some space between paragraphs */
+}

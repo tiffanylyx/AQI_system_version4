@@ -22,12 +22,12 @@ const barHeight = outerRadius - innerRadius;
 const buttun_line_padding = 80
 // Sample data
 const data = [
-  { Type: 'CO', Value: 78 },
-  { Type: 'PM2.5', Value: 94 },
-  { Type: 'NO2', Value: 117 },
-  { Type: 'SO2', Value: 50 },
-  { Type: 'PM10', Value: 117 },
-  { Type: 'O3', Value: 195 },
+  { Type: 'NO2', Value: 78 },
+  { Type: 'O3', Value: 94 },
+  { Type: 'CO', Value: 117 },
+  { Type: 'PM10', Value: 50 },
+  { Type: 'PM2.5', Value: 117 },
+  { Type: 'SO2', Value: 195 },
 ];
 const rank = [0,50,100,150,200,300,500]
 // Create a scale for the angles
