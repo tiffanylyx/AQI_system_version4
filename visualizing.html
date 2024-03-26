@@ -8,10 +8,33 @@
 <script src="https://cdn.jsdelivr.net/npm/d3plus@2"></script>
 <script src="https://unpkg.com/d3-arrow@0.0.25/dist/d3-arrow.min.js"></script>
 <div class="navbar">
-    <a href="/what-is-aqi.html">What is AQI</a>
-    <a href="visualizing.html" class = 'active'>Visualizing AQI</a>
-    <a href="index.html">Breaking Down AQI</a>
-    <a href="calender.html">AQI Timeline</a>
+  <div class="navbar-section navbar-left">
+    <img src="logo.png" alt="Logo" class="logo">
+    <div class="bottom-section">
+    <img src="nsf.png" alt="NSF Logo" class="nsf-logo">
+    <div class="supporting-text">
+    <p>TILES Lab</p>
+    <p>GT-Visual Analytics Lab</p>
+    <p>CEISMC</p>
+  </div>
+</div>
+</div>
+
+  <div class="navbar-section navbar-center">
+    <div class="nav-title">How does Air Quality Index Work?</div>
+    <br>
+    <div class="nav-text">AQI is...</div>
+    <br>
+    <br>
+    <br>
+    <div class="nav-text" style='font-size:12px;'>Data source: US Environmental Protection Agency. Air Quality System Data Mart [internet database] available via https://www.epa.gov/outdoor-air-quality-data. Accessed Mar 25th, 2024.</div>
+  </div>
+  <div class="navbar-section navbar-right">
+    <a href="visualizing.html"class = 'active'>Decoding</a>
+    <a href="index.html" >Snapshot</a>
+    <a href="calender.html">Trend</a>
+    <a href="trend.html">Context</a>
+  </div>
 </div>
 <button id="previousButton">Run Previous Function</button>
 <button id="nextButton">Run Next Function</button>
@@ -46,7 +69,7 @@
     <!-- Dynamically filled content will go here -->
   </div>
 </div>
-<div id = 'content' style=' height: 90vh;'>
+<div id = 'content' style=' height: 75vh;'>
 <div id = 'bar_chart'  style="position: relative;width: 100%;height:100%">
 
 <div class="floating-legend">

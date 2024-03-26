@@ -5,8 +5,8 @@ const svg_header= svg_calender.append('g')
 const svg_date = svg_calender.append('g')
 
 // Set the dimensions for each day cell and the SVG canvas size
-const dayWidth = 100;
-const dayHeight = 98;
+const dayWidth = width/6;
+const dayHeight = height/7.5;
 const margin_top = 0
 svg_header.attr('transform', `translate(0, ${margin_top})`);
 svg_date.attr('transform', `translate(0, ${margin_top+dayHeight / 2})`);
@@ -30,14 +30,14 @@ svg_calender.attr("width", dayWidth * 7) // 7 days for a week
   // Add rectangles for each day cell
   cells_day.append("rect")
     .attr("width", dayWidth - 1) // Subtract 1 for grid gap
-    .attr("height", dayHeight/2 - 1)
+    .attr("height", dayHeight/2 - 10)
     .style("fill", "none")
     .style("stroke", "none");
 
   // Add text labels for each day
   cells_day.append("text")
     .attr("x", dayWidth / 2)
-    .attr("y", dayHeight/2 / 2)
+    .attr("y", (dayHeight/2-10) / 2)
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em") // Vertical alignment
     .text(d => d)
@@ -61,7 +61,6 @@ d3.csv("Data2.csv").then( function(data) {
       select_month = 11;
       year--;
     }
-    console.log(select_month)
     create_calender(select_month,data)
   });
 
@@ -107,7 +106,7 @@ for(i in calendarArray){
   cell = svg_date.append("g")
   .attr("transform", function(){
     const x = (i % 7) * dayWidth; // Calculate x based on the day of the week
-    const y = (Math.floor(i / 7)) * dayHeight; // Calculate y based on the week
+    const y = (Math.floor(i / 7)) * dayHeight-20; // Calculate y based on the week
     return `translate(${x}, ${y})`;
   });
   cell.append("rect")
@@ -136,7 +135,7 @@ for(i in calendarArray){
 
 
 function create_rosa_small(date,data,group){
-  barwidth = 35
+  barwidth = 40
   AQI_value = 0
 const circle_bar = group.append('g').attr("id",'circle_bar').attr("transform",`translate(${dayWidth/2}, ${dayHeight/2})`)
 var layer2 = circle_bar.append('g').attr("id",'layer2');
@@ -184,9 +183,12 @@ const AQI_mark =  layer2.append('circle')
 .attr('cx', 0)
 .attr('cy', 0)
 .attr('r',bar_height(AQI_value, outerRadius, innerRadius ))
-.attr("fill","none")
+//.attr("fill",color_fill(AQI_value))
+.attr("fill",'none')
+//.style('fill-opacity',0.3)
 .attr("stroke",color_fill(AQI_value))
 .attr("stroke-width",10)
+
 
 
   var yAxis = layer3
@@ -196,8 +198,8 @@ const AQI_mark =  layer2.append('circle')
     .selectAll("g")
     .data(rank)
     .enter().append("g");
-layer2.attr('transform', `scale(${0.24})`)
-layer3.attr('transform', `scale(${0.24})`)
+layer2.attr('transform', `scale(${0.2})`)
+layer3.attr('transform', `scale(${0.2})`)
 group.on("click", function(){
   create_rosa(date,data)
     svg_calender.selectAll('#edge').style('stroke-width',0)

@@ -12,51 +12,7 @@ content {
   background-color: #f7f7f7;
 }
 
-.float-container {
-  width: 100%;
-  content: "";
-  display: table;
-  clear: both;
-}
 
-.float-child1 {
-  width: 28%; /* Set the width of each box */
-  float: left; /* Float boxes to the left */
-  margin: 5px;
-  padding: 0px;
-  box-sizing: border-box;
-
-}
-
-.float-child2 {
-  width: 70%; /* Set the width of each box */
-  float: left; /* Float boxes to the left */
-  margin: 5px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-.modal {
-    display: none;
-    position: absolute;
-    float: left;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal-content {
-    top: 0;
-    background-color: rgba(240,240,240, 1);
-    margin: 10% auto;
-    padding: 10px;
-    border: 1px solid #888;
-    width: 60%;
-    height: 70%;
-}
 * {box-sizing:border-box}
 
 /* Slideshow container */
@@ -182,8 +138,25 @@ content {
 }
 .floating-div {
     position: fixed;
-    top: 100px;
-    left: 40px;
+    top: 30%;
+    left:5%;
+    background-color: #ffffff;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.floating-div-left {
+    position: fixed;
+    top: 30%;
+    left:2%;
     background-color: #ffffff;
     padding-left: 40px;
     padding-right: 40px;
@@ -270,39 +243,104 @@ content {
 .maroon { background: #731425; }
 
 .navbar {
-    position: fixed; /* Fixed navbar (it will stick at the top) */
-    top: 0;
-    width: 100%; /* Full width */
-    background-color: #EEEEEE; /* Color of the navbar */
-    z-index: 10; /* Ensures navbar overlays other content */
-    text-align: center; /* Center navbar links */
-    box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2); /* Drop shadow effect */
-    height: 60px;
-    line-height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: #EEEEEE;
+  box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
+  padding: 10px;
+  height:25vh;
 }
 
+.navbar-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+.navbar-left {
+  align-items: flex-start;
+  width: 30vw;
+}
+.navbar-center {
+  flex-grow: 1;
+  text-align: left;
+  align-items: flex-start;
+  margin-top: 20px;
+
+}
+
+.navbar-right {
+  align-items: flex-end;
+  width: 20vw; /* Set the width of navbar-right to 20% of the viewport width */
+    margin-top: 20px;
+}
+
+.logo {
+  margin-right: 20px;
+  width: 20vw; /* Adjust as needed */
+  margin-bottom: 0px;
+  margin-top: 0px;
+  margin-left: 10px;
+}
+.bottom-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50%; /* 50% of the navbar-left height */
+}
+
+.nsf-logo {
+  width: 124px; /* As per the image dimensions */
+  height: 54px; /* As per the image dimensions */
+  margin-right: 16px;
+  margin-left: 20px;
+}
+
+.nav-title {
+  font-weight: 500;
+  font-size: 34px;
+  margin-right: 20px;
+  padding-top:10;
+  margin-bottom: 10;
+  color: #3273D1;
+
+}
+.nav-text {
+  font-size: 20px;
+  margin-top: 40;
+  padding-bottom: 10;
+
+
+}
+.nav-support-text {
+  font-size: 0.8em;
+}
+
+
 /* Navigation links styling */
-.navbar a {
+.navbar-right a {
     display: inline-block; /* Center links by setting display to inline-block */
     color: #3273D1;
     text-align: center;
-    padding: 0 40px;
+    padding: 1vh 2vh;
     text-decoration: none;
     transition: background-color 0.2s;
+    font-size:22px;
 }
 
 /* Change the background color of links on hover */
-.navbar a:hover {
+.navbar-right a:hover {
     background-color: #ddd;
     color: black;
 }
-.navbar a.active {
+.navbar-right a.active {
     text-decoration: underline;
     background-color: #EEEEEE;
 }
 /* Add padding at the top of the body to ensure the content doesn't hide under the navbar */
 body {
-    padding-top: 50px; /* Adjust the value to the height of your navbar */
+    padding-top: 0px; /* Adjust the value to the height of your navbar */
 }
 
 .container {
@@ -331,7 +369,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 30px;
+  padding: 10px;
 }
 
 #prev-month-btn, #next-month-btn {

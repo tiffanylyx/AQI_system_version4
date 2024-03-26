@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
 const select_date = 129
-const scaleFactor = 1.1
+const scaleFactor = 0.95
 const container = d3.select('#bar_chart');
 
 // Get the width of the container div
@@ -117,8 +117,8 @@ Promise.all([
   const functionsArray = [
       { func: create_number, args: [date,data_for_day,info] },
       { func: create_bar, args: [date,data_for_day,info] },
-      { func: move_bar, args: [date, data_for_day, info,150] },
-      { func: stack, args: [150] },
+      { func: move_bar, args: [date, data_for_day, info,50] },
+      { func: stack, args: [50] },
       { func: add_rosa, args: [date,data_for_day,info] },
   ];
 
@@ -271,7 +271,7 @@ labels2
 arrow= d3.arrow1()
    .id("my-arrow-9")
 info_group.call(arrow);
-AQI_y = 200-bar_height_bar(AQI_value, outerRadius, innerRadius )
+AQI_y = distance+50-bar_height_bar(AQI_value, outerRadius, innerRadius )
 AQI_line_0 = info_group
 .append("polyline")
       .attr("marker-end", `url(#${arrow.id()})`)
@@ -324,8 +324,8 @@ function stack(distance){
   .attr('rx', barwidth / 5) // Rounded corners
   .attr('ry', barwidth / 5) // Rounded corners
 
-  labels1.attr("x", barwidth / 2) .attr("y", 156).style('font-size',16)
-  labels2.attr("x", barwidth / 2) .attr("y", 176).style('font-size',16)
+  labels1.attr("x", barwidth / 2) .attr("y", 50).style('font-size',16)
+  labels2.attr("x", barwidth / 2) .attr("y", 70).style('font-size',16)
 
   AQI_line_0
   .transition()
@@ -343,7 +343,7 @@ function stack(distance){
 function add_rosa(date,data,info){
   function blinkBar(index,blinkCount) {
     blinkDuration = 500
-    const numberOfBlinks = 3;
+    const numberOfBlinks = 2;
     // Check if the current index exceeds the number of bars
     if (index >= bars.size()) {
       return; // Stop the recursion if we've blinked all bars
@@ -406,7 +406,7 @@ function add_rosa(date,data,info){
   // Start the blinking effect with the first bar and initial blink count of 0
   blinkBar(0, 0);
   AQI_line_0.transition()
-    .delay(6*3000) // Initial delay of 6000ms
+    .delay(6*2000) // Initial delay of 6000ms
     .duration(500) // Duration of the color change
     .style('opacity', 0) // Change color to blinkColor
     .transition() // Chain another transition to return to the original color
@@ -464,7 +464,7 @@ const bars = layer3
   .style('opacity',0)
   .transition()
   .delay(function(d, i) {
-    return i * 3000; // Delay each subsequent bar by an additional 100ms
+    return i * 2000; // Delay each subsequent bar by an additional 100ms
   })
   .duration(800)
   .style('opacity',1)
@@ -485,7 +485,7 @@ const AQI_mark =  layer2.append('circle')
 .style('opacity',0)
 .transition()
 .delay(function() {
-  return 6 * 3000; // Delay each subsequent bar by an additional 100ms
+  return 6 * 2000; // Delay each subsequent bar by an additional 100ms
 })
 .duration(800)
 .style('opacity',1)
@@ -505,7 +505,7 @@ const lines = layer1.append("g")
   .style('opacity',0)
   .transition()
   .delay(function(d,i) {
-    return i * 3000; // Delay each subsequent bar by an additional 100ms
+    return i * 2000; // Delay each subsequent bar by an additional 100ms
   })
   .duration(800)
   .style('opacity',1)
@@ -560,7 +560,7 @@ for (i in data){
           indicate = 1
         }
         else{indicate = -1}
-      return `translate(${60*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
+      return `translate(${20*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
       ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
     })
 
@@ -588,7 +588,7 @@ for (i in data){
         .style('opacity',0)
         .transition()
         .delay(function() {
-          return i * 3000; // Delay each subsequent bar by an additional 100ms
+          return i * 2000; // Delay each subsequent bar by an additional 100ms
         })
         .duration(800)
         .style('opacity',1)
@@ -658,7 +658,7 @@ for (i in data){
       .style('opacity',0)
       .transition()
       .delay(function() {
-        return i * 3000; // Delay each subsequent bar by an additional 100ms
+        return i * 2000; // Delay each subsequent bar by an additional 100ms
       })
       .duration(800)
       .style('opacity',1)
@@ -714,10 +714,10 @@ circle_bar.attr('transform', `translate(${width*3 / 4-60}, ${height / 2}) scale(
 }
 
 function bar_height_bar(d, max, min){
-  return 9*Math.sqrt(d)+barwidth/2
+  return 1.7*Math.pow(d,0.8)+barwidth/2
 }
 function bar_height(d, max, min){
-  return 9*Math.sqrt(d)+barwidth
+  return 1.7*Math.pow(d,0.8)+barwidth
 }
 
 function color_fill(d){

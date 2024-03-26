@@ -7,12 +7,35 @@
 <script src="https://d3js.org/d3.v6.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3plus@2"></script>
 <div class="navbar">
-    <a href="/what-is-aqi.html">What is AQI</a>
-    <a href="visualizing.html">Visualizing AQI</a>
-    <a href="index.html">Breaking Down AQI</a>
-    <a href="calender.html"class = 'active'>AQI Timeline</a>
+  <div class="navbar-section navbar-left">
+    <img src="logo.png" alt="Logo" class="logo">
+    <div class="bottom-section">
+    <img src="nsf.png" alt="NSF Logo" class="nsf-logo">
+    <div class="supporting-text">
+    <p>TILES Lab</p>
+    <p>GT-Visual Analytics Lab</p>
+    <p>CEISMC</p>
+  </div>
 </div>
-<div class = 'container' id = 'content' style ='height: 90vh;'>
+</div>
+
+  <div class="navbar-section navbar-center">
+    <div class="nav-title">How does Air Quality Index Work?</div>
+    <br>
+    <div class="nav-text">AQI is...</div>
+    <br>
+    <br>
+    <br>
+    <div class="nav-text" style='font-size:12px;'>Data source: US Environmental Protection Agency. Air Quality System Data Mart [internet database] available via https://www.epa.gov/outdoor-air-quality-data. Accessed Mar 25th, 2024.</div>
+  </div>
+  <div class="navbar-section navbar-right">
+    <a href="visualizing.html">Decoding</a>
+    <a href="index.html" >Snapshot</a>
+    <a href="calender.html"class = 'active'>Trend</a>
+    <a href="trend.html">Context</a>
+  </div>
+</div>
+<div class = 'container' id = 'content' style ='height: 75vh;'>
   <div class="left-div" style="height: 100%;">
     <div id = 'daily_chart'  style="position: relative;width: 100%;height: 100%;">
 

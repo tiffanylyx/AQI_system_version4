@@ -1,12 +1,12 @@
 // set the dimensions and margins of the graph
 const select_date = 129
-const scaleFactor = 1.1
-const container = d3.select('#daily_chart');
+const scaleFactor = 0.93
+var container = d3.select('#daily_chart');
+var svg_color
 
 // Get the width of the container div
-const containerWidth = container.node().getBoundingClientRect().width;
-const containerHeight = container.node().getBoundingClientRect().height;
-console.log(containerHeight)
+var containerWidth = container.node().getBoundingClientRect().width;
+var containerHeight = container.node().getBoundingClientRect().height;
 const margin = {top: 0, right: 20, bottom: 0, left: 20},
     width = containerWidth - margin.left - margin.right,
     height = containerHeight - margin.top - margin.bottom,
@@ -44,7 +44,7 @@ const radiusScale = d3.scaleLinear()
 // Function to calculate rotation for each bar
 const calculateRotation = d => (angleScale(d.Type) * 180 / Math.PI-90)
 
-const barwidth = 20
+const barwidth = 40
 
 let AQI_value = 0
 let DP
@@ -121,6 +121,10 @@ Promise.all([
   for(i in data_select){
     data_for_day.push({'Type':data_select[i].Type,'Value': parseInt(data_select[i].Value,10)})
   }
+
+  svg_color = d3.select("#overlay-content-color")
+  .append('svg')
+
   create_rosa(date,data_for_day,info)
   // The scaling factor, e.g., 2 would double size, 0.5 would halve it
 
@@ -267,7 +271,7 @@ for (i in data){
         .text(function(){
           for(j in info){
             if(data[i].Type==info[j].Name){
-              return info[j].Full+' '+data[i].Value + ' ⓘ'}
+              return info[j].Full+' '+data[i].Value}
             }
           }
         )
@@ -351,7 +355,6 @@ for (i in data){
       text_group.on('click',function(){
         text = d3.select(this).select('text').text().split(' ')
         text.pop();
-        text.pop();
         const newtext = text.join(' ');
         for(i in info){
           if(info[i].Full==newtext){
@@ -394,15 +397,13 @@ floatingDiv.on('click',function(){
   var overlay_DP = document.getElementById('overlay_DP');
   // Show the overlay
   overlay_DP.style.display = 'block';
-
-
           })
 
 }
 
 
 function bar_height(d, max, min){
-  return 9*Math.sqrt(d)+barwidth
+  return 4.5*Math.pow(d,0.65)+barwidth
 }
 
 function color_fill(d){
@@ -459,6 +460,47 @@ function wrap(text, width) {
         }
     });
 }
+function create_color(containerWidth,containerHeight){
+console.log("here")
+svg_color.selectAll("*").remove()
+group = svg_color
+.attr('width',containerWidth)
+.attr('height',containerHeight)
+.append('g')
+.attr('transform', `translate(${containerWidth / 2}, ${containerHeight / 2-15})`);
+var yAxis = group
+    .attr("text-anchor", "middle");
+
+var yTick = yAxis
+  .selectAll("g")
+  .data(rank.reverse())
+  .enter().append("g");
+
+yTick.append("circle")
+    .attr("fill", d=>color_fill(d))
+    .style("stroke-dasharray", ("1, 5"))
+    .attr("stroke", "#555")
+    .attr("r", d=>bar_height(d,outerRadius,innerRadius)*0.9)
+    .attr('opacity',0.9)
+yTick.append("circle")
+    .attr("fill", 'white')
+    .style("stroke-dasharray", ("1, 5"))
+    .attr("stroke", "#555")
+    .attr("r", d=>bar_height(0,outerRadius,innerRadius)*0.9)
+    yTick.append("text")
+        .data(rank)
+        .attr("y", function(d) { return -bar_height(d,outerRadius,innerRadius)*0.9+15 })
+        .attr("dy", "0.35em")
+        .attr("fill", "white")
+        .text(function(d,i){
+          if(i<6){
+          return rank[i+1]+'--'+d}})
+        .attr("class","pullution-axis")
+        .style("font-size","20")
+
+
+svg_color.attr('transform', ` scale(${0.75})`)
+}
 function openOverlay(buttonText,info) {
   var overlay = document.getElementById('overlay');
   var overlayContent = document.getElementById('overlay-content');
@@ -483,10 +525,22 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('clos')
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('overlay_DP').style.display = 'none';
+    document.getElementById('overlay_color').style.display = 'none';
   }
 
   // Set up the close icon event listener
   document.getElementById('close-icon').addEventListener('click', closeOverlay);
   document.getElementById('close-icon-DP').addEventListener('click', closeOverlay);
+  document.getElementById('close-icon-color').addEventListener('click', closeOverlay);
+  document.getElementById('floating-legend').addEventListener('click', function(){
+    document.getElementById('overlay_color').style.display = 'block';
+    container = d3.select("#overlay-content-color")
+    containerWidth = container.node().getBoundingClientRect().width;
+    console.log(containerWidth)
+    containerHeight = container.node().getBoundingClientRect().height;
+    console.log(containerHeight)
+    create_color(containerWidth,containerHeight)
+  });
+
 
 });

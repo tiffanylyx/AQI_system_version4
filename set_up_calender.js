@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
 const select_date = 180
-const scaleFactor = 0.9
+const scaleFactor = 0.78
 const container = d3.select('#daily_chart');
 
 // Get the width of the container div
@@ -44,7 +44,7 @@ const radiusScale = d3.scaleLinear()
 // Function to calculate rotation for each bar
 const calculateRotation = d => (angleScale(d.Type) * 180 / Math.PI-90)
 
-var barwidth = 20
+var barwidth = 30
 
 let AQI_value = 0
 let DP
@@ -115,7 +115,7 @@ d3.csv("Data2.csv").then( function(dataall) {
   svg.attr('transform', `translate(${width / 2}, ${height / 2}) scale(${scaleFactor})`)
 })
 const floatingDiv = d3.select('#daily_chart').append('div')
-    .attr('class', 'floating-div')
+    .attr('class', 'floating-div-left')
     .style('top',60)
     .style('left',30)
 
@@ -135,7 +135,7 @@ function create_rosa(date,data){
 
   AQI_value = 0
 svg.selectAll("*").remove()
-barwidth = 20
+barwidth = 26
 const circle_bar = svg.append('g').attr("id",'circle_bar')
 var layer1 = circle_bar.append('g').attr("id",'layer1');
 var layer2 = circle_bar.append('g').attr("id",'layer2');
@@ -327,7 +327,7 @@ DP_text.text('Driver Pollutant: '+DP);
 
 
 function bar_height(d, max, min){
-  return 9*Math.sqrt(d)+barwidth
+  return 3.5*Math.pow(d,0.7)+barwidth
 }
 
 function color_fill(d){
