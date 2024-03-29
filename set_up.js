@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
 const select_date = 129
-const scaleFactor = 0.93
+const scaleFactor = 1
 var container = d3.select('#daily_chart');
 var svg_color
 
@@ -17,7 +17,8 @@ const svg = d3.select('#daily_chart').append('svg')
   .attr('width', width)
   .attr('height', height)
   .append('g')
-  .attr('transform', `translate(${width / 2}, ${height / 2})`);
+  .attr('transform', `translate(${width / 2}, ${height / 2})`)
+  .attr("fill","#F5F6F6")
 const barHeight = outerRadius - innerRadius;
 const buttun_line_padding = 80
 // Sample data
@@ -54,23 +55,7 @@ var layer2 = circle_bar.append('g');
 var layer3 = circle_bar.append('g');
 const csvFile1 = 'Data2.csv';
 const csvFile2 = 'info.csv';
-const points = [
-        [0,8*Math.sqrt(3)], // 顶点A
-        [16,-8*Math.sqrt(3)], // 顶点B
-        [-16,-8*Math.sqrt(3)] // 顶点C
-    ]
-var overlay_DP = d3.select('#DP')
-    .append('svg')
-    .attr('width', 750)
-    .attr('height', 100)
-    .append('g')
-    .attr('transform', `translate(375,50)`)
-    .attr("text-anchor", "middle")
-    .append("polygon")
-              .attr("points", points.join(" "))
-              .attr("fill", "black")
-              .attr("stroke", "black")
-              .attr("stroke-width", 2)
+
 // Load both files concurrently
 Promise.all([
   d3.csv(csvFile1),
@@ -141,10 +126,14 @@ const date_text = floatingDiv.append('div')
 
 const AQI_text = floatingDiv.append('div')
     .attr('class', 'aqi-value')
+const status = floatingDiv.append('div').attr('class', 'text-info')
 
+const health = status.append('span')
+    .attr('class', 'pollutant-text-left')
+    status.append('span').text("•").attr("class",'separator')
 
-const DP_text = floatingDiv.append('div')
-    .attr('class', 'pollutant-text')
+const DP_text = status.append('span')
+    .attr('class', 'pollutant-text-right')
 
 //create_rosa(data)
 function create_rosa(date,data,info){
@@ -213,7 +202,7 @@ const lines = layer1.append("g")
   .attr('stroke', d => color_fill(d.Value))
   .attr("stroke-width",3)
   .style("stroke-dasharray", ("5, 5"))
-  var yAxis = layer3
+  var yAxis = layer2
       .attr("text-anchor", "middle");
 
   var yTick = yAxis
@@ -223,8 +212,9 @@ const lines = layer1.append("g")
 
   yTick.append("circle")
       .attr("fill", "none")
-      .style("stroke-dasharray", ("1, 5"))
-      .attr("stroke", "#555")
+      .style("stroke-dasharray", ("3, 6"))
+      .attr("stroke", "#0052C2")
+      .attr("opacity",0.5)
       .attr("r", d=>bar_height(d,outerRadius,innerRadius));
   yTick.append("text")
       .data(rank)
@@ -246,7 +236,8 @@ const lines = layer1.append("g")
       .attr("dy", "0.35em")
       .text(d => d)
       .attr("class","pullution-axis")
-      .style("fill", "#999")
+      .style("fill", "#002A62")
+      .style("opacity",0.8)
       .style("font-size","16")
       .style("font-weight","300")
 
@@ -267,27 +258,50 @@ for (i in data){
       return `translate(${60*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
       ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
     })
-  text = text_group.append("text")
-        .text(function(){
-          for(j in info){
-            if(data[i].Type==info[j].Name){
-              return info[j].Full+' '+data[i].Value}
-            }
-          }
-        )
-        .style('fill',function(){
-          if(data[i].Type==DP){
-            if((AQI_value<101)&&(AQI_value>50)){
-              return 'Black'
-            }
-            else{
-              return 'White'
-            }
-          }
-          else{
-            return 'Black'
-          }
-        })
+  text = text_group.append("text")  .attr("x", 0) // Set the x position of the text element
+  .attr("y", 0) .style("dominant-baseline", "middle")
+  text.append("tspan")
+    .text(function() {
+      var textContent = '';
+      for (var j in info) {
+        if (data[i].Type === info[j].Name) {
+          textContent = info[j].Full + ' (' + info[j].Name + ') ';
+          break; // Exit the loop once the match is found
+        }
+      }
+      return textContent;
+    })
+    .style('fill',function(){
+      if(data[i].Type==DP){
+        if((AQI_value<101)&&(AQI_value>50)){
+          return 'Black'
+        }
+        else{
+          return 'White'
+        }
+      }
+      else{
+        return 'Black'
+      }
+    })
+    .style("font-size",'14px')
+  text.append("tspan")
+  .text(data[i].Value)
+  .style("font-size", "22px") // Smaller font size for the AQI range
+    .attr("dx", "0.3em").style('fill',function(){
+      if(data[i].Type==DP){
+        if((AQI_value<101)&&(AQI_value>50)){
+          return 'Black'
+        }
+        else{
+          return 'White'
+        }
+      }
+      else{
+        return color_fill(data[i].Value)
+      }
+    })
+    .style("font-weight", "bold")
 
   // Calculate text dimensions
   const bbox = text.node().getBBox();
@@ -332,15 +346,15 @@ for (i in data){
       .attr('ry', textHeight / 2) // Rounded corners
       .attr('width', textWidth + padding_h)
       .attr('height', textHeight + padding_v)
-      .style('fill', function(){
-        if(data[i].Type==DP){
-          return color_fill(data[i].Value)
-        }
-        else{
-          return 'white'
-        }
+      .style('fill',function(){
+              if(data[i].Type==DP){
+                return color_fill(data[i].Value)
+              }
+              else{
+                return 'white'
+              }
 
-      } )
+            } )
       .style('stroke', function(){
         if(data[i].Type!=DP){
           return color_fill(data[i].Value)
@@ -350,7 +364,15 @@ for (i in data){
         }
 
       } )
-      .style('stroke-width', '3')
+      .style('stroke-width',function(){
+              if(data[i].Type==DP){
+                return '4'
+              }
+              else{
+                return '3'
+              }
+
+            } )
   .style('filter', 'url(#drop-shadow)');
       text_group.on('click',function(){
         text = d3.select(this).select('text').text().split(' ')
@@ -391,13 +413,15 @@ for (i in data){
 
 date_text.text(text_to_display(date));
 AQI_text.text('AQI: '+AQI_value).style('fill',color_fill(AQI_value));
+health.text(color_type(AQI_value));
 
-DP_text.text('Driver Pollutant: '+DP).style('fill',color_fill(AQI_value));
+DP_text.text( 'Driver Pollutant: '+DP).style('fill',color_fill(AQI_value));
 floatingDiv.on('click',function(){
   var overlay_DP = document.getElementById('overlay_DP');
   // Show the overlay
   overlay_DP.style.display = 'block';
           })
+floatingDiv.style("border-top", "10px solid "+color_fill(AQI_value))
 
 }
 
@@ -414,6 +438,18 @@ function color_fill(d){
   else if (d<201){return '#D3112E';}
   else if (d<301){return '#8854D0';}
   else if (d<501){return '#731425';}
+}
+
+function color_type(d){
+  if(d<51){
+    return 'Good';}
+  else if (d<101){return 'Moderate';}
+  else if (d<151){return 'Unhealthy for sensitive group';}
+  else if (d<201){return 'Unhealthy';}
+  else if (d<301){return 'Very Unhealthy';}
+  else if (d<501){return 'Hazardous';}
+
+
 }
 
 function text_to_display(dateString){
@@ -437,28 +473,29 @@ const formattedDate = formatDate(date).replace(/(\d+),/, `$1${suffix},`);
 return formattedDate
 }
 function wrap(text, width) {
-    text.each(function() {
-        var text = d3.select(this);
-        var words = text.text().split(/\s+/).reverse();
-        var lineHeight = 1.1; // ems
-        var y = text.attr("y");
-        var x = text.attr("x");
-        var dy = parseFloat(text.attr("dy") || 0);
-        var tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em");
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(), // Split the text into words
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        x = 0, // x position
+        y = text.attr("y"), // y position
+        dy = 0, // Initial offset
+        tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em");
 
-        var word;
-        var line = [];
-        while (word = words.pop()) {
-            line.push(word);
-            tspan.text(line.join(" "));
-            if (tspan.node().getComputedTextLength() > width) {
-                line.pop();
-                tspan.text(line.join(" "));
-                line = [word];
-                tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", ++dy + "em").text(word);
-            }
-        }
-    });
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop(); // remove the word that was too much
+        tspan.text(line.join(" "));
+        line = [word]; // Start a new line with the overflow word
+        tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+  });
 }
 function create_color(containerWidth,containerHeight){
 console.log("here")

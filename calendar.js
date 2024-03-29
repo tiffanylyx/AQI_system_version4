@@ -6,7 +6,7 @@ const svg_date = svg_calender.append('g')
 
 // Set the dimensions for each day cell and the SVG canvas size
 const dayWidth = width/6;
-const dayHeight = height/7.5;
+const dayHeight = height/7.2;
 const margin_top = 0
 svg_header.attr('transform', `translate(0, ${margin_top})`);
 svg_date.attr('transform', `translate(0, ${margin_top+dayHeight / 2})`);

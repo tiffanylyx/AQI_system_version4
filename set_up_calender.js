@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
 const select_date = 180
-const scaleFactor = 0.78
+const scaleFactor = 0.9
 const container = d3.select('#daily_chart');
 
 // Get the width of the container div
@@ -125,11 +125,14 @@ const date_text = floatingDiv.append('div')
 
 const AQI_text = floatingDiv.append('div')
     .attr('class', 'aqi-value')
+const status = floatingDiv.append('div').attr('class', 'text-info')
 
+const health = status.append('span')
+    .attr('class', 'pollutant-text-left')
+    status.append('span').text("•").attr("class",'separator')
 
-const DP_text = floatingDiv.append('div')
-    .attr('class', 'pollutant-text')
-
+const DP_text = status.append('span')
+    .attr('class', 'pollutant-text-right')
 //create_rosa(data)
 function create_rosa(date,data){
 
@@ -319,10 +322,11 @@ for (i in data){
 }
 
 date_text.text(text_to_display(date));
+AQI_text.text('AQI: '+AQI_value).style('fill',color_fill(AQI_value));
+health.text(color_type(AQI_value));
 
-AQI_text.text('AQI: '+AQI_value);
-
-DP_text.text('Driver Pollutant: '+DP);
+DP_text.text( 'Driver Pollutant: '+DP).style('fill',color_fill(AQI_value));
+floatingDiv.style("border-top", "10px solid "+color_fill(AQI_value))
 }
 
 
@@ -338,6 +342,18 @@ function color_fill(d){
   else if (d<201){return '#D3112E';}
   else if (d<301){return '#8854D0';}
   else if (d<501){return '#731425';}
+}
+
+function color_type(d){
+  if(d<51){
+    return 'Good';}
+  else if (d<101){return 'Moderate';}
+  else if (d<151){return 'Unhealthy for sensitive group';}
+  else if (d<201){return 'Unhealthy';}
+  else if (d<301){return 'Very Unhealthy';}
+  else if (d<501){return 'Hazardous';}
+
+
 }
 
 function text_to_display(dateString){

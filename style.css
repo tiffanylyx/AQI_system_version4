@@ -1,6 +1,7 @@
 body {
   font-family: Arial, sans-serif;
   overflow: hidden;
+  background-color:#F5F6F6;
 }
 content {
   width :100%
@@ -9,7 +10,6 @@ content {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f7f7f7;
 }
 
 
@@ -141,10 +141,7 @@ content {
     top: 30%;
     left:5%;
     background-color: #ffffff;
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-top: 20px;
-    padding-bottom: 20px;
+
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     font-family: sans-serif;
@@ -156,12 +153,8 @@ content {
 .floating-div-left {
     position: fixed;
     top: 30%;
-    left:2%;
+    left:2%
     background-color: #ffffff;
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-top: 20px;
-    padding-bottom: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     font-family: sans-serif;
@@ -171,82 +164,147 @@ content {
     justify-content: center;
 }
 .aqi-value {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: bold;
     margin: 5px 0;
+    padding-bottom: 10px;
+    padding-top: 10px;
+
 }
-.date-text, .pollutant-text {
+.date-text {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  width:100%;
     font-size: 16px;
     font-weight: 400;
     margin: 2px 0;
+    border-bottom: 1px solid #aaaaaa;
+
 }
+.text-info {
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-bottom: 10px;
+
+}
+.pollutant-text-left {
+    font-size: 12px;
+    font-weight: 400;
+    vertical-align: top;
+    display: inline-block; /* or 'block' depending on your layout needs */
+     max-width: 90px; /* Set your desired width */
+     word-wrap: break-word; /* Allows long words to wrap and break onto the next line */
+     text-align: center;
+   }
+.separator {
+  display: inline-block;
+  vertical-align: top; /* Centers the dot vertically */
+  margin: 0 8px; /* Adjust the margin to control spacing around the dot */
+  margin-top: -8px;
+  font-size:30px;
+}
+.pollutant-text-right {
+    font-size: 12px;
+    font-weight: 400;
+    margin-left:4px;
+    vertical-align: top;
+}
+
 .floating-legend {
   position: fixed;
-  bottom:3%;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  background-color: #fff;
+  top: 30%;
+  left:75%;
+  display: block; /* Change from flex to block to allow the default list styling */
+  padding: 16px;
+  background-color: #F5F6F6;
   border-radius: 8px;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   font-size: 14px;
+  width: auto; /* Ensure the width is as per content */
+  max-width: 90%; /* Optional: to ensure it doesn't get too wide */
 }
 
-.floating-legend div {
-  display: flex;
-  align-items: center;
-  margin-right: 6px; /* Adjust spacing between items */
+.floating-legend ul {
+  list-style-type: none; /* Removes default list bullet */
+  padding: 0; /* Removes default padding */
+  margin: 0; /* Removes default margin */
 }
 
-.floating-legend span {
-  margin-right: 10px; /* Adjust the right margin as needed */
-  display: inline-block; /* Makes sure the margin is applied correctly */
+.floating-legend li {
+  margin-bottom: 12px; /* Increase space between lines. Adjust value as needed */
+  padding-left: 30px; /* Add padding for inline-block circle */
+  position: relative; /* Needed for absolute positioning of the circle */
+}
+
+.indicator {
+  height: 15px; /* Size of the circle */
+  width: 15px; /* Size of the circle */
+  border-radius: 50%; /* Makes the indicator a circle */
+  display: inline-block; /* Allows us to set a width and height */
+  position: absolute; /* Positions the circle absolutely within the li */
+  left: 0; /* Aligns the circle to the far left of the li */
+  top: 50%; /* Centers the circle vertically */
+  transform: translateY(-50%); /* Fine-tunes the vertical centering */
+}
+
+/* Specific colors for each indicator type */
+.good {
+  background-color: #34B274;
+}
+
+.moderate {
+  background-color: #FDD000;
+}
+
+.unhealthy-sg {
+  background-color: #F4681A;
+}
+
+.unhealthy {
+  background-color: #D3112E;
+}
+
+.very-unhealthy {
+  background-color: #8854D0;
+}
+
+.hazardous {
+  background-color: #731425;
 }
 .floating-legend-left {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width:100%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  background-color: #fff;
+  position: fixed;
+  top: 30%;
+  left:35%;
+  display: block; /* Change from flex to block to allow the default list styling */
+  padding: 16px;
+  background-color: #F5F6F6;
   border-radius: 8px;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-  font-family: sans-serif;
   font-size: 14px;
-}
-.floating-legend-left div {
-  display: flex;
-  align-items: center;
-  margin-right: 6px; /* Adjust spacing between items */
+  width: 10%; /* Ensure the width is as per content */
+  max-width: 90%; /* Optional: to ensure it doesn't get too wide */
 }
 
-.floating-legend-left span {
-  margin-right: 10px; /* Adjust the right margin as needed */
-  display: inline-block; /* Makes sure the margin is applied correctly */
+.floating-legend-left ul {
+  list-style-type: none; /* Removes default list bullet */
+  padding: 0; /* Removes default padding */
+  margin: 0; /* Removes default margin */
 }
-.color-box {
-  width: 50px; /* Adjust box size */
-  height: 20px;
-  display: inline-block;
-  border: 0px solid #000;
+
+.floating-legend-left li {
+  margin-bottom: 12px; /* Increase space between lines. Adjust value as needed */
+  padding-left: 30px; /* Add padding for inline-block circle */
+  position: relative; /* Needed for absolute positioning of the circle */
 }
-.green { background: #34B274; }
-.yellow { background: #FDD000; }
-.orange { background: #F4681A; }
-.red { background: #D3112E; }
-.purple { background: #8854D0; }
-.maroon { background: #731425; }
+
 
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  background-color: #EEEEEE;
+  background-color: white;
   box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
   padding: 10px;
   height:25vh;
@@ -271,17 +329,34 @@ content {
 }
 
 .navbar-right {
-  align-items: flex-end;
+  align-items: flex-start;
   width: 20vw; /* Set the width of navbar-right to 20% of the viewport width */
     margin-top: 20px;
+  margin-left: 10%;
+}
+/* This class is for the check icon that should be hidden by default */
+.check-icon {
+  display: none;
+}
+
+/* Only display the check icon when the tab has the 'active' class */
+.navbar-right a.active .check-icon {
+  display: inline;
+}
+
+/* Optional: If you want to style the icon */
+.navbar-right a.active .check-icon {
+  color: #00a2ff; /* Set the icon color */
+  margin-left: 8px; /* Space between the text and the icon */
 }
 
 .logo {
   margin-right: 20px;
-  width: 20vw; /* Adjust as needed */
+  width: 17vw; /* Adjust as needed */
   margin-bottom: 0px;
   margin-top: 0px;
   margin-left: 10px;
+  border-bottom: 1px solid #cccccc;
 }
 .bottom-section {
   display: flex;
@@ -299,15 +374,15 @@ content {
 
 .nav-title {
   font-weight: 500;
-  font-size: 34px;
+  font-size: 36px;
   margin-right: 20px;
   padding-top:10;
   margin-bottom: 10;
-  color: #3273D1;
+  color: #0052C2;
 
 }
 .nav-text {
-  font-size: 20px;
+  font-size: 16px;
   margin-top: 40;
   padding-bottom: 10;
 
@@ -322,11 +397,14 @@ content {
 .navbar-right a {
     display: inline-block; /* Center links by setting display to inline-block */
     color: #3273D1;
-    text-align: center;
     padding: 1vh 2vh;
     text-decoration: none;
     transition: background-color 0.2s;
     font-size:22px;
+    width: 100%;
+    text-align: left; /* Align text to the left */
+    display: block; /* Make the anchor fill the horizontal space of .navbar-section */
+    border-bottom: 1px solid #cccccc;
 }
 
 /* Change the background color of links on hover */
@@ -335,8 +413,8 @@ content {
     color: black;
 }
 .navbar-right a.active {
-    text-decoration: underline;
     background-color: #EEEEEE;
+    border-bottom: 2px solid #0052C2;
 }
 /* Add padding at the top of the body to ensure the content doesn't hide under the navbar */
 body {
@@ -449,7 +527,18 @@ body {
     align-items: center; /* Center items horizontally */
     text-align: center; /* Center text inside each <p> */
     margin: 0; /* Remove default margin */
+width: 100vw; /* Make the container fill the viewport width */
 }
 p {
     margin: 10px 0; /* Add some space between paragraphs */
+}
+.triangle {
+  width: 0;
+  height: 0;
+  border-left: 25px solid transparent; /* 左侧透明边框 */
+  border-right: 25px solid transparent; /* 右侧透明边框 */
+  border-top: 43px solid black; /* 顶部边框的颜色为黑色，代表三角形的颜色 */
+  margin: auto; /* 水平居中三角形 */
+  padding-top:20px;
+  padding-bottom:10px;
 }
