@@ -153,7 +153,7 @@ content {
 .floating-div-left {
     position: fixed;
     top: 30%;
-    left:2%
+    left:2%;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -283,7 +283,7 @@ content {
   border-radius: 8px;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   font-size: 14px;
-  width: 10%; /* Ensure the width is as per content */
+  width: 12%; /* Ensure the width is as per content */
   max-width: 90%; /* Optional: to ensure it doesn't get too wide */
 }
 
@@ -332,7 +332,7 @@ content {
   align-items: flex-start;
   width: 20vw; /* Set the width of navbar-right to 20% of the viewport width */
     margin-top: 20px;
-  margin-left: 10%;
+  margin-left: 4%;
 }
 /* This class is for the check icon that should be hidden by default */
 .check-icon {

@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
 const select_date = 129
-const scaleFactor = 1
+const scaleFactor = 0.95
 var container = d3.select('#daily_chart');
 var svg_color
 
@@ -377,10 +377,15 @@ for (i in data){
       text_group.on('click',function(){
         text = d3.select(this).select('text').text().split(' ')
         text.pop();
-        const newtext = text.join(' ');
+        var newtext = text.join(' ')
+
+        var a = newtext.split('(')
+        a.pop()
+        newtext = a.join(' ')
+
         for(i in info){
-          if(info[i].Full==newtext){
-            console.log(newtext )
+          if(info[i].Full===newtext.slice(0, -1)){
+
             openOverlay(newtext,info[i])
           }
         }
