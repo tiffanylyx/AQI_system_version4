@@ -42,41 +42,56 @@ svg_calender.attr("width", dayWidth * 7) // 7 days for a week
     .attr("dy", "0.35em") // Vertical alignment
     .text(d => d)
     .attr('class','semi-title')
-d3.csv("Data2.csv").then( function(data) {
+    Promise.all([
+      d3.csv(csvFile1),
+      d3.csv(csvFile2)
+    ]).then(function([data, info]) {
   data.forEach(function(d) {
     d.Date_org = d.Date
-    d.Date = d3.timeParse("%m/%d/%y")(d.Date);
+    d.Date = d3.timeParse("%m/%d/%Y")(d.Date);
   });
   year = 2023
   d3.select('#calendar-title')
   .text(new Date(year, select_month)
   .toLocaleString('en-us', { month: 'long' }) + " " + year)
 
-  create_calender(select_month,data)
+  create_calender(select_month,data,info)
   // Click event handler for the previous month button
   d3.select('#prev-month-btn').on('click', function() {
-    // Decrement the month and update year if needed
-    select_month--;
-    if (select_month < 0) {
-      select_month = 11;
-      year--;
-    }
-    create_calender(select_month,data)
+      // Decrement the month and update year if needed
+      select_month--;
+      if (select_month < 0) {
+          select_month = 11;
+          year--;
+      }
+      if (year < 2023) {
+          // Reset to the minimum limit
+          year = 2023;
+          select_month = 0;
+      }
+      create_calender(select_month, data,info);
   });
 
   // Click event handler for the next month button
   d3.select('#next-month-btn').on('click', function() {
-    // Increment the month and update year if needed
-    select_month++;
-    if (select_month > 11) {
-      select_month = 0;
-      year++;
-    }
-    create_calender(select_month,data)
+      // Increment the month and update year if needed
+      select_month++;
+      if (select_month > 11) {
+          select_month = 0;
+          year++;
+      }
+      if (year > 2023) {
+          // Reset to the maximum limit
+          year = 2023;
+          select_month = 11;
+      }
+        console.log(info)
+      create_calender(select_month, data,info);
   });
 
 })
-function create_calender(select_month,data){
+function create_calender(select_month,data,info){
+
   svg_date.selectAll('*').remove()
   d3.select('#calendar-title').text(new Date(year, select_month).toLocaleString('en-us', { month: 'long' }) + " " + year);
 
@@ -127,14 +142,16 @@ for(i in calendarArray){
 
   if(calendarArray[i]>0){
     data_for_day = monthData.filter(d => d.Date.getDate() === calendarArray[i])
-    create_rosa_small(data_for_day[0].Date_org,data_for_day,cell)
+
+
+    create_rosa_small(data_for_day[0].Date_org,data_for_day,cell,info)
   }
 
 }
 }
 
 
-function create_rosa_small(date,data,group){
+function create_rosa_small(date,data,group,info){
   barwidth = 40
   AQI_value = 0
 const circle_bar = group.append('g').attr("id",'circle_bar').attr("transform",`translate(${dayWidth/2}, ${dayHeight/2})`)
@@ -172,7 +189,6 @@ const bars = layer3
   })
   // First translate to the bottom center, then rotate
   .attr('transform', d => `rotate(${calculateRotation(d)})`);
-  console.log(AQI_value)
 const circle = layer3.append('circle')
 .attr('cx', 0)
 .attr('cy', 0)
@@ -201,7 +217,7 @@ const AQI_mark =  layer2.append('circle')
 layer2.attr('transform', `scale(${0.2})`)
 layer3.attr('transform', `scale(${0.2})`)
 group.on("click", function(){
-  create_rosa(date,data)
+  create_rosa(date,data,info)
     svg_calender.selectAll('#edge').style('stroke-width',0)
   group.select('#edge').style('stroke','black').style('stroke-width',2)
 

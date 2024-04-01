@@ -53,7 +53,7 @@ const circle_bar = svg.append('g')
 var layer1 = circle_bar.append('g');
 var layer2 = circle_bar.append('g');
 var layer3 = circle_bar.append('g');
-const csvFile1 = 'Data2.csv';
+const csvFile1 = 'data_2023.csv';
 const csvFile2 = 'info.csv';
 
 // Load both files concurrently
@@ -109,6 +109,7 @@ Promise.all([
 
   svg_color = d3.select("#overlay-content-color")
   .append('svg')
+
 
   create_rosa(date,data_for_day,info)
   // The scaling factor, e.g., 2 would double size, 0.5 would halve it
@@ -246,7 +247,6 @@ const padding_h = 30;
 const padding_v = 20;
 // Add the text to the SVG first to measure it
 for (i in data){
-  console.log(data[i])
   text_group = layer3.append("g")
       .attr("text-anchor", "middle")
       .attr("transform",  function(){
@@ -284,10 +284,10 @@ for (i in data){
         return 'Black'
       }
     })
-    .style("font-size",'14px')
+    .style("font-size",'16px')
   text.append("tspan")
   .text(data[i].Value)
-  .style("font-size", "22px") // Smaller font size for the AQI range
+  .style("font-size", "30px") // Smaller font size for the AQI range
     .attr("dx", "0.3em").style('fill',function(){
       if(data[i].Type==DP){
         if((AQI_value<101)&&(AQI_value>50)){
@@ -391,29 +391,69 @@ for (i in data){
         }
 
       })
+  text_group = layer3.append("g")
+      .attr("transform",  function(){
+        var indicate = 1
+        if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+          indicate = 1}
+        else{indicate = -1}
+      return `translate(${(textWidth+padding_h)*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
+      ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
+    })
 
 
   // Move text to the front if needed (for browsers that don't support 'insert')
   text.raise();
 
+      if(data[i].Type==DP){
+      DP_group = text_group.append("g")
+          .attr("text-anchor", "middle").attr("transform", function(){
+            var indicate = 1
+            if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+              indicate = 1}
+            else{indicate = -1}
+          return `translate(${-indicate*70},${indicate*50})`})
+      DP_info = DP_group.append("text").attr("x",106).attr("y",10);
+        DP_group.append("path")
+        .attr("d", "M 0,-12.5 L -14,12.5 H 14 Z") // Triangle path with the tip centered at (0,0)
+        .attr("fill", color_fill(AQI_value));
+      // Draw the exclamation mark using rectangles for simplicity
+      DP_group.append("rect")
+        .attr("x", -1.5) // X position (centered at 0,0)
+        .attr("y", -7) // Y position (above the bottom)
+        .attr("width", 3) // Width of the exclamation mark
+        .attr("height", 12) // Height of the exclamation mark's stick
+        .attr("fill", "#fff"); // Fill with white color
 
-  const points = [
-          [0,8*Math.sqrt(3)], // 顶点A
-          [16,-8*Math.sqrt(3)], // 顶点B
-          [-16,-8*Math.sqrt(3)] // 顶点C
-      ]
-  if(data[i].Type==DP){
-  DP_group = text_group.append("g")
-      .attr("text-anchor", "middle")
-      .attr("transform",  function(){
-      return `translate(${buttun_line_padding/2*Math.cos(Math.PI+angleScale(data[i].Type))},${buttun_line_padding/2*Math.sin(Math.PI+angleScale(data[i].Type))})`
-    })
-  DP_group.append("polygon")
-            .attr("points", points.join(" "))
-            .attr("fill", "black")
-            .attr("stroke", "black")
-            .attr("stroke-width", 2)
-            .attr('transform', `rotate(${calculateRotation(data[i])})`);}
+      DP_group.append("rect")
+        .attr("x", -1.5) // X position (centered at 0,0)
+        .attr("y", 7) // Y position (above the bottom)
+        .attr("width", 3) // Width of the exclamation mark's dot
+        .attr("height", 3) // Height of the exclamation mark's dot
+        .attr("fill", "#fff"); // Fill with white color
+        // Append the text "Driver Pollutant"
+        DP_info.append("tspan")
+        .text(" Driver Pollutant")
+        .style("font-weight", "bold")
+        .style("fill", color_fill(AQI_value)); // Style the text color
+
+        // Append the "Learn more" text
+        DP_info.append("tspan")
+        .attr("dx", "6")
+        .text("Learn more")
+        .style("font-size", "10px")
+        .style("fill", "blue") // Style the text to look like a link
+        const bbox = DP_group.node().getBBox();
+        const textWidth = bbox.width;
+        const textHeight = bbox.height;
+        console.log(textWidth)
+        DP_group.attr("text-anchor", "middle").attr("transform", function(){
+              var indicate = 1
+              if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+                indicate = 1}
+              else{indicate = -1}
+            return `translate(0,${indicate*(textHeight+30)})`})
+          }
 }
 
 date_text.text(text_to_display(date));
@@ -459,7 +499,7 @@ function color_type(d){
 
 function text_to_display(dateString){
   // Function to parse the date in m/d/y format
-const parseDate = d3.timeParse("%m/%d/%y");
+const parseDate = d3.timeParse("%m/%d/%Y");
 
 // Function to format the date into "Month day, Year" format
 // Note: D3 does not have built-in ordinal date formatters (%O),

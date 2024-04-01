@@ -1,5 +1,5 @@
 // set the dimensions and margins of the graph
-const select_date = 180
+const select_date = 1
 const scaleFactor = 0.9
 const container = d3.select('#daily_chart');
 
@@ -52,16 +52,20 @@ const circle_bar = svg.append('g')
 var layer1 = circle_bar.append('g');
 var layer2 = circle_bar.append('g');
 var layer3 = circle_bar.append('g');
+function parseDate(dateString) {
+  const [month, day,year] = dateString.split('/');
+  console.log(month,day,year)
+  const res  = new Date(year, month - 1, day)//.getDate()
+  return res;
+}
+const csvFile1 = 'data_2023.csv';
+const csvFile2 = 'info.csv';
 
-d3.csv("Data2.csv").then( function(dataall) {
-
-
-  // Custom parsing function for "M/D/Y" format
-  function parseDate(dateString) {
-    const [month, day,year] = dateString.split('/');
-    const res  = new Date(year, month - 1, day)//.getDate()
-    return res;
-  }
+// Load both files concurrently
+Promise.all([
+  d3.csv(csvFile1),
+  d3.csv(csvFile2)
+]).then(function([dataall, info]) {
 
   var parseDate1 = d3.timeParse("%m/%d/%Y");
 
@@ -86,7 +90,6 @@ d3.csv("Data2.csv").then( function(dataall) {
     if(!allTime.includes(data[i].Date_org)){allTime.push(data[i].Date_org);}
   }
   var date = allTime[select_date]
-  console.log(date)
 
   var by_date = d3.group(data, d => d.Date);
   // Convert the Map object to an array of key-value pairs using .entries()
@@ -107,7 +110,7 @@ d3.csv("Data2.csv").then( function(dataall) {
   for(i in data_select){
     data_for_day.push({'Type':data_select[i].Type,'Value': parseInt(data_select[i].Value,10)})
   }
-  create_rosa(date,data_for_day)
+  create_rosa(date,data_for_day,info)
   // The scaling factor, e.g., 2 would double size, 0.5 would halve it
 
 
@@ -134,12 +137,12 @@ const health = status.append('span')
 const DP_text = status.append('span')
     .attr('class', 'pollutant-text-right')
 //create_rosa(data)
-function create_rosa(date,data){
-
+function create_rosa(date,data,info){
+  console.log(info)
   AQI_value = 0
 svg.selectAll("*").remove()
 barwidth = 26
-const circle_bar = svg.append('g').attr("id",'circle_bar')
+const circle_bar = svg.append('g').attr("id",'circle_bar').attr("transform",'translate(0,40)')
 var layer1 = circle_bar.append('g').attr("id",'layer1');
 var layer2 = circle_bar.append('g').attr("id",'layer2');
 var layer3 = circle_bar.append('g').attr("id",'layer3');
@@ -239,33 +242,68 @@ const lines = layer1.append("g")
       .style("font-size","16")
       .style("font-weight","300")
 
-
 // Draw the button background
-const padding_h = 30;
-const padding_v = 20;
+const padding_h = 20;
+const padding_v = 12;
 // Add the text to the SVG first to measure it
 for (i in data){
   text_group = layer3.append("g")
       .attr("text-anchor", "middle")
       .attr("transform",  function(){
-      return `translate(${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
+        var indicate = 1
+        if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+          indicate = 1
+        }
+        else{indicate = -1}
+      return `translate(${60*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
       ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
     })
-  text = text_group.append("text")
-        .text(function(){return data[i].Type+' '+data[i].Value})
-        .style('fill',function(){
-          if(data[i].Type==DP){
-            if((AQI_value<101)&&(AQI_value>50)){
-              return 'Black'
-            }
-            else{
-              return 'White'
-            }
-          }
-          else{
-            return 'Black'
-          }
-        })
+  text = text_group.append("text")  .attr("x", 0) // Set the x position of the text element
+  .attr("y", 0) .style("dominant-baseline", "middle")
+  text.append("tspan")
+    .text(function() {
+      var textContent = '';
+      for (var j in info) {
+        console.log()
+        if (data[i].Type === info[j].Name) {
+          textContent = info[j].Full + ' (' + info[j].Name + ') ';
+          break; // Exit the loop once the match is found
+        }
+      }
+      return textContent;
+    })
+    .style('fill',function(){
+      if(data[i].Type==DP){
+        if((AQI_value<101)&&(AQI_value>50)){
+          return 'Black'
+        }
+        else{
+          return 'White'
+        }
+      }
+      else{
+        return 'Black'
+      }
+    })
+    .style("font-size",'12px')
+
+  text.append("tspan")
+  .text(data[i].Value)
+  .style("font-size", "26px") // Smaller font size for the AQI range
+    .attr("dx", "0.3em").style('fill',function(){
+      if(data[i].Type==DP){
+        if((AQI_value<101)&&(AQI_value>50)){
+          return 'Black'
+        }
+        else{
+          return 'White'
+        }
+      }
+      else{
+        return color_fill(data[i].Value)
+      }
+    })
+    .style("font-weight", "bold")
   // Calculate text dimensions
   const bbox = text.node().getBBox();
   const textWidth = bbox.width;
@@ -307,18 +345,55 @@ for (i in data){
           [16,-8*Math.sqrt(3)], // 顶点B
           [-16,-8*Math.sqrt(3)] // 顶点C
       ]
-  if(data[i].Type==DP){
-  DP_group = text_group.append("g")
-      .attr("text-anchor", "middle")
-      .attr("transform",  function(){
-      return `translate(${buttun_line_padding/2*Math.cos(Math.PI+angleScale(data[i].Type))},${buttun_line_padding/2*Math.sin(Math.PI+angleScale(data[i].Type))})`
-    })
-  DP_group.append("polygon")
-            .attr("points", points.join(" "))
-            .attr("fill", "black")
-            .attr("stroke", "black")
-            .attr("stroke-width", 2)
-            .attr('transform', `rotate(${calculateRotation(data[i])})`);}
+      if(data[i].Type==DP){
+      DP_group = text_group.append("g")
+          .attr("text-anchor", "middle").attr("transform", function(){
+            var indicate = 1
+            if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+              indicate = 1}
+            else{indicate = -1}
+          return `translate(${-indicate*70},${indicate*50})`})
+      DP_info = DP_group.append("text").attr("x",106).attr("y",10);
+        DP_group.append("path")
+        .attr("d", "M 0,-12.5 L -14,12.5 H 14 Z") // Triangle path with the tip centered at (0,0)
+        .attr("fill", color_fill(AQI_value));
+      // Draw the exclamation mark using rectangles for simplicity
+      DP_group.append("rect")
+        .attr("x", -1.5) // X position (centered at 0,0)
+        .attr("y", -7) // Y position (above the bottom)
+        .attr("width", 3) // Width of the exclamation mark
+        .attr("height", 12) // Height of the exclamation mark's stick
+        .attr("fill", "#fff"); // Fill with white color
+
+      DP_group.append("rect")
+        .attr("x", -1.5) // X position (centered at 0,0)
+        .attr("y", 7) // Y position (above the bottom)
+        .attr("width", 3) // Width of the exclamation mark's dot
+        .attr("height", 3) // Height of the exclamation mark's dot
+        .attr("fill", "#fff"); // Fill with white color
+        // Append the text "Driver Pollutant"
+        DP_info.append("tspan")
+        .text(" Driver Pollutant")
+        .style("font-weight", "bold")
+        .style("fill", color_fill(AQI_value)); // Style the text color
+
+        // Append the "Learn more" text
+        DP_info.append("tspan")
+        .attr("dx", "6")
+        .text("Learn more")
+        .style("font-size", "10px")
+        .style("fill", "blue") // Style the text to look like a link
+        const bbox = DP_group.node().getBBox();
+        const textWidth = bbox.width;
+        const textHeight = bbox.height;
+        console.log(textWidth)
+        DP_group.attr("text-anchor", "middle").attr("transform", function(){
+              var indicate = 1
+              if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+                indicate = 1}
+              else{indicate = -1}
+            return `translate(${-textWidth/2.5},${indicate*(textHeight+15)})`})
+          }
 }
 
 date_text.text(text_to_display(date));
@@ -358,7 +433,7 @@ function color_type(d){
 
 function text_to_display(dateString){
   // Function to parse the date in m/d/y format
-const parseDate = d3.timeParse("%m/%d/%y");
+const parseDate = d3.timeParse("%m/%d/%Y");
 
 // Function to format the date into "Month day, Year" format
 // Note: D3 does not have built-in ordinal date formatters (%O),
@@ -367,6 +442,7 @@ const formatDate = d3.timeFormat("%b %-d, %Y");
 
 // Parse the date string into a date object
 const date = parseDate(dateString);
+console.log(dateString)
 
 // Create an ordinal suffix for the day
 const day = date.getDate();
