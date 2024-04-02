@@ -1,5 +1,5 @@
 // set the dimensions and margins of the graph
-const select_date = 129
+const select_date = 193
 const scaleFactor = 0.95
 const container = d3.select('#bar_chart');
 
@@ -52,9 +52,9 @@ let DP
 const info_group = svg.append('g')
 const bars_group = svg.append('g')
 
-const csvFile1 = 'Data2.csv';
+const csvFile1 = 'data_2023.csv';
 const csvFile2 = 'info.csv';
-
+var back = 0
 // Load both files concurrently
 Promise.all([
   d3.csv(csvFile1),
@@ -101,6 +101,7 @@ Promise.all([
       data_select.push(data[i])
     }
   }
+  console.log(data_select)
   var data_for_day = []
   for(i in data_select){
     data_for_day.push({'Type':data_select[i].Type,'Value': parseInt(data_select[i].Value,10)})
@@ -113,17 +114,20 @@ Promise.all([
   var AQI_text_0
   var AQI_y
   var circle_bar
+
+  initial(date, data_for_day, info)
+  create_number(date, data_for_day, info)
   // Store the functions in an array
   const functionsArray = [
       { func: create_number, args: [date,data_for_day,info] },
       { func: create_bar, args: [date,data_for_day,info] },
-      { func: move_bar, args: [date, data_for_day, info,50] },
-      { func: stack, args: [50] },
+      { func: move_bar, args: [date, data_for_day, info,80] },
+      { func: stack, args: [80] },
       { func: add_rosa, args: [date,data_for_day,info] },
   ];
 
   // Initialize the current index
-  let currentIndex = -1;
+  let currentIndex = 0;
 
   // Function to run the function at the current index
   function runFunctionAtIndex() {
@@ -131,28 +135,43 @@ Promise.all([
       functionObject.func.apply(null, functionObject.args);
   }
 
-  // Attach event listeners to the buttons
+  function updateProgressIndicator() {
+      // Get all the dots
+      const dots = document.querySelectorAll('.progress-dot');
+
+      // Remove 'active' class from all dots
+      dots.forEach(dot => {
+          dot.classList.remove('active');
+      });
+
+      // Add 'active' class to the current dot
+      dots[currentIndex].classList.add('active');
+  }
+
+  // Run the updateProgressIndicator function initially to set the first step active
+  updateProgressIndicator();
+
+  // Event listener for the next button
   document.getElementById('nextButton').addEventListener('click', () => {
-      currentIndex = (currentIndex + 1) % functionsArray.length; // Move to next function, loop back to start if at the end
+    if (currentIndex < functionsArray.length - 1) { // Check if currentIndex is less than the last index
+      currentIndex++; // Increment currentIndex
       runFunctionAtIndex();
+      updateProgressIndicator(); // Call this function to update the visual progress indicator
+    }
   });
 
+  // Event listener for the previous button
   document.getElementById('previousButton').addEventListener('click', () => {
-      currentIndex = (currentIndex - 1 + functionsArray.length) % functionsArray.length; // Move to previous function, loop back to end if at the start
+    if (currentIndex > 0) { // Check if currentIndex is greater than 0
+      currentIndex--; // Decrement currentIndex
       runFunctionAtIndex();
-    })
-
-
-  // The scaling factor, e.g., 2 would double size, 0.5 would halve it
-
-
-  // Apply the scaling transform to a group element that contains all other elements
+      updateProgressIndicator(); // Call this function to update the visual progress indicator
+    }
+  });
 
 })
 
-function create_number(date, data, info){
-  console.log(data)
-  // Create the enter selection for the groups
+function initial(date, data, info){
   barGroups = bars_group
     .selectAll('g')
     .data(data)
@@ -169,7 +188,7 @@ function create_number(date, data, info){
     .attr('rx', barwidth / 5) // Rounded corners
     .attr('ry', barwidth / 5) // Rounded corners
     .attr('width', barwidth)
-    .attr('height', 80)
+    .attr('height', 0)
     .attr('fill', function(d){
       if(AQI_value < parseInt(d.Value)){
         AQI_value = parseInt(d.Value)
@@ -208,6 +227,7 @@ function create_number(date, data, info){
       }
     })
     .attr('class','main_text')
+    .style('opacity',0)
 
   // Now append a text element to each group
   labels2 = barGroups.append('text')
@@ -227,27 +247,68 @@ function create_number(date, data, info){
       }
     })
     .attr('class','sub_title')
+    .style('opacity',0)
+
+  }
+function create_number(date, data, info){
+  console.log(create_number)
+
+  // Append a rect to each group
+  bars.attr('height', 80).attr('y',-40)
+  labels1.style('opacity',1)
+  labels2.style('opacity',1)
+
+
 }
 
 function create_bar(date, data, info){
+  console.log('create_bar')
   bars
   .transition()
   .duration(1000)
   .style('opacity',1)
   .attr('height',d => bar_height_bar(d.Value, outerRadius, innerRadius ))
   .attr('y',d => 50-bar_height_bar(d.Value, outerRadius, innerRadius ))
+  labels1
+  .transition()
+  .delay(function(d,i) {
+    return i * 100; // Delay each subsequent bar by an additional 100ms
+  })
+  .duration(800)
+  .attr('y', -8)
+labels2
+.transition()
+.delay(function(d,i) {
+  return i * 100; // Delay each subsequent bar by an additional 100ms
+})
+.duration(800)
+.attr('y',20)
+info_group.selectAll("*").remove()
 }
 function move_bar(date, data, info,distance){
+info_group.selectAll("*").remove()
+  barwidth = 120
+  padding_bar = 80
+  barGroups
+  .transition()
+  .delay(function(d,i) {
+    return i * 100; // Delay each subsequent bar by an additional 100ms
+  })
+  .duration(800)
+  .attr("transform", function(d,i) {
+    return `translate(${(i-5/2)*(padding_bar+barwidth)-50},0)`;
+  });
+
+  console.log('move_bar')
   bars
   .transition()
   .delay(function(d,i) {
     return i * 100; // Delay each subsequent bar by an additional 100ms
   })
   .duration(800)
+  .attr('width',barwidth)
   .attr('y',d => distance+50-bar_height_bar(d.Value, outerRadius, innerRadius ))
-
-
-
+  if(back==0){
   labels1
   .transition()
   .delay(function(d,i) {
@@ -256,17 +317,24 @@ function move_bar(date, data, info,distance){
   .duration(800)
   .attr('y', function() {
     // Get the current 'y' value and parse it to an integer, then add 50
-    return parseInt(d3.select(this).attr('y')) + distance;
-})
-labels2
-.transition()
-.delay(function(d,i) {
-  return i * 100; // Delay each subsequent bar by an additional 100ms
-})
-.duration(800)
-.attr('y', function() {
-  // Get the current 'y' value and parse it to an integer, then add 50
-  return parseInt(d3.select(this).attr('y')) + distance;})
+    return parseInt(d3.select(this).attr('y')) + distance;})
+  labels2
+  .transition()
+  .delay(function(d,i) {
+    return i * 100; // Delay each subsequent bar by an additional 100ms
+  })
+  .duration(800)
+  .attr('y', function() {
+    // Get the current 'y' value and parse it to an integer, then add 50
+    return parseInt(d3.select(this).attr('y')) + distance;})
+    back = 1
+  }
+  else{
+      labels1.attr("x", barwidth / 2).attr("y", distance-5).style('font-size',22)
+      labels2.attr("x", barwidth / 2).attr("y", distance+20).style('font-size',28)
+      back = 0
+
+  }
 
 arrow= d3.arrow1()
    .id("my-arrow-9")
@@ -300,6 +368,9 @@ info_group
 }
 
 function stack(distance){
+  console.log('stack')
+
+  d3.select('#bar_chart').select('svg').select('#circle_bar').remove()
   barwidth = 50
   padding_bar = 20
   move_x = 350
@@ -320,12 +391,17 @@ function stack(distance){
 
 
   bars
+  .transition()
+  .delay(function(d,i) {
+    return i * 100; // Delay each subsequent bar by an additional 100ms
+  })
+  .duration(800)
   .attr('width',barwidth)
   .attr('rx', barwidth / 5) // Rounded corners
   .attr('ry', barwidth / 5) // Rounded corners
 
-  labels1.attr("x", barwidth / 2) .attr("y", 50).style('font-size',16)
-  labels2.attr("x", barwidth / 2) .attr("y", 70).style('font-size',16)
+  labels1.attr("x", barwidth / 2) .attr("y", distance).style('font-size',16)
+  labels2.attr("x", barwidth / 2) .attr("y", distance+20).style('font-size',16)
 
   AQI_line_0
   .transition()
@@ -341,6 +417,7 @@ function stack(distance){
 }
 
 function add_rosa(date,data,info){
+  console.log('add_rosa')
   function blinkBar(index,blinkCount) {
     blinkDuration = 500
     const numberOfBlinks = 2;
@@ -425,7 +502,7 @@ function add_rosa(date,data,info){
 //create_rosa(data)
 function create_rosa(date,data,info){
 
-circle_bar = d3.select('#bar_chart').select('svg').append('g').attr("id",'circle_bar').attr("transform",`translate(${width*3/4}, ${height / 2})`)
+circle_bar = d3.select('#bar_chart').select('svg').append('g').attr("id",'circle_bar').attr("transform",`translate(${width*0.6}, ${height / 2})`)
 var layer1 = circle_bar.append('g').attr("id",'layer1');
 var layer2 = circle_bar.append('g').attr("id",'layer2');
 var layer3 = circle_bar.append('g').attr("id",'layer3');
@@ -564,70 +641,72 @@ for (i in data){
       ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
     })
 
-  text = text_group.append("text")
-        .text(function(){
-          for(j in info){
-            if(data[i].Type==info[j].Name){
-              return info[j].Name+' '+data[i].Value}
-            }
+    text = text_group.append("text").attr("x", 0) // Set the x position of the text element
+    .attr("y", 0) .style("dominant-baseline", "middle")
+
+    text.append("tspan")
+      .text(function() {
+        var textContent = '';
+        for (var j in info) {
+          if (data[i].Type === info[j].Name) {
+            textContent = info[j].Full + ' (' + info[j].Name + ') ';
+            break; // Exit the loop once the match is found
           }
-        )
-        .style('fill',function(){
-          if(data[i].Type==DP){
-            if((AQI_value<101)&&(AQI_value>50)){
-              return 'Black'
-            }
-            else{
-              return 'White'
-            }
-          }
-          else{
+        }
+        return textContent;
+      })
+      .style('fill',function(){
+        if(data[i].Type==DP){
+          if((AQI_value<101)&&(AQI_value>50)){
             return 'Black'
           }
-        })
-        .style('opacity',0)
-        .transition()
-        .delay(function() {
-          return i * 2000; // Delay each subsequent bar by an additional 100ms
-        })
-        .duration(800)
-        .style('opacity',1)
+          else{
+            return 'White'
+          }
+        }
+        else{
+          return 'Black'
+        }
+      })
+      .style("font-size",'16px')
+      .style('opacity',0)
+      .transition()
+      .delay(function() {
+        return i * 2000; // Delay each subsequent bar by an additional 100ms
+      })
+      .duration(800)
+      .style('opacity',1)
+    text.append("tspan")
+    .text(data[i].Value)
+    .style("font-size", "30px") // Smaller font size for the AQI range
+      .attr("dx", "0.3em").style('fill',function(){
+        if(data[i].Type==DP){
+          if((AQI_value<101)&&(AQI_value>50)){
+            return 'Black'
+          }
+          else{
+            return 'White'
+          }
+        }
+        else{
+          return color_fill(data[i].Value)
+        }
+      })
+      .style("font-weight", "bold")
+      .style('opacity',0)
+      .transition()
+      .delay(function() {
+        return i * 2000; // Delay each subsequent bar by an additional 100ms
+      })
+      .duration(800)
+      .style('opacity',1)
+
 
   // Calculate text dimensions
   const bbox = text.node().getBBox();
   const textWidth = bbox.width;
   const textHeight = bbox.height;
 
-  // Create the filter with the id #drop-shadow
-  // Set the height and width to 130% to allow for the blur
-  var filter = svg.append("defs")
-    .append("filter")
-      .attr("id", "drop-shadow")
-      .attr("height", "120%")
-      .attr("width", "120%");
-
-  // SourceAlpha refers to the graphic that this filter will be applied to
-  // convolve that with a Gaussian with a standard deviation of 3
-  filter.append("feGaussianBlur")
-      .attr("in", "SourceAlpha")
-      .attr("stdDeviation", 5)
-      .attr("result", "blur");
-
-  // Translate the blur
-  filter.append("feOffset")
-      .attr("in", "blur")
-      .attr("dx", 2)
-      .attr("dy", 2)
-      .attr("result", "offsetBlur");
-
-  // Add an feMerge node to merge the original source graphic and the
-  // blur filter result
-  var feMerge = filter.append("feMerge");
-
-  feMerge.append("feMergeNode")
-      .attr("in", "offsetBlur")
-  feMerge.append("feMergeNode")
-      .attr("in", "SourceGraphic");
   // Draw the button background behind the text
   text_group.insert('rect', 'text') // Insert rectangle before the text element
       .attr('x', bbox.x - padding_h / 2)
@@ -643,7 +722,6 @@ for (i in data){
         else{
           return 'white'
         }
-
       } )
       .style('stroke', function(){
         if(data[i].Type!=DP){
@@ -663,61 +741,90 @@ for (i in data){
       .duration(800)
       .style('opacity',1)
 
-  .style('filter', 'url(#drop-shadow)');
-      text_group.on('click',function(){
-        text = d3.select(this).select('text').text().split(' ')
-        text.pop();
-        text.pop();
-        const newtext = text.join(' ');
-        for(i in info){
-          if(info[i].Full==newtext){
-            console.log(newtext )
-            openOverlay(newtext,info[i])
-          }
-        }
-
-      })
-
-
-
-
-      const points = [
-          [0,8*Math.sqrt(3)], // 顶点A
-          [16,-8*Math.sqrt(3)], // 顶点B
-          [-16,-8*Math.sqrt(3)] // 顶点C
-      ]
-  if(data[i].Type==DP){
-  DP_group = text_group.append("g")
-      .attr("text-anchor", "middle")
+  text_group = layer3.append("g")
       .attr("transform",  function(){
-      return `translate(${buttun_line_padding/2*Math.cos(Math.PI+angleScale(data[i].Type))},${buttun_line_padding/2*Math.sin(Math.PI+angleScale(data[i].Type))})`
+        var indicate = 1
+        if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+          indicate = 1}
+        else{indicate = -1}
+      return `translate(${(textWidth+padding_h)*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
+      ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
     })
-  DP_group.append("polygon")
-            .attr("points", points.join(" "))
-            .attr("fill", "black")
-            .attr("stroke", "black")
-            .attr("stroke-width", 2)
-            .attr('transform', `rotate(${calculateRotation(data[i])})`)
-            .style('opacity',0)
-            .transition()
-            .delay(function() {
-              return 6 * 3000; // Delay each subsequent bar by an additional 100ms
-            })
-            .duration(800)
-            .style('opacity',1)
 
-          }
+
+    if(data[i].Type==DP){
+    DP_group = text_group.append("g")
+    .attr("text-anchor", "middle").attr("transform", function(){
+      var indicate = 1
+      if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+        indicate = 1}
+      else{indicate = -1}
+    return `translate(${-indicate*70},${indicate*50})`})
+
+    DP_info = DP_group.append("text").attr("x",80).attr("y",10);
+      DP_group.append("path")
+      .attr("d", "M 0,-12.5 L -14,12.5 H 14 Z") // Triangle path with the tip centered at (0,0)
+      .attr("fill", color_fill(AQI_value))
+      .style("opacity",0)
+      .transition()
+      .delay(function() {
+        return i * 2000; // Delay each subsequent bar by an additional 100ms
+      })
+      .duration(800)
+      .style("opacity",1)
+    // Draw the exclamation mark using rectangles for simplicity
+    DP_group.append("rect")
+      .attr("x", -1.5) // X position (centered at 0,0)
+      .attr("y", -7) // Y position (above the bottom)
+      .attr("width", 3) // Width of the exclamation mark
+      .attr("height", 12) // Height of the exclamation mark's stick
+      .attr("fill", "#fff") // Fill with white color
+      .style("opacity",0)
+      .transition()
+      .delay(function() {
+        return i * 2000; // Delay each subsequent bar by an additional 100ms
+      })
+      .duration(800)
+      .style("opacity",1)
+
+    DP_group.append("rect")
+      .attr("x", -1.5) // X position (centered at 0,0)
+      .attr("y", 7) // Y position (above the bottom)
+      .attr("width", 3) // Width of the exclamation mark's dot
+      .attr("height", 3) // Height of the exclamation mark's dot
+      .attr("fill", "#fff")
+      .style("opacity",0)
+      .transition()
+      .delay(function() {
+        return i * 2000; // Delay each subsequent bar by an additional 100ms
+      })
+      .duration(800)
+      .style("opacity",1)
+      DP_info.append("tspan")
+      .text(" Driver Pollutant")
+      .style("font-weight", "bold")
+      .style("fill", color_fill(AQI_value))
+      .style("opacity",0)
+          .transition()
+          .delay(function() {
+            return i * 2000; // Delay each subsequent bar by an additional 100ms
+          })
+          .duration(800)
+          .style("opacity",1)
+
+
+        }
 }
 
 
-circle_bar.attr('transform', `translate(${width*3 / 4-60}, ${height / 2}) scale(${0.9})`)
+circle_bar.attr('transform', `translate(${width*0.65}, ${height / 2}) scale(${0.9})`)
 }
 
 function bar_height_bar(d, max, min){
-  return 1.7*Math.pow(d,0.8)+barwidth/2
+  return 4.5*Math.pow(d,0.65)+barwidth/2
 }
 function bar_height(d, max, min){
-  return 1.7*Math.pow(d,0.8)+barwidth
+  return 4.5*Math.pow(d,0.65)+barwidth
 }
 
 function color_fill(d){

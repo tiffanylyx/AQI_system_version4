@@ -1,6 +1,7 @@
 // set the dimensions and margins of the graph
-const select_date = 129
-const scaleFactor = 0.95
+const select_date = 193
+
+const scaleFactor = 0.97
 var container = d3.select('#daily_chart');
 var svg_color
 
@@ -213,8 +214,8 @@ const lines = layer1.append("g")
 
   yTick.append("circle")
       .attr("fill", "none")
-      .style("stroke-dasharray", ("3, 6"))
-      .attr("stroke", "#0052C2")
+      .style("stroke-dasharray", ("2, 6"))
+      .attr("stroke", "#003E93")
       .attr("opacity",0.5)
       .attr("r", d=>bar_height(d,outerRadius,innerRadius));
   yTick.append("text")
@@ -248,17 +249,17 @@ const padding_v = 20;
 // Add the text to the SVG first to measure it
 for (i in data){
   text_group = layer3.append("g")
-      .attr("text-anchor", "middle")
+      .attr("text-anchor", "left")
       .attr("transform",  function(){
-        var indicate = 1
+        var indicate = 0
         if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
-          indicate = 1
+          indicate = 0
         }
         else{indicate = -1}
-      return `translate(${60*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
+      return `translate(${180*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
       ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
     })
-  text = text_group.append("text")  .attr("x", 0) // Set the x position of the text element
+  text = text_group.append("text").attr("x", 0) // Set the x position of the text element
   .attr("y", 0) .style("dominant-baseline", "middle")
   text.append("tspan")
     .text(function() {
@@ -307,7 +308,16 @@ for (i in data){
   const bbox = text.node().getBBox();
   const textWidth = bbox.width;
   const textHeight = bbox.height;
-
+  text_group
+      .attr("transform",  function(){
+        var indicate = 0
+        if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+          indicate = 0
+        }
+        else{indicate = -1}
+      return `translate(${textWidth*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
+      ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
+    })
   // Create the filter with the id #drop-shadow
   // Set the height and width to 130% to allow for the blur
   var filter = svg.append("defs")
@@ -452,7 +462,7 @@ for (i in data){
               if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
                 indicate = 1}
               else{indicate = -1}
-            return `translate(0,${indicate*(textHeight+30)})`})
+            return `translate(${-indicate*textWidth*1.2},${indicate*(textHeight+15)})`})
           }
 }
 
@@ -585,21 +595,25 @@ svg_color.attr('transform', ` scale(${0.75})`)
 }
 function openOverlay(buttonText,info) {
   var overlay = document.getElementById('overlay');
-  var overlayContent = document.getElementById('overlay-content');
+
+  var overlayContent = document.getElementById('overlay-content1');
   console.log(info)
 
   // Set the content of the overlay based on the button's text
-  document.querySelector('#overlay-content h2').textContent = info.Full + ' ('+info.Name + ')';
-  document.getElementById('h3-left').textContent = 'What is '+info.Name+'?';
-  document.getElementById('p-left').textContent = info.What;
-  document.getElementById('h3-mid').textContent = 'What causes '+info.Name +'?';
-  document.getElementById('p-mid').textContent = info.Where;
-  document.getElementById('h3-right').textContent = 'How does '+info.Name +' harm?';
-  document.getElementById('p-right').textContent = info.Harm;
+  document.querySelector('#overlay-content1 h2').textContent = info.Full + ' ('+info.Name + ')';
+  document.querySelector('#overlay-content2 h2').textContent = info.Full + ' ('+info.Name + ')';
+  document.getElementById('h3-what').textContent = 'What is '+info.Name+'?';
+  document.getElementById('p-what').textContent = info.What;
+  document.getElementById('h3-where').textContent = 'What causes '+info.Name +'?';
+  document.getElementById('p-where').textContent = info.Where;
+  document.getElementById('h3-how').textContent = 'How does '+info.Name +' harm?';
+  document.getElementById('p-how').textContent = info.Harm;
+
 
 
   // Show the overlay
   overlay.style.display = 'block';
+
 }
 document.addEventListener('DOMContentLoaded', function() {
   // Function to close the overlay
@@ -626,3 +640,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 });
+
+function showDivLayout() {
+  var content1 = document.getElementById('overlay-content1');
+  var content2 = document.getElementById('overlay-content2');
+  // Toggle between showing content1 and content2
+  if (content1.style.display === 'none') {
+    content1.style.display = 'block';
+    content2.style.display = 'none';
+  } else {
+    content1.style.display = 'none';
+    content2.style.display = 'block';
+  }
+}
+document.getElementById('overlay-content1').onclick = showDivLayout;
+document.getElementById('overlay-content2').onclick = showDivLayout; // If you want to switch back to the first div when the second one is clicked

@@ -141,6 +141,7 @@ content {
     top: 30%;
     left:5%;
     background-color: #ffffff;
+    width:14%;
 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -152,8 +153,9 @@ content {
 }
 .floating-div-left {
     position: fixed;
-    top: 30%;
+    top: 29%;
     left:2%;
+    width:14%;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -184,8 +186,7 @@ content {
 
 }
 .text-info {
-  padding-left: 14px;
-  padding-right: 14px;
+
   padding-bottom: 10px;
 
 }
@@ -275,15 +276,15 @@ content {
 }
 .floating-legend-left {
   position: fixed;
-  top: 30%;
-  left:35%;
+  top: 29%;
+  left:37%;
   display: block; /* Change from flex to block to allow the default list styling */
   padding: 16px;
   background-color: #F5F6F6;
   border-radius: 8px;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   font-size: 14px;
-  width: 10%; /* Ensure the width is as per content */
+  width: 9%; /* Ensure the width is as per content */
   max-width: 90%; /* Optional: to ensure it doesn't get too wide */
 }
 
@@ -315,6 +316,7 @@ content {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  padding-top:20px;
 }
 .navbar-left {
   align-items: flex-start;
@@ -325,8 +327,8 @@ content {
   text-align: left;
   align-items: flex-start;
   margin-top: 20px;
-  width:58vw;
-  left:20vw;
+  width:54vw;
+  left:22vw;
 
 }
 
@@ -344,7 +346,7 @@ content {
 /* Navigation links styling */
 .navbar-right a {
     display: inline-block; /* Center links by setting display to inline-block */
-    color: #3273D1;
+    color: #003E93;
     padding: 1vh 2vh;
     text-decoration: none;
     transition: background-color 0.2s;
@@ -394,11 +396,11 @@ content {
   margin-right: 20px;
   padding-top:10;
   margin-bottom: 10;
-  color: #0052C2;
+  color: #003E93;
 
 }
 .nav-text {
-  font-size: 16px;
+  font-size: 18px;
   margin-top: 40;
   padding-bottom: 10;
 
@@ -406,6 +408,7 @@ content {
 }
 .nav-support-text {
   font-size: 0.8em;
+  padding-top:10px;
 }
 
 
@@ -450,12 +453,12 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+  padding: 20px;
 }
 
 #prev-month-btn, #next-month-btn {
   border: none;
-  background-color: white;
+  background-color: transparent;
   cursor: pointer;
   margin: 0 10px;
   font-size: 24px;
@@ -552,4 +555,106 @@ p {
   margin: auto; /* 水平居中三角形 */
   padding-top:0px;
   padding-bottom:10px;
+}
+#overlay-content1{
+  position:relative;
+  background:#fff;
+  padding:40px;
+  padding-bottom:30px;
+  border-bottom: 60px solid #003E93;
+  border-radius: 15px;
+}
+#overlay-content1:after {
+    content: "Click to flip for more information 👆"; /* The text you want to display */
+    position: absolute;
+    bottom: -50px; /* Adjust as needed */
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+    background: #003E93; /* Background color for the text box */
+    color: white; /* Text color */
+    font-size: 20px; /* Adjust as needed */
+    box-sizing: border-box;
+     border-radius: 15px;
+}
+
+/* This style will initially hide your div layout */
+#overlay-content2 {
+  display: none;
+  /* Add your other styles here */
+}
+#overlay-content2{
+  position:relative;
+  background:#fff;
+  padding:40px;
+  padding-bottom:30px;
+  border-bottom: 60px solid #003E93;
+  border-radius: 15px;
+}
+#overlay-content2:after {
+    content: "Click to flip for more information 👆"; /* The text you want to display */
+    position: absolute;
+    bottom: -50px; /* Adjust as needed */
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+    background: #003E93; /* Background color for the text box */
+    color: white; /* Text color */
+    font-size: 20px; /* Adjust as needed */
+    box-sizing: border-box;
+     border-radius: 15px;
+}
+
+/* This class will be added via JavaScript to show the div layout */
+.show {
+  display: block;
+}
+/* Container for navigation elements */
+.navigation-container {
+  position: fixed;
+  bottom: 5%; /* Adjust distance from bottom as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Styles for round buttons */
+.round-button {
+  background-color: #f4f4f4; /* Light gray background */
+  border: none;
+  color: #333; /* Dark gray text color */
+  padding: 15px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 30px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 50%; /* Makes the button round */
+  width: 60px; /* Fixed width */
+  height: 60px; /* Fixed height */
+  line-height: 30px; /* Centers the arrow vertically */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds a slight shadow */
+}
+
+/* Styles for progress dots */
+.progress-dots-container {
+  display: flex;
+  padding: 0 20px; /* Space on the left and right */
+}
+
+.progress-dot {
+  display: inline-block;
+  width: 15px; /* Dot size */
+  height: 15px; /* Dot size */
+  border-radius: 50%; /* Makes the dot round */
+  background-color: #bbb; /* Default inactive color */
+  margin: 0 10px; /* Spacing between dots */
+}
+
+.progress-dot.active {
+  background-color: #333; /* Active step color */
 }

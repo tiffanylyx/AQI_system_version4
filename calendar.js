@@ -6,7 +6,7 @@ const svg_date = svg_calender.append('g')
 
 // Set the dimensions for each day cell and the SVG canvas size
 const dayWidth = width/6;
-const dayHeight = height/7.2;
+const dayHeight = height/7.5;
 const margin_top = 0
 svg_header.attr('transform', `translate(0, ${margin_top})`);
 svg_date.attr('transform', `translate(0, ${margin_top+dayHeight / 2})`);
@@ -23,7 +23,7 @@ svg_calender.attr("width", dayWidth * 7) // 7 days for a week
     .append("g")
     .attr("transform", (d, i) => {
       const x = (i % 7) * dayWidth; // Calculate x based on the day of the week
-      const y = (Math.floor(i / 7)) * dayHeight*0.4; // Calculate y based on the week
+      const y = (Math.floor(i / 7)) * dayHeight*0.45; // Calculate y based on the week
       return `translate(${x}, ${y})`;
     });
 
@@ -121,7 +121,7 @@ for(i in calendarArray){
   cell = svg_date.append("g")
   .attr("transform", function(){
     const x = (i % 7) * dayWidth; // Calculate x based on the day of the week
-    const y = (Math.floor(i / 7)) * dayHeight-20; // Calculate y based on the week
+    const y = (Math.floor(i / 7)) * dayHeight-5; // Calculate y based on the week
     return `translate(${x}, ${y})`;
   });
   cell.append("rect")
@@ -214,8 +214,8 @@ const AQI_mark =  layer2.append('circle')
     .selectAll("g")
     .data(rank)
     .enter().append("g");
-layer2.attr('transform', `scale(${0.2})`)
-layer3.attr('transform', `scale(${0.2})`)
+layer2.attr('transform', `scale(${0.22})`)
+layer3.attr('transform', `scale(${0.22})`)
 group.on("click", function(){
   create_rosa(date,data,info)
     svg_calender.selectAll('#edge').style('stroke-width',0)

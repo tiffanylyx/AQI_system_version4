@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
 const select_date = 1
-const scaleFactor = 0.9
+const scaleFactor = 0.87
 const container = d3.select('#daily_chart');
 
 // Get the width of the container div
@@ -142,7 +142,7 @@ function create_rosa(date,data,info){
   AQI_value = 0
 svg.selectAll("*").remove()
 barwidth = 26
-const circle_bar = svg.append('g').attr("id",'circle_bar').attr("transform",'translate(0,40)')
+const circle_bar = svg.append('g').attr("id",'circle_bar').attr("transform",'translate(0,25)')
 var layer1 = circle_bar.append('g').attr("id",'layer1');
 var layer2 = circle_bar.append('g').attr("id",'layer2');
 var layer3 = circle_bar.append('g').attr("id",'layer3');
@@ -353,7 +353,7 @@ for (i in data){
               indicate = 1}
             else{indicate = -1}
           return `translate(${-indicate*70},${indicate*50})`})
-      DP_info = DP_group.append("text").attr("x",106).attr("y",10);
+      DP_info = DP_group.append("text").attr("x",80).attr("y",10);
         DP_group.append("path")
         .attr("d", "M 0,-12.5 L -14,12.5 H 14 Z") // Triangle path with the tip centered at (0,0)
         .attr("fill", color_fill(AQI_value));
@@ -377,12 +377,6 @@ for (i in data){
         .style("font-weight", "bold")
         .style("fill", color_fill(AQI_value)); // Style the text color
 
-        // Append the "Learn more" text
-        DP_info.append("tspan")
-        .attr("dx", "6")
-        .text("Learn more")
-        .style("font-size", "10px")
-        .style("fill", "blue") // Style the text to look like a link
         const bbox = DP_group.node().getBBox();
         const textWidth = bbox.width;
         const textHeight = bbox.height;
