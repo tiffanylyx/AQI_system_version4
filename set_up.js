@@ -456,7 +456,6 @@ for (i in data){
         const bbox = DP_group.node().getBBox();
         const textWidth = bbox.width;
         const textHeight = bbox.height;
-        console.log(textWidth)
         DP_group.attr("text-anchor", "middle").attr("transform", function(){
               var indicate = 1
               if (Math.cos(Math.PI+angleScale(data[i].Type))>0){

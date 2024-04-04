@@ -29,6 +29,7 @@ const data = [
   { Type: 'PM2.5', Value: 117 },
   { Type: 'SO2', Value: 195 },
 ];
+const types = ['NO2','O3','CO','PM10','PM2.5','SO2']
 const rank = [0,50,100,150,200,300,500]
 // Create a scale for the angles
 const angleScale = d3.scaleBand()
@@ -108,7 +109,13 @@ Promise.all([
   }
   var data_for_day = []
   for(i in data_select){
-    data_for_day.push({'Type':data_select[i].Type,'Value': parseInt(data_select[i].Value,10)})
+    state = 'Missing'
+    if(types.includes(data_select[i].Type)){
+      state = 'In'
+    }
+    data_for_day.push({'Type':data_select[i].Type,
+    'Value': parseInt(data_select[i].Value,10),
+    'State':state})
   }
   create_rosa(date,data_for_day,info)
   // The scaling factor, e.g., 2 would double size, 0.5 would halve it
@@ -136,9 +143,22 @@ const health = status.append('span')
 
 const DP_text = status.append('span')
     .attr('class', 'pollutant-text-right')
-//create_rosa(data)
-function create_rosa(date,data,info){
-  console.log(info)
+function create_rosa(date,data_select,info){
+  var data = []
+  var typesArray = data_select.map(item => item.Type);
+  console.log(typesArray)
+  for(i in types){
+    if(typesArray.includes(types[i])){
+    data.push({'Type':types[i],
+    'Value': parseInt(data_select.find(item => item.Type === types[i]).Value,10)})
+  }
+  else{
+    data.push({'Type':types[i],
+    'Value': 'Missing'})
+  }
+}
+  console.log(data)
+
   AQI_value = 0
 svg.selectAll("*").remove()
 barwidth = 26
@@ -285,7 +305,7 @@ for (i in data){
         return 'Black'
       }
     })
-    .style("font-size",'12px')
+    .style("font-size",'14px')
 
   text.append("tspan")
   .text(data[i].Value)
@@ -325,7 +345,6 @@ for (i in data){
         else{
           return 'White'
         }
-
       } )
       .style('stroke', function(){
         if(data[i].Type!=DP){
@@ -334,10 +353,16 @@ for (i in data){
         else{
           return 'Black'
         }
-
       } )
       .style('stroke-width', '4');
-
+  text_group.attr("transform",  function(){
+        var indicate = 1
+        if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+          indicate = 1}
+        else{indicate = -1}
+      return `translate(${textWidth/2*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
+      ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
+    })
   // Move text to the front if needed (for browsers that don't support 'insert')
   text.raise();
       const points = [
@@ -411,6 +436,9 @@ function color_fill(d){
   else if (d<201){return '#D3112E';}
   else if (d<301){return '#8854D0';}
   else if (d<501){return '#731425';}
+  else if (d=='Missing'){
+    return '#bbbbbb'
+  }
 }
 
 function color_type(d){

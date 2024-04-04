@@ -1,6 +1,6 @@
 <!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-<meta charset="utf-8">
 <head>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -40,7 +40,7 @@
     <a href="visualizing.html">Decoding AQI</a>
 
     <a href="calender.html">Trend</a>
-    <a>Context</a>
+    <a href="video.html">Context</a>
   </div>
 </div>
 
@@ -137,3 +137,9 @@
 
 
 <script src = "set_up.js"></script>
+<script>
+    // Prevent the context menu (right-click menu) from appearing.
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    }, false);
+</script>

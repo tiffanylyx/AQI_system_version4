@@ -151,22 +151,36 @@ Promise.all([
   // Run the updateProgressIndicator function initially to set the first step active
   updateProgressIndicator();
 
-  // Event listener for the next button
+  let timer; // Declare a variable to hold the reference to the timeout
+
+  function resetTimer() {
+    clearTimeout(timer); // Clear the existing timer
+    timer = setTimeout(() => {
+      document.getElementById('nextButton').click(); // Programmatically click the next button
+    }, 10000); // Set a new timer for 45 seconds
+  }
+
+  // Initialize the timer when the page loads
+  resetTimer();
+
+  // Modified event listener for the next button
   document.getElementById('nextButton').addEventListener('click', () => {
     if (currentIndex < functionsArray.length - 1) { // Check if currentIndex is less than the last index
       currentIndex++; // Increment currentIndex
       runFunctionAtIndex();
       updateProgressIndicator(); // Call this function to update the visual progress indicator
     }
+    resetTimer(); // Reset the timer each time the next button is clicked
   });
 
-  // Event listener for the previous button
+  // Modified event listener for the previous button
   document.getElementById('previousButton').addEventListener('click', () => {
     if (currentIndex > 0) { // Check if currentIndex is greater than 0
       currentIndex--; // Decrement currentIndex
       runFunctionAtIndex();
       updateProgressIndicator(); // Call this function to update the visual progress indicator
     }
+    resetTimer(); // Reset the timer each time the previous button is clicked
   });
 
 })
@@ -420,7 +434,7 @@ function add_rosa(date,data,info){
   console.log('add_rosa')
   function blinkBar(index,blinkCount) {
     blinkDuration = 500
-    const numberOfBlinks = 2;
+    const numberOfBlinks = 1;
     // Check if the current index exceeds the number of bars
     if (index >= bars.size()) {
       return; // Stop the recursion if we've blinked all bars
@@ -541,7 +555,7 @@ const bars = layer3
   .style('opacity',0)
   .transition()
   .delay(function(d, i) {
-    return i * 2000; // Delay each subsequent bar by an additional 100ms
+    return i * 1000; // Delay each subsequent bar by an additional 100ms
   })
   .duration(800)
   .style('opacity',1)
@@ -562,7 +576,7 @@ const AQI_mark =  layer2.append('circle')
 .style('opacity',0)
 .transition()
 .delay(function() {
-  return 6 * 2000; // Delay each subsequent bar by an additional 100ms
+  return 6 * 1000; // Delay each subsequent bar by an additional 100ms
 })
 .duration(800)
 .style('opacity',1)
@@ -582,7 +596,7 @@ const lines = layer1.append("g")
   .style('opacity',0)
   .transition()
   .delay(function(d,i) {
-    return i * 2000; // Delay each subsequent bar by an additional 100ms
+    return i * 1000; // Delay each subsequent bar by an additional 100ms
   })
   .duration(800)
   .style('opacity',1)
@@ -596,9 +610,11 @@ const lines = layer1.append("g")
 
   yTick.append("circle")
       .attr("fill", "none")
-      .style("stroke-dasharray", ("1, 5"))
-      .attr("stroke", "#555")
+      .style("stroke-dasharray", ("2, 6"))
+      .attr("stroke", "#003E93")
+      .attr("opacity",0.5)
       .attr("r", d=>bar_height(d,outerRadius,innerRadius));
+
   yTick.append("text")
       .data(rank)
       .attr("y", function(d) { return -bar_height(d,outerRadius,innerRadius) })
@@ -619,7 +635,7 @@ const lines = layer1.append("g")
       .attr("dy", "0.35em")
       .text(d => d)
       .attr("class","pullution-axis")
-      .style("fill", "#999")
+      .style("fill", "#002A62")
       .style("font-size","16")
       .style("font-weight","300")
 
@@ -672,7 +688,7 @@ for (i in data){
       .style('opacity',0)
       .transition()
       .delay(function() {
-        return i * 2000; // Delay each subsequent bar by an additional 100ms
+        return i * 1000; // Delay each subsequent bar by an additional 100ms
       })
       .duration(800)
       .style('opacity',1)
@@ -696,7 +712,7 @@ for (i in data){
       .style('opacity',0)
       .transition()
       .delay(function() {
-        return i * 2000; // Delay each subsequent bar by an additional 100ms
+        return i * 1000; // Delay each subsequent bar by an additional 100ms
       })
       .duration(800)
       .style('opacity',1)
@@ -736,7 +752,7 @@ for (i in data){
       .style('opacity',0)
       .transition()
       .delay(function() {
-        return i * 2000; // Delay each subsequent bar by an additional 100ms
+        return i * 1000; // Delay each subsequent bar by an additional 100ms
       })
       .duration(800)
       .style('opacity',1)
@@ -768,7 +784,7 @@ for (i in data){
       .style("opacity",0)
       .transition()
       .delay(function() {
-        return i * 2000; // Delay each subsequent bar by an additional 100ms
+        return i * 1000; // Delay each subsequent bar by an additional 100ms
       })
       .duration(800)
       .style("opacity",1)
@@ -782,7 +798,7 @@ for (i in data){
       .style("opacity",0)
       .transition()
       .delay(function() {
-        return i * 2000; // Delay each subsequent bar by an additional 100ms
+        return i * 1000; // Delay each subsequent bar by an additional 100ms
       })
       .duration(800)
       .style("opacity",1)
@@ -796,22 +812,32 @@ for (i in data){
       .style("opacity",0)
       .transition()
       .delay(function() {
-        return i * 2000; // Delay each subsequent bar by an additional 100ms
+        return i * 1000; // Delay each subsequent bar by an additional 100ms
       })
       .duration(800)
       .style("opacity",1)
+      
       DP_info.append("tspan")
       .text(" Driver Pollutant")
       .style("font-weight", "bold")
       .style("fill", color_fill(AQI_value))
-      .style("opacity",0)
-          .transition()
-          .delay(function() {
-            return i * 2000; // Delay each subsequent bar by an additional 100ms
-          })
-          .duration(800)
-          .style("opacity",1)
 
+      const bbox = DP_group.node().getBBox();
+      const textWidth = bbox.width;
+      const textHeight = bbox.height;
+      DP_group.attr("text-anchor", "middle").attr("transform", function(){
+            var indicate = 1
+            if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+              indicate = 1}
+            else{indicate = -1}
+            return `translate(${-textWidth*2.3},${indicate*(textHeight+15)})`})
+            .style("opacity",0)
+                .transition()
+                .delay(function() {
+                  return i * 1000; // Delay each subsequent bar by an additional 100ms
+                })
+                .duration(800)
+                .style("opacity",1)
 
         }
 }

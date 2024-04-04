@@ -3,6 +3,9 @@ body {
   overflow: hidden;
   background-color:#F5F6F6;
 }
+html {
+  touch-action:none;
+}
 content {
   width :100%
   height: 100%;
@@ -155,7 +158,7 @@ content {
     position: fixed;
     top: 29%;
     left:2%;
-    width:14%;
+    width:13%;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;

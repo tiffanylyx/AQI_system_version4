@@ -39,7 +39,7 @@
     <a href="visualizing.html"class = 'active'>Decoding AQI<i class="check-icon fas fa-check"></i></a>
 
     <a href="calender.html">Trend</a>
-    <a >Context</a>
+    <a href="video.html">Context</a>
   </div>
 </div>
 
@@ -109,3 +109,9 @@
 
 
 <script src = "set_up_bar.js"></script>
+<script>
+    // Prevent the context menu (right-click menu) from appearing.
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    }, false);
+</script>
