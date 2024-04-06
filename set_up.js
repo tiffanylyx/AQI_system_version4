@@ -600,13 +600,13 @@ function openOverlay(buttonText,info) {
 
   // Set the content of the overlay based on the button's text
   document.querySelector('#overlay-content1 h2').textContent = info.Full + ' ('+info.Name + ')';
-  document.querySelector('#overlay-content2 h2').textContent = info.Full + ' ('+info.Name + ')';
-  document.getElementById('h3-what').textContent = 'What is '+info.Name+'?';
+  document.getElementById('p-title').textContent = info.Full + ' ('+info.Name + ')';
   document.getElementById('p-what').textContent = info.What;
-  document.getElementById('h3-where').textContent = 'What causes '+info.Name +'?';
   document.getElementById('p-where').textContent = info.Where;
-  document.getElementById('h3-how').textContent = 'How does '+info.Name +' harm?';
   document.getElementById('p-how').textContent = info.Harm;
+  document.getElementById('illustration').src = 'illustration/'+info.Name+'.png'
+  document.getElementById('cause').src = 'illustration/cause/'+info.Name+'.png'
+  document.getElementById('harm').src = 'illustration/harm/'+info.Name+'.png'
 
 
 
@@ -621,6 +621,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('overlay_DP').style.display = 'none';
     document.getElementById('overlay_color').style.display = 'none';
+    var content1 = document.getElementById('overlay-content1');
+    var content2 = document.getElementById('overlay-content2');
+    content1.style.display = 'block';
+    content2.style.display = 'none';
   }
 
   // Set up the close icon event listener

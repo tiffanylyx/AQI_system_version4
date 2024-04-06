@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
 const select_date = 193
-const scaleFactor = 0.95
+const scaleFactor = 0.85
 const container = d3.select('#bar_chart');
 
 // Get the width of the container div
@@ -54,14 +54,13 @@ const bars_group = svg.append('g')
 
 const csvFile1 = 'data_2023.csv';
 const csvFile2 = 'info.csv';
+var explain_text
 var back = 0
 // Load both files concurrently
 Promise.all([
   d3.csv(csvFile1),
   d3.csv(csvFile2)
 ]).then(function([dataall, info]) {
-  console.log(info)
-
 
 
   // Custom parsing function for "M/D/Y" format
@@ -101,7 +100,7 @@ Promise.all([
       data_select.push(data[i])
     }
   }
-  console.log(data_select)
+
   var data_for_day = []
   for(i in data_select){
     data_for_day.push({'Type':data_select[i].Type,'Value': parseInt(data_select[i].Value,10)})
@@ -115,11 +114,15 @@ Promise.all([
   var AQI_y
   var circle_bar
 
+  explain_text = svg.append('g').append('text').text("happy").attr('x',0)
+  .attr('y',-height/4).attr("class",'semi-title').style("text-anchor","middle")
+
   initial(date, data_for_day, info)
   create_number(date, data_for_day, info)
   // Store the functions in an array
   const functionsArray = [
       { func: create_number, args: [date,data_for_day,info] },
+      { func: color_code, args: [date,data_for_day,info] },
       { func: create_bar, args: [date,data_for_day,info] },
       { func: move_bar, args: [date, data_for_day, info,80] },
       { func: stack, args: [80] },
@@ -159,7 +162,6 @@ Promise.all([
       document.getElementById('nextButton').click(); // Programmatically click the next button
     }, 10000); // Set a new timer for 45 seconds
   }
-
   // Initialize the timer when the page loads
   resetTimer();
 
@@ -193,7 +195,7 @@ function initial(date, data, info){
     .append('g')
     .attr("transform", function(d,i) {
       return `translate(${(i-5/2)*(padding_bar+barwidth)-50},0)`;
-    });
+    })
 
   // Append a rect to each group
   bars = barGroups.append('rect')
@@ -203,6 +205,54 @@ function initial(date, data, info){
     .attr('ry', barwidth / 5) // Rounded corners
     .attr('width', barwidth)
     .attr('height', 0)
+    .attr('fill','None')
+    .attr('stroke','black')
+
+
+  // Now append a text element to each group
+  labels1 = barGroups.append('text')
+    .attr("x", barwidth / 2) // Position the text in the center of the rect
+    .attr("y", -8) // Adjust the position accordingly
+    .attr("text-anchor", "middle") // Center the text
+    .attr("dominant-baseline", "central") // Vertically center the text
+    .text(function(d) {
+      return d.Type; // Assuming each datum has a label property
+    })
+    .attr("fill", 'black')
+    .attr('class','main_text')
+    .style('opacity',0)
+
+  // Now append a text element to each group
+  labels2 = barGroups.append('text')
+    .attr("x", barwidth / 2) // Position the text in the center of the rect
+    .attr("y",20) // Adjust the position accordingly
+    .attr("text-anchor", "middle") // Center the text
+    .attr("dominant-baseline", "central") // Vertically center the text
+    .text(function(d) {
+      return d.Value; // Assuming each datum has a label property
+    })
+    .attr("fill", 'black')
+    .attr('class','sub_title')
+    .style('opacity',0)
+
+  }
+function create_number(date, data, info){
+
+  // Append a rect to each group
+  bars.attr('height', 80).attr('y',-40)
+  labels1.style('opacity',1)
+  labels2.style('opacity',1)
+
+
+}
+function color_code(date, data, info){
+  explain_text.text('We color-code the number according to their value to represent how harmful the pollution situation is to our life.')
+
+  // Append a rect to each group
+  bars
+  .transition()
+  .duration(1000)
+  .attr('height', 80).attr('y',-40)
     .attr('fill', function(d){
       if(AQI_value < parseInt(d.Value)){
         AQI_value = parseInt(d.Value)
@@ -223,16 +273,7 @@ function initial(date, data, info){
       else{ return 0}
     })
 
-  // Now append a text element to each group
-  labels1 = barGroups.append('text')
-    .attr("x", barwidth / 2) // Position the text in the center of the rect
-    .attr("y", -8) // Adjust the position accordingly
-    .attr("text-anchor", "middle") // Center the text
-    .attr("dominant-baseline", "central") // Vertically center the text
-    .text(function(d) {
-      return d.Type; // Assuming each datum has a label property
-    })
-    .attr("fill", function(d){
+    labels1.attr("fill", function(d){
       if((d.Value<101)&&(d.Value>50)){
         return 'black'
       }
@@ -240,19 +281,7 @@ function initial(date, data, info){
         return 'white'
       }
     })
-    .attr('class','main_text')
-    .style('opacity',0)
-
-  // Now append a text element to each group
-  labels2 = barGroups.append('text')
-    .attr("x", barwidth / 2) // Position the text in the center of the rect
-    .attr("y",20) // Adjust the position accordingly
-    .attr("text-anchor", "middle") // Center the text
-    .attr("dominant-baseline", "central") // Vertically center the text
-    .text(function(d) {
-      return d.Value; // Assuming each datum has a label property
-    })
-    .attr("fill", function(d){
+    labels2.attr("fill", function(d){
       if((d.Value<101)&&(d.Value>50)){
         return 'black'
       }
@@ -260,22 +289,9 @@ function initial(date, data, info){
         return 'white'
       }
     })
-    .attr('class','sub_title')
-    .style('opacity',0)
-
-  }
-function create_number(date, data, info){
-  console.log(create_number)
-
-  // Append a rect to each group
-  bars.attr('height', 80).attr('y',-40)
-  labels1.style('opacity',1)
-  labels2.style('opacity',1)
-
-
 }
-
 function create_bar(date, data, info){
+  explain_text.text('What if for each pollutant we create a bar, and use the AQI value as each bar’s height? ')
   console.log('create_bar')
   bars
   .transition()
@@ -300,6 +316,8 @@ labels2
 info_group.selectAll("*").remove()
 }
 function move_bar(date, data, info,distance){
+explain_text.text('And of AQI of Day would be the WORST case, which is 195!!! This is Unhealthy for general public!')
+
 info_group.selectAll("*").remove()
   barwidth = 120
   padding_bar = 80
@@ -431,6 +449,12 @@ function stack(distance){
 }
 
 function add_rosa(date,data,info){
+  explain_text
+  .text('We can further arrange the bars in to a circle by rounding the x-axis. Now the daily AQI is represented in the flower-like shape.')
+  .transition()
+  .duration(800)
+  .attr('y',-height*0.4)
+
   console.log('add_rosa')
   function blinkBar(index,blinkCount) {
     blinkDuration = 500
@@ -816,7 +840,7 @@ for (i in data){
       })
       .duration(800)
       .style("opacity",1)
-      
+
       DP_info.append("tspan")
       .text(" Driver Pollutant")
       .style("font-weight", "bold")
@@ -843,7 +867,7 @@ for (i in data){
 }
 
 
-circle_bar.attr('transform', `translate(${width*0.65}, ${height / 2}) scale(${0.9})`)
+circle_bar.attr('transform', `translate(${width*0.65}, ${height / 2}) scale(${0.85})`)
 }
 
 function bar_height_bar(d, max, min){
