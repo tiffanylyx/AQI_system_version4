@@ -46,6 +46,7 @@ const calculateRotation = d => (angleScale(d.Type) * 180 / Math.PI-90)
 
 var barwidth = 120
 var padding_bar = 80
+var text_length = 800
 
 let AQI_value = 0
 let DP
@@ -114,7 +115,7 @@ Promise.all([
   var AQI_y
   var circle_bar
 
-  explain_text = svg.append('g').append('text').text("happy").attr('x',0)
+  explain_text = svg.append('g').append('text').text("happy").attr('x',0).attr("dy", 0)
   .attr('y',-height/4).attr("class",'semi-title').style("text-anchor","middle")
 
   initial(date, data_for_day, info)
@@ -247,6 +248,7 @@ function create_number(date, data, info){
 }
 function color_code(date, data, info){
   explain_text.text('We color-code the number according to their value to represent how harmful the pollution situation is to our life.')
+.call(wrapText, text_length);
 
   // Append a rect to each group
   bars
@@ -260,12 +262,7 @@ function color_code(date, data, info){
       }
       return color_fill(d.Value)
     })
-    .attr("stroke", function(d){
-      if(d.Type==DP){
-        return 'Black'
-      }
-      else{ return 'None'}
-    })
+    .attr("stroke", 'None')
     .attr("stroke-width", function(d){
       if(d.Type==DP){
         return 6
@@ -292,6 +289,7 @@ function color_code(date, data, info){
 }
 function create_bar(date, data, info){
   explain_text.text('What if for each pollutant we create a bar, and use the AQI value as each bar’s height? ')
+  .call(wrapText, text_length);
   console.log('create_bar')
   bars
   .transition()
@@ -306,6 +304,13 @@ function create_bar(date, data, info){
   })
   .duration(800)
   .attr('y', -8)
+  .attr("stroke",'None')
+  .attr("stroke-width", function(d){
+    if(d.Type==DP){
+      return 6
+    }
+    else{ return 0}
+  })
 labels2
 .transition()
 .delay(function(d,i) {
@@ -316,8 +321,8 @@ labels2
 info_group.selectAll("*").remove()
 }
 function move_bar(date, data, info,distance){
-explain_text.text('And of AQI of Day would be the WORST case, which is 195!!! This is Unhealthy for general public!')
-
+explain_text.text('And of AQI of Day will take the WORST case, which is the highest AQI score among all the pollutants. The pollutant that has the highest AQI is the Driver Pollutant of the day.')
+.call(wrapText, text_length);
 info_group.selectAll("*").remove()
   barwidth = 120
   padding_bar = 80
@@ -333,6 +338,12 @@ info_group.selectAll("*").remove()
 
   console.log('move_bar')
   bars
+  .attr("stroke", function(d){
+    if(d.Type==DP){
+      return 'Black'
+    }
+    else{ return 'None'}
+  })
   .transition()
   .delay(function(d,i) {
     return i * 100; // Delay each subsequent bar by an additional 100ms
@@ -365,7 +376,6 @@ info_group.selectAll("*").remove()
       labels1.attr("x", barwidth / 2).attr("y", distance-5).style('font-size',22)
       labels2.attr("x", barwidth / 2).attr("y", distance+20).style('font-size',28)
       back = 0
-
   }
 
 arrow= d3.arrow1()
@@ -401,6 +411,11 @@ info_group
 
 function stack(distance){
   console.log('stack')
+  explain_text.text(function(){
+    return 'The AQI of the day is '+AQI_value+', which is '+color_level(AQI_value)+' for people!'
+  })
+  .call(wrapText, text_length);
+
 
   d3.select('#bar_chart').select('svg').select('#circle_bar').remove()
   barwidth = 50
@@ -451,9 +466,8 @@ function stack(distance){
 function add_rosa(date,data,info){
   explain_text
   .text('We can further arrange the bars in to a circle by rounding the x-axis. Now the daily AQI is represented in the flower-like shape.')
-  .transition()
-  .duration(800)
   .attr('y',-height*0.4)
+  .call(wrapText, text_length)
 
   console.log('add_rosa')
   function blinkBar(index,blinkCount) {
@@ -907,29 +921,29 @@ const suffix = ["th", "st", "nd", "rd"][((day % 100) - 20) % 10] || ["th", "st",
 const formattedDate = formatDate(date).replace(/(\d+),/, `$1${suffix},`);
 return formattedDate
 }
-function wrap(text, width) {
-    text.each(function() {
-        var text = d3.select(this);
-        var words = text.text().split(/\s+/).reverse();
-        var lineHeight = 1.1; // ems
-        var y = text.attr("y");
-        var x = text.attr("x");
-        var dy = parseFloat(text.attr("dy") || 0);
-        var tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em");
+function wrapText(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
 
-        var word;
-        var line = [];
-        while (word = words.pop()) {
-            line.push(word);
-            tspan.text(line.join(" "));
-            if (tspan.node().getComputedTextLength() > width) {
-                line.pop();
-                tspan.text(line.join(" "));
-                line = [word];
-                tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", ++dy + "em").text(word);
-            }
-        }
-    });
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+  });
 }
 function openOverlay(buttonText,info) {
   var overlay = document.getElementById('overlay');
@@ -958,3 +972,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // Set up the close icon event listener
   document.getElementById('close-icon').addEventListener('click', closeOverlay);
 });
+function color_level(d){
+  if(d<51){
+    return 'Good';}
+  else if (d<101){return 'Moderate';}
+  else if (d<151){return 'Unhealthy for Sensitive Groups';}
+  else if (d<201){return 'Unhealthy';}
+  else if (d<301){return 'Very Unhealthy';}
+  else if (d<501){return 'Hazardous';}
+}

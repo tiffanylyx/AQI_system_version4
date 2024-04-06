@@ -128,7 +128,8 @@ for(i in calendarArray){
     .attr('id','edge')
     .attr("width", dayWidth - 1) // Subtract 1 for grid gap
     .attr("height", dayHeight - 1)
-    .style("fill", "none")
+    .style("fill", "#F5F6F6")
+    .style("opacity",0)
     .style("stroke", "none");
   cell.append("text")
     .attr("x", dayWidth / 2)
@@ -216,10 +217,11 @@ const AQI_mark =  layer2.append('circle')
     .enter().append("g");
 layer2.attr('transform', `scale(${0.22})`)
 layer3.attr('transform', `scale(${0.22})`)
+
 group.on("click", function(){
   create_rosa(date,data,info)
-    svg_calender.selectAll('#edge').style('stroke-width',0)
-  group.select('#edge').style('stroke','black').style('stroke-width',2)
+    svg_calender.selectAll('#edge').style('stroke-width',0).style("opacity",0)
+  group.select('#edge').style('stroke','black').style('stroke-width',2).style("opacity",1)
 
 })
 }
