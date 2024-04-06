@@ -554,7 +554,7 @@ p {
 /* Container for navigation elements */
 .navigation-container {
   position: fixed;
-  bottom: 5%; /* Adjust distance from bottom as needed */
+  bottom: 6%; /* Adjust distance from bottom as needed */
   left: 50%;
   transform: translateX(-50%);
   display: flex;

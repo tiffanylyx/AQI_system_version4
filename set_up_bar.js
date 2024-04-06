@@ -115,7 +115,11 @@ Promise.all([
   var AQI_y
   var circle_bar
 
-  explain_text = svg.append('g').append('text').text("happy").attr('x',0).attr("dy", 0)
+  explain_text = svg.append('g')
+  .append('text')
+  .text("happy")
+  .attr('x',0)
+  .attr("dy", 0)
   .attr('y',-height/4).attr("class",'semi-title').style("text-anchor","middle")
 
   initial(date, data_for_day, info)
@@ -125,8 +129,8 @@ Promise.all([
       { func: create_number, args: [date,data_for_day,info] },
       { func: color_code, args: [date,data_for_day,info] },
       { func: create_bar, args: [date,data_for_day,info] },
-      { func: move_bar, args: [date, data_for_day, info,80] },
-      { func: stack, args: [80] },
+      { func: move_bar, args: [date, data_for_day, info,120] },
+      { func: stack, args: [120] },
       { func: add_rosa, args: [date,data_for_day,info] },
   ];
 
@@ -206,7 +210,7 @@ function initial(date, data, info){
     .attr('ry', barwidth / 5) // Rounded corners
     .attr('width', barwidth)
     .attr('height', 0)
-    .attr('fill','None')
+    .attr('fill','white')
     .attr('stroke','black')
 
 
@@ -238,11 +242,26 @@ function initial(date, data, info){
 
   }
 function create_number(date, data, info){
-
+  explain_text.text('There are six main pollutants in the air. Assume on this day, their pollutant levels are like the following.')
+.call(wrapText, text_length);
   // Append a rect to each group
   bars.attr('height', 80).attr('y',-40)
-  labels1.style('opacity',1)
-  labels2.style('opacity',1)
+  .attr('fill','white')
+  .attr('stroke','black')
+  .attr('stroke-width',1)
+  .attr('opacity',1)
+  barGroups.on('click',function(){
+    text = d3.select(this).select('text').text()
+
+    for(i in info){
+      if(info[i].Name===text){
+        openOverlay(text,info[i])
+      }
+    }
+  })
+
+  labels1.style('opacity',1).attr("fill", 'black')
+  labels2.style('opacity',1).attr("fill", 'black')
 
 
 }
@@ -252,6 +271,7 @@ function color_code(date, data, info){
 
   // Append a rect to each group
   bars
+  .attr('fill','None')
   .transition()
   .duration(1000)
   .attr('height', 80).attr('y',-40)
@@ -263,13 +283,6 @@ function color_code(date, data, info){
       return color_fill(d.Value)
     })
     .attr("stroke", 'None')
-    .attr("stroke-width", function(d){
-      if(d.Type==DP){
-        return 6
-      }
-      else{ return 0}
-    })
-
     labels1.attr("fill", function(d){
       if((d.Value<101)&&(d.Value>50)){
         return 'black'
@@ -344,6 +357,14 @@ info_group.selectAll("*").remove()
     }
     else{ return 'None'}
   })
+
+  .attr("stroke-width", function(d){
+    if(d.Type==DP){
+      return 6
+    }
+    else{ return 0}
+  })
+
   .transition()
   .delay(function(d,i) {
     return i * 100; // Delay each subsequent bar by an additional 100ms
@@ -401,11 +422,11 @@ AQI_text_0 = info_group.append("text")
 .attr('fill',color_fill(AQI_value))
 .attr("opacity",1)
 info_group
-.attr('opacity',0)
+.attr("transform", `translate(0,-600)`)
 .transition()
   .delay(1000)
-  .duration(800)
-  .attr('opacity',1)
+  .duration(1500)
+.attr("transform", `translate(0,0)`)
 
 }
 
@@ -466,7 +487,7 @@ function stack(distance){
 function add_rosa(date,data,info){
   explain_text
   .text('We can further arrange the bars in to a circle by rounding the x-axis. Now the daily AQI is represented in the flower-like shape.')
-  .attr('y',-height*0.4)
+  .attr('y',-height*0.35)
   .call(wrapText, text_length)
 
   console.log('add_rosa')
@@ -535,18 +556,12 @@ function add_rosa(date,data,info){
   // Start the blinking effect with the first bar and initial blink count of 0
   blinkBar(0, 0);
   AQI_line_0.transition()
-    .delay(6*2000) // Initial delay of 6000ms
+    .delay(6*1000) // Initial delay of 6000ms
     .duration(500) // Duration of the color change
     .style('opacity', 0) // Change color to blinkColor
     .transition() // Chain another transition to return to the original color
     .duration(500) // Duration of the return transition
-    .style('opacity', 1) // Change the color back to originalColor
-    .transition() // Chain another transition to return to the original color
-    .duration(500) // Duration of the return transition
-    .style('opacity', 0) // Change the color back to originalColor
-    .transition() // Chain another transition to return to the original color
-    .duration(500) // Duration of the return transition
-    .style('opacity', 1) // Change the color back to originalColor
+    .style('opacity', 1)
   create_rosa(date,data,info)
 
 
@@ -881,7 +896,7 @@ for (i in data){
 }
 
 
-circle_bar.attr('transform', `translate(${width*0.65}, ${height / 2}) scale(${0.85})`)
+circle_bar.attr('transform', `translate(${width*0.65}, ${height*0.53}) scale(${0.85})`)
 }
 
 function bar_height_bar(d, max, min){
@@ -981,3 +996,39 @@ function color_level(d){
   else if (d<301){return 'Very Unhealthy';}
   else if (d<501){return 'Hazardous';}
 }
+function openOverlay(buttonText,info) {
+  var overlay = document.getElementById('overlay');
+
+  var overlayContent = document.getElementById('overlay-content1');
+  console.log(info)
+
+  // Set the content of the overlay based on the button's text
+  document.querySelector('#overlay-content1 h2').textContent = info.Full + ' ('+info.Name + ')';
+  document.getElementById('p-title').textContent = info.Full + ' ('+info.Name + ')';
+  document.getElementById('p-what').textContent = info.What;
+  document.getElementById('p-where').textContent = info.Where;
+  document.getElementById('p-how').textContent = info.Harm;
+  document.getElementById('illustration').src = 'illustration/'+info.Name+'.png'
+  document.getElementById('cause').src = 'illustration/cause/'+info.Name+'.png'
+  document.getElementById('harm').src = 'illustration/harm/'+info.Name+'.png'
+
+
+
+  // Show the overlay
+  overlay.style.display = 'block';
+
+}
+function showDivLayout() {
+  var content1 = document.getElementById('overlay-content1');
+  var content2 = document.getElementById('overlay-content2');
+  // Toggle between showing content1 and content2
+  if (content1.style.display === 'none') {
+    content1.style.display = 'block';
+    content2.style.display = 'none';
+  } else {
+    content1.style.display = 'none';
+    content2.style.display = 'block';
+  }
+}
+document.getElementById('overlay-content1').onclick = showDivLayout;
+document.getElementById('overlay-content2').onclick = showDivLayout;

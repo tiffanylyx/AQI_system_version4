@@ -1,4 +1,5 @@
-var select_month = 5
+var select_month = 6
+select_date = 193
 
 const svg_calender = d3.select('#calender').append('svg')
 const svg_header= svg_calender.append('g')
@@ -129,8 +130,20 @@ for(i in calendarArray){
     .attr("width", dayWidth - 1) // Subtract 1 for grid gap
     .attr("height", dayHeight - 1)
     .style("fill", "#F5F6F6")
-    .style("opacity",0)
-    .style("stroke", "none");
+    .style("opacity",function(){
+      if(calendarArray[i]==18){
+       return 1
+      }
+      else{return 0}
+    })
+    .style("stroke", "black")
+    .style("stroke-width", function(){
+      if(calendarArray[i]==18){
+       return 2
+      }
+      else{return 0}
+    })
+
   cell.append("text")
     .attr("x", dayWidth / 2)
     .attr("y", 10)

@@ -384,23 +384,21 @@ for (i in data){
 
             } )
   .style('filter', 'url(#drop-shadow)');
-      text_group.on('click',function(){
-        text = d3.select(this).select('text').text().split(' ')
-        text.pop();
-        var newtext = text.join(' ')
+  text_group.on('click',function(){
+    text = d3.select(this).select('text').text().split(' ')
+    text.pop();
+    var newtext = text.join(' ')
 
-        var a = newtext.split('(')
-        a.pop()
-        newtext = a.join(' ')
+    var a = newtext.split('(')
+    a.pop()
+    newtext = a.join(' ')
 
-        for(i in info){
-          if(info[i].Full===newtext.slice(0, -1)){
-
-            openOverlay(newtext,info[i])
-          }
-        }
-
-      })
+    for(i in info){
+      if(info[i].Full===newtext.slice(0, -1)){
+        openOverlay(newtext,info[i])
+      }
+    }
+  })
   text_group = layer3.append("g")
       .attr("transform",  function(){
         var indicate = 1
