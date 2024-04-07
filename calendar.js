@@ -93,6 +93,7 @@ svg_calender.attr("width", dayWidth * 7) // 7 days for a week
 })
 function create_calender(select_month,data,info){
 
+
   svg_date.selectAll('*').remove()
   d3.select('#calendar-title').text(new Date(year, select_month).toLocaleString('en-us', { month: 'long' }) + " " + year);
 
@@ -131,14 +132,14 @@ for(i in calendarArray){
     .attr("height", dayHeight - 1)
     .style("fill", "#F5F6F6")
     .style("opacity",function(){
-      if(calendarArray[i]==18){
+      if((select_month==6)&&(calendarArray[i]==18)) {
        return 1
       }
       else{return 0}
     })
     .style("stroke", "black")
     .style("stroke-width", function(){
-      if(calendarArray[i]==18){
+      if((select_month==6)&&(calendarArray[i]==18)) {
        return 2
       }
       else{return 0}
