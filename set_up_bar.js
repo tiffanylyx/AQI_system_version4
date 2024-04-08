@@ -56,6 +56,7 @@ const bars_group = svg.append('g')
 const csvFile1 = 'data_2023.csv';
 const csvFile2 = 'info.csv';
 var explain_text
+var text_box
 var back = 0
 // Load both files concurrently
 Promise.all([
@@ -114,13 +115,29 @@ Promise.all([
   var AQI_text_0
   var AQI_y
   var circle_bar
+  var text_group = svg.append('g')
+  padding_h = 80
+  padding_v = 50
 
-  explain_text = svg.append('g')
+  explain_text = text_group
   .append('text')
   .text("happy")
   .attr('x',0)
   .attr("dy", 0.5)
   .attr('y',-height/4).attr("class",'semi-title').style("text-anchor","middle").style("font-size",'24px')
+  bbox = explain_text.node().getBBox();
+  textWidth = bbox.width;
+  textHeight = bbox.height;
+  text_box = text_group.insert('rect', 'text') // Insert rectangle before the text element
+      .attr('x', bbox.x - padding_h / 2)
+      .attr('y', bbox.y - padding_v / 2)
+      .attr('rx', textHeight / 2) // Rounded corners
+      .attr('ry', textHeight / 2) // Rounded corners
+      .attr('width', textWidth + padding_h)
+      .attr('height', textHeight + padding_v)
+      .style('stroke-width',2)
+      .style('stroke','#aaaaaa')
+      .attr("fill",'none')
 
   initial(date, data_for_day, info)
   create_number(date, data_for_day, info)
@@ -244,6 +261,17 @@ function initial(date, data, info){
 function create_number(date, data, info){
   explain_text.text('There are six main pollutants in the air. Assume on this day, their pollutant levels are like the following.')
 .call(wrapText, text_length);
+bbox = explain_text.node().getBBox();
+textWidth = bbox.width;
+textHeight = bbox.height;
+text_box
+    .attr('x', bbox.x - padding_h / 2)
+    .attr('y', bbox.y - padding_v / 2)
+    .attr('rx', textHeight / 2) // Rounded corners
+    .attr('ry', textHeight / 2) // Rounded corners
+    .attr('width', textWidth + padding_h)
+    .attr('height', textHeight + padding_v)
+
   // Append a rect to each group
   bars.attr('height', 80).attr('y',-40)
   .attr('fill','white')
@@ -268,7 +296,16 @@ function create_number(date, data, info){
 function color_code(date, data, info){
   explain_text.text('We color-code the number according to their value to represent how harmful the pollution situation is to our life.')
 .call(wrapText, text_length);
-
+bbox = explain_text.node().getBBox();
+textWidth = bbox.width;
+textHeight = bbox.height;
+text_box
+    .attr('x', bbox.x - padding_h / 2)
+    .attr('y', bbox.y - padding_v / 2)
+    .attr('rx', textHeight / 2) // Rounded corners
+    .attr('ry', textHeight / 2) // Rounded corners
+    .attr('width', textWidth + padding_h)
+    .attr('height', textHeight + padding_v)
   // Append a rect to each group
   bars
   .attr('fill','None')
@@ -303,6 +340,16 @@ function color_code(date, data, info){
 function create_bar(date, data, info){
   explain_text.text('What if for each pollutant we create a bar, and use the AQI value as each bar’s height? ')
   .call(wrapText, text_length);
+  bbox = explain_text.node().getBBox();
+  textWidth = bbox.width;
+  textHeight = bbox.height;
+  text_box
+      .attr('x', bbox.x - padding_h / 2)
+      .attr('y', bbox.y - padding_v / 2)
+      .attr('rx', textHeight / 2) // Rounded corners
+      .attr('ry', textHeight / 2) // Rounded corners
+      .attr('width', textWidth + padding_h)
+      .attr('height', textHeight + padding_v)
   console.log('create_bar')
   bars
   .transition()
@@ -336,6 +383,16 @@ info_group.selectAll("*").remove()
 function move_bar(date, data, info,distance){
 explain_text.text('And of AQI of Day will take the WORST case, which is the highest AQI score among all the pollutants. The pollutant that has the highest AQI is the Driver Pollutant of the day.')
 .call(wrapText, text_length);
+bbox = explain_text.node().getBBox();
+textWidth = bbox.width;
+textHeight = bbox.height;
+text_box
+    .attr('x', bbox.x - padding_h / 2)
+    .attr('y', bbox.y - padding_v / 2)
+    .attr('rx', textHeight / 2) // Rounded corners
+    .attr('ry', textHeight / 2) // Rounded corners
+    .attr('width', textWidth + padding_h)
+    .attr('height', textHeight + padding_v)
 info_group.selectAll("*").remove()
   barwidth = 120
   padding_bar = 80
@@ -436,7 +493,16 @@ function stack(distance){
     return 'The AQI of the day is '+AQI_value+', which is '+color_level(AQI_value)+' for people!'
   })
   .call(wrapText, text_length);
-
+  bbox = explain_text.node().getBBox();
+  textWidth = bbox.width;
+  textHeight = bbox.height;
+  text_box
+      .attr('x', bbox.x - padding_h / 2)
+      .attr('y', bbox.y - padding_v / 2)
+      .attr('rx', textHeight / 2) // Rounded corners
+      .attr('ry', textHeight / 2) // Rounded corners
+      .attr('width', textWidth + padding_h)
+      .attr('height', textHeight + padding_v)
 
   d3.select('#bar_chart').select('svg').select('#circle_bar').remove()
   barwidth = 50
@@ -468,8 +534,8 @@ function stack(distance){
   .attr('rx', barwidth / 5) // Rounded corners
   .attr('ry', barwidth / 5) // Rounded corners
 
-  labels1.attr("x", barwidth / 2) .attr("y", distance).style('font-size',16)
-  labels2.attr("x", barwidth / 2) .attr("y", distance+20).style('font-size',16)
+  labels1.attr("x", barwidth / 2) .attr("y", distance).style('font-size',14)
+  labels2.attr("x", barwidth / 2) .attr("y", distance+20).style('font-size',14)
 
   AQI_line_0
   .transition()
@@ -489,7 +555,16 @@ function add_rosa(date,data,info){
   .text('We can further arrange the bars in to a circle by rounding the x-axis. Now the daily AQI is represented in the flower-like shape.')
   .attr('y',-height*0.35)
   .call(wrapText, text_length)
-
+  bbox = explain_text.node().getBBox();
+  textWidth = bbox.width;
+  textHeight = bbox.height;
+  text_box
+      .attr('x', bbox.x - padding_h / 2)
+      .attr('y', bbox.y - padding_v / 2)
+      .attr('rx', textHeight / 2) // Rounded corners
+      .attr('ry', textHeight / 2) // Rounded corners
+      .attr('width', textWidth + padding_h)
+      .attr('height', textHeight + padding_v)
   console.log('add_rosa')
   function blinkBar(index,blinkCount) {
     blinkDuration = 500

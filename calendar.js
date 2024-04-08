@@ -139,7 +139,7 @@ for(i in calendarArray){
     })
     .style("stroke", "black")
     .style("stroke-width", function(){
-      if((select_month==6)&&(calendarArray[i]==18)) {
+      if((select_month==6)&&(calendarArray[i]==18)){
        return 2
       }
       else{return 0}

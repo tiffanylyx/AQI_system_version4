@@ -363,7 +363,6 @@ for (i in data){
               else{
                 return 'white'
               }
-
             } )
       .style('stroke', function(){
         if(data[i].Type!=DP){
