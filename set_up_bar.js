@@ -116,8 +116,8 @@ Promise.all([
   var AQI_y
   var circle_bar
   var text_group = svg.append('g')
-  padding_h = 80
-  padding_v = 50
+  padding_h = 120
+  padding_v = 80
 
   explain_text = text_group
   .append('text')
@@ -506,6 +506,7 @@ function stack(distance){
 
   d3.select('#bar_chart').select('svg').select('#circle_bar').remove()
   barwidth = 50
+  barwidth_bar = 70
   padding_bar = 20
   move_x = 350
 
@@ -520,7 +521,7 @@ function stack(distance){
     // Get the current 'y' value and parse it to an integer, then add 50
     return parseInt(d3.select(this).attr('y')) + distance;})
   .attr("transform", function(d,i) {
-      return `translate(${(i-5/2)*(padding_bar+barwidth)-move_x},0)`;
+      return `translate(${(i-5/2)*(padding_bar+barwidth_bar)-move_x},0)`;
     })
 
 
@@ -530,23 +531,23 @@ function stack(distance){
     return i * 100; // Delay each subsequent bar by an additional 100ms
   })
   .duration(800)
-  .attr('width',barwidth)
-  .attr('rx', barwidth / 5) // Rounded corners
-  .attr('ry', barwidth / 5) // Rounded corners
+  .attr('width',barwidth_bar)
+  .attr('rx', barwidth_bar / 5) // Rounded corners
+  .attr('ry', barwidth_bar / 5) // Rounded corners
 
-  labels1.attr("x", barwidth / 2) .attr("y", distance).style('font-size',14)
-  labels2.attr("x", barwidth / 2) .attr("y", distance+20).style('font-size',14)
+  labels1.attr("x", barwidth_bar / 2) .attr("y", distance).style('font-size',14)
+  labels2.attr("x", barwidth_bar / 2) .attr("y", distance+20).style('font-size',14)
 
   AQI_line_0
   .transition()
   .duration(800)
-  .attr("points", [[(5/2)*(padding_bar+barwidth)-move_x+barwidth, AQI_y],
-  [(-5/2)*(padding_bar+barwidth)-move_x, AQI_y]])
+  .attr("points", [[(5/2)*(padding_bar+barwidth_bar)-move_x+barwidth_bar, AQI_y],
+  [(-5/2)*(padding_bar+barwidth_bar)-move_x, AQI_y]])
 
   AQI_text_0
   .transition()
   .duration(800)
-  .attr("x",barwidth/2-move_x)
+  .attr("x",barwidth_bar/2-move_x)
   // Define the blink function
 }
 
