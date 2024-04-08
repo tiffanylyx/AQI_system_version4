@@ -169,7 +169,7 @@ for(i in calendarArray){
 function create_rosa_small(date,data,group,info){
   barwidth = 40
   AQI_value = 0
-const circle_bar = group.append('g').attr("id",'circle_bar').attr("transform",`translate(${dayWidth/2}, ${dayHeight/2})`)
+const circle_bar = group.append('g').attr("id",'circle_bar').attr("transform",`translate(${dayWidth/2}, ${dayHeight*0.55})`)
 var layer2 = circle_bar.append('g').attr("id",'layer2');
 var layer3 = circle_bar.append('g').attr("id",'layer3');
 const bars = layer3
@@ -229,8 +229,8 @@ const AQI_mark =  layer2.append('circle')
     .selectAll("g")
     .data(rank)
     .enter().append("g");
-layer2.attr('transform', `scale(${0.22})`)
-layer3.attr('transform', `scale(${0.22})`)
+layer2.attr('transform', `scale(${0.24})`)
+layer3.attr('transform', `scale(${0.24})`)
 
 group.on("click", function(){
   create_rosa(date,data,info)

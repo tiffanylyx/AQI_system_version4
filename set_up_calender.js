@@ -161,7 +161,6 @@ function create_rosa(date,data_select,info){
 
   AQI_value = 0
 svg.selectAll("*").remove()
-barwidth = 26
 const circle_bar = svg.append('g').attr("id",'circle_bar').attr("transform",'translate(0,25)')
 var layer1 = circle_bar.append('g').attr("id",'layer1');
 var layer2 = circle_bar.append('g').attr("id",'layer2');
