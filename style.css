@@ -94,7 +94,7 @@ content {
     position: fixed;
     top: 29%;
     left:2%;
-    width:13%;
+    width:14%;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -134,7 +134,7 @@ content {
     font-weight: 400;
     vertical-align: top;
     display: inline-block; /* or 'block' depending on your layout needs */
-     max-width: 90px; /* Set your desired width */
+     max-width: 130px; /* Set your desired width */
      word-wrap: break-word; /* Allows long words to wrap and break onto the next line */
      text-align: center;
    }
@@ -339,7 +339,7 @@ content {
 
 }
 .nav-text {
-  font-size: 18px;
+  font-size: 20px;
   margin-top: 40;
   padding-bottom: 10;
 
@@ -412,7 +412,7 @@ body {
   font-family: sans-serif;
 }
 .note {
-  font-size: 10px;
+  font-size: 12px;
   font-family: sans-serif;
   color:#777777;
 }
@@ -576,7 +576,7 @@ p {
   border-radius: 50%; /* Makes the button round */
   width: 60px; /* Fixed width */
   height: 60px; /* Fixed height */
-  line-height: 30px; /* Centers the arrow vertically */
+  line-height: 0px; /* Centers the arrow vertically */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds a slight shadow */
 }
 
