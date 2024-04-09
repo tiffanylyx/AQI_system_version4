@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
 select_date = 193
-const scaleFactor = 0.9
+const scaleFactor = 0.93
 const container = d3.select('#daily_chart');
 
 // Get the width of the container div

@@ -229,8 +229,8 @@ const AQI_mark =  layer2.append('circle')
     .selectAll("g")
     .data(rank)
     .enter().append("g");
-layer2.attr('transform', `scale(${0.25})`)
-layer3.attr('transform', `scale(${0.25})`)
+layer2.attr('transform', `scale(${0.27})`)
+layer3.attr('transform', `scale(${0.27})`)
 
 group.on("click", function(){
   create_rosa(date,data,info)
