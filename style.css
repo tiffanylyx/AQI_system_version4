@@ -276,7 +276,7 @@ content {
   align-items: flex-start;
   width: 20vw; /* Set the width of navbar-right to 20% of the viewport width */
   left:80vw;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 /* This class is for the check icon that should be hidden by default */
 .check-icon {
