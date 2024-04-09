@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
 const select_date = 193
 
-const scaleFactor = 1.1
+const scaleFactor = 1.15
 var container = d3.select('#daily_chart');
 var svg_color
 

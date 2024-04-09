@@ -94,7 +94,7 @@ content {
 .floating-div-left {
     position: fixed;
     top: 29%;
-    left:2%;
+    left:51%;
     width:14%;
     padding:6px;
     background-color: #ffffff;
@@ -218,7 +218,7 @@ content {
 .floating-legend-left {
   position: fixed;
   top: 29%;
-  left:37%;
+  left:90%;
   display: block; /* Change from flex to block to allow the default list styling */
   padding: 16px;
   background-color: #F5F6F6;
