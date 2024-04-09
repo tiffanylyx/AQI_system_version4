@@ -81,6 +81,7 @@ content {
     left:5%;
     background-color: #ffffff;
     width:14%;
+    padding:6px;
 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -95,6 +96,7 @@ content {
     top: 29%;
     left:2%;
     width:14%;
+    padding:6px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -108,17 +110,17 @@ content {
     font-size: 32px;
     font-weight: bold;
     margin: 5px 0;
-    padding-bottom: 14px;
-    padding-top: 14px;
+    padding-bottom: 16px;
+    padding-top: 16px;
 
 }
 .date-text {
   padding-left: 10px;
   padding-right: 10px;
-  padding-top: 14px;
-  padding-bottom: 14px;
+  padding-top: 16px;
+  padding-bottom: 16px;
   width:100%;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 400;
     margin: 2px 0;
     border-bottom: 1px solid #aaaaaa;
@@ -130,7 +132,7 @@ content {
 
 }
 .pollutant-text-left {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 400;
     vertical-align: top;
     display: inline-block; /* or 'block' depending on your layout needs */
@@ -146,7 +148,7 @@ content {
   font-size:30px;
 }
 .pollutant-text-right {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 400;
     margin-left:4px;
     vertical-align: top;
