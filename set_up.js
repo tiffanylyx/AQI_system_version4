@@ -383,7 +383,8 @@ for (i in data){
 
             } )
   .style('filter', 'url(#drop-shadow)');
-  text_group.on('click',function(){
+  text_group.on('click',function(event){
+    event.stopPropagation();
     text = d3.select(this).select('text').text().split(' ')
     text.pop();
     var newtext = text.join(' ')
@@ -468,6 +469,7 @@ health.text(color_type(AQI_value));
 
 DP_text.text( 'Driver Pollutant: '+DP).style('fill',color_fill(AQI_value));
 floatingDiv.on('click',function(){
+  event.stopPropagation();
   var overlay_DP = document.getElementById('overlay_DP');
   // Show the overlay
   overlay_DP.style.display = 'block';
@@ -605,8 +607,6 @@ function openOverlay(buttonText,info) {
   document.getElementById('cause').src = 'illustration/cause/'+info.Name+'.png'
   document.getElementById('harm').src = 'illustration/harm/'+info.Name+'.png'
 
-
-
   // Show the overlay
   overlay.style.display = 'block';
 
@@ -635,6 +635,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log(containerWidth)
     containerHeight = container.node().getBoundingClientRect().height;
     console.log(containerHeight)
+    event.stopPropagation();
     create_color(containerWidth,containerHeight)
   });
   // Close the overlay when clicking outside
@@ -642,6 +643,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var overlay = document.getElementById('overlay');
     var overlayDP = document.getElementById('overlay_DP');
     var overlayColor = document.getElementById('overlay_color');
+    var content1 = document.getElementById('overlay-content1');
+    var content2 = document.getElementById('overlay-content2');
+    var overlay2 = document.getElementById('overlay2');
+    var overlay3 = document.getElementById('overlay3');
 
     // Check if any overlay is currently displayed
     var isAnyOverlayVisible = (overlay.style.display !== 'none') ||
@@ -649,15 +654,16 @@ document.addEventListener('DOMContentLoaded', function() {
                               (overlayColor.style.display !== 'none');
 
     // Determine if the click was outside all overlays
-    var isClickInsideOverlay = overlay.contains(event.target) ||
-                               overlayDP.contains(event.target) ||
-                               overlayColor.contains(event.target);
+    var isClickInsideOverlay = content1.contains(event.target) ||
+                               content2.contains(event.target) ||
+                               overlay2.contains(event.target) ||
+                               overlay3.contains(event.target)
+    console.log(isClickInsideOverlay,isAnyOverlayVisible,overlay.style.display !== 'none',overlayDP.style.display !== 'none',overlayColor.style.display !== 'none')
 
-    if (isAnyOverlayVisible && isClickInsideOverlay) {
+    if (!isClickInsideOverlay && isAnyOverlayVisible) {
       closeOverlay();
     }
   });
-
 });
 
 function showDivLayout() {

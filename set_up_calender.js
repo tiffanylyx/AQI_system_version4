@@ -363,6 +363,7 @@ for (i in data){
       ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
     })
     text_group.on('click',function(){
+      event.stopPropagation();
       text = d3.select(this).select('text').text().split(' ')
       text.pop();
       var newtext = text.join(' ')
@@ -563,6 +564,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var overlay = document.getElementById('overlay');
     var overlayDP = document.getElementById('overlay_DP');
     var overlayColor = document.getElementById('overlay_color');
+    var content1 = document.getElementById('overlay-content1');
+    var content2 = document.getElementById('overlay-content2');
+    var overlay2 = document.getElementById('overlay2');
+    var overlay3 = document.getElementById('overlay3');
 
     // Check if any overlay is currently displayed
     var isAnyOverlayVisible = (overlay.style.display !== 'none') ||
@@ -570,11 +575,12 @@ document.addEventListener('DOMContentLoaded', function() {
                               (overlayColor.style.display !== 'none');
 
     // Determine if the click was outside all overlays
-    var isClickInsideOverlay = overlay.contains(event.target) ||
-                               overlayDP.contains(event.target) ||
-                               overlayColor.contains(event.target);
+    var isClickInsideOverlay = content1.contains(event.target) ||
+                               content2.contains(event.target) ||
+                               overlay2.contains(event.target) ||
+                               overlay3.contains(event.target)
 
-    if (isAnyOverlayVisible && isClickInsideOverlay) {
+    if (!isClickInsideOverlay && isAnyOverlayVisible) {
       closeOverlay();
     }
   });

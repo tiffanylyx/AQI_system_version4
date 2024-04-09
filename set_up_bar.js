@@ -278,7 +278,8 @@ text_box
   .attr('stroke','black')
   .attr('stroke-width',1)
   .attr('opacity',1)
-  barGroups.on('click',function(){
+  barGroups.on('click',function(event){
+    event.stopPropagation();
     text = d3.select(this).select('text').text()
 
     for(i in info){
@@ -1037,15 +1038,7 @@ function wrapText(text, width) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Function to close the overlay
-  function closeOverlay() {
-    document.getElementById('overlay').style.display = 'none';
-  }
 
-  // Set up the close icon event listener
-  document.getElementById('close-icon').addEventListener('click', closeOverlay);
-});
 function color_level(d){
   if(d<51){
     return 'Good';}
@@ -1055,6 +1048,7 @@ function color_level(d){
   else if (d<301){return 'Very Unhealthy';}
   else if (d<501){return 'Hazardous';}
 }
+
 function openOverlay(buttonText,info) {
   var overlay = document.getElementById('overlay');
 
@@ -1071,12 +1065,42 @@ function openOverlay(buttonText,info) {
   document.getElementById('cause').src = 'illustration/cause/'+info.Name+'.png'
   document.getElementById('harm').src = 'illustration/harm/'+info.Name+'.png'
 
-
-
   // Show the overlay
   overlay.style.display = 'block';
 
 }
+document.addEventListener('DOMContentLoaded', function() {
+  // Function to close the overlay
+  function closeOverlay() {
+    console.log('clos')
+    document.getElementById('overlay').style.display = 'none';
+    var content1 = document.getElementById('overlay-content1');
+    var content2 = document.getElementById('overlay-content2');
+    content1.style.display = 'block';
+    content2.style.display = 'none';
+  }
+
+  // Set up the close icon event listener
+  document.getElementById('close-icon').addEventListener('click', closeOverlay);
+  // Close the overlay when clicking outside
+  document.addEventListener('click', function(event) {
+    var overlay = document.getElementById('overlay');
+    var content1 = document.getElementById('overlay-content1');
+    var content2 = document.getElementById('overlay-content2');
+
+    // Check if any overlay is currently displayed
+    var isAnyOverlayVisible = (overlay.style.display !== 'none') 
+
+    // Determine if the click was outside all overlays
+    var isClickInsideOverlay = content1.contains(event.target) ||
+                               content2.contains(event.target)
+
+    if (!isClickInsideOverlay && isAnyOverlayVisible) {
+      closeOverlay();
+    }
+  });
+});
+
 function showDivLayout() {
   var content1 = document.getElementById('overlay-content1');
   var content2 = document.getElementById('overlay-content2');
@@ -1090,4 +1114,4 @@ function showDivLayout() {
   }
 }
 document.getElementById('overlay-content1').onclick = showDivLayout;
-document.getElementById('overlay-content2').onclick = showDivLayout;
+document.getElementById('overlay-content2').onclick = showDivLayout; // If you want to switch back to the first div when the second one is clicked
