@@ -362,6 +362,21 @@ for (i in data){
       return `translate(${textWidth/2*indicate+(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.cos(Math.PI+angleScale(data[i].Type))},
       ${(bar_height(AQI_value, outerRadius, innerRadius)+buttun_line_padding)*Math.sin(Math.PI+angleScale(data[i].Type))})`
     })
+    text_group.on('click',function(){
+      text = d3.select(this).select('text').text().split(' ')
+      text.pop();
+      var newtext = text.join(' ')
+
+      var a = newtext.split('(')
+      a.pop()
+      newtext = a.join(' ')
+
+      for(i in info){
+        if(info[i].Full===newtext.slice(0, -1)){
+          openOverlay(newtext,info[i])
+        }
+      }
+    })
   // Move text to the front if needed (for browsers that don't support 'insert')
   text.raise();
       const points = [
@@ -497,3 +512,86 @@ function wrap(text, width) {
         }
     });
 }
+function openOverlay(buttonText,info) {
+  var overlay = document.getElementById('overlay');
+
+  var overlayContent = document.getElementById('overlay-content1');
+  console.log(info)
+
+  // Set the content of the overlay based on the button's text
+  document.querySelector('#overlay-content1 h2').textContent = info.Full + ' ('+info.Name + ')';
+  document.getElementById('p-title').textContent = info.Full + ' ('+info.Name + ')';
+  document.getElementById('p-what').textContent = info.What;
+  document.getElementById('p-where').textContent = info.Where;
+  document.getElementById('p-how').textContent = info.Harm;
+  document.getElementById('illustration').src = 'illustration/'+info.Name+'.png'
+  document.getElementById('cause').src = 'illustration/cause/'+info.Name+'.png'
+  document.getElementById('harm').src = 'illustration/harm/'+info.Name+'.png'
+
+
+
+  // Show the overlay
+  overlay.style.display = 'block';
+
+}
+document.addEventListener('DOMContentLoaded', function() {
+  // Function to close the overlay
+  function closeOverlay() {
+    console.log('clos')
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('overlay_DP').style.display = 'none';
+    document.getElementById('overlay_color').style.display = 'none';
+    var content1 = document.getElementById('overlay-content1');
+    var content2 = document.getElementById('overlay-content2');
+    content1.style.display = 'block';
+    content2.style.display = 'none';
+  }
+
+  // Set up the close icon event listener
+  document.getElementById('close-icon').addEventListener('click', closeOverlay);
+  document.getElementById('close-icon-DP').addEventListener('click', closeOverlay);
+  document.getElementById('close-icon-color').addEventListener('click', closeOverlay);
+  document.getElementById('floating-legend-left').addEventListener('click', function(){
+    document.getElementById('overlay_color').style.display = 'block';
+    container = d3.select("#overlay-content-color")
+    containerWidth = container.node().getBoundingClientRect().width;
+    containerHeight = container.node().getBoundingClientRect().height;
+    create_color(containerWidth,containerHeight)
+  });
+  // Close the overlay when clicking outside
+  document.addEventListener('click', function(event) {
+    var overlay = document.getElementById('overlay');
+    var overlayDP = document.getElementById('overlay_DP');
+    var overlayColor = document.getElementById('overlay_color');
+
+    // Check if any overlay is currently displayed
+    var isAnyOverlayVisible = (overlay.style.display !== 'none') ||
+                              (overlayDP.style.display !== 'none') ||
+                              (overlayColor.style.display !== 'none');
+
+    // Determine if the click was outside all overlays
+    var isClickInsideOverlay = overlay.contains(event.target) ||
+                               overlayDP.contains(event.target) ||
+                               overlayColor.contains(event.target);
+
+    if (isAnyOverlayVisible && isClickInsideOverlay) {
+      closeOverlay();
+    }
+  });
+
+});
+
+function showDivLayout() {
+  var content1 = document.getElementById('overlay-content1');
+  var content2 = document.getElementById('overlay-content2');
+  // Toggle between showing content1 and content2
+  if (content1.style.display === 'none') {
+    content1.style.display = 'block';
+    content2.style.display = 'none';
+  } else {
+    content1.style.display = 'none';
+    content2.style.display = 'block';
+  }
+}
+document.getElementById('overlay-content1').onclick = showDivLayout;
+document.getElementById('overlay-content2').onclick = showDivLayout; // If you want to switch back to the first div when the second one is clicked

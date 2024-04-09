@@ -1036,24 +1036,7 @@ function wrapText(text, width) {
     }
   });
 }
-function openOverlay(buttonText,info) {
-  var overlay = document.getElementById('overlay');
-  var overlayContent = document.getElementById('overlay-content');
-  console.log(info)
 
-  // Set the content of the overlay based on the button's text
-  document.querySelector('#overlay-content h2').textContent = info.Full + ' ('+info.Name + ')';
-  document.getElementById('h3-left').textContent = 'What is '+info.Name+'?';
-  document.getElementById('p-left').textContent = info.What;
-  document.getElementById('h3-mid').textContent = 'What causes '+info.Name +'?';
-  document.getElementById('p-mid').textContent = info.Where;
-  document.getElementById('h3-right').textContent = 'How does '+info.Name +' harm?';
-  document.getElementById('p-right').textContent = info.Harm;
-
-
-  // Show the overlay
-  overlay.style.display = 'block';
-}
 document.addEventListener('DOMContentLoaded', function() {
   // Function to close the overlay
   function closeOverlay() {

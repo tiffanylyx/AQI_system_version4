@@ -637,7 +637,26 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log(containerHeight)
     create_color(containerWidth,containerHeight)
   });
+  // Close the overlay when clicking outside
+  document.addEventListener('click', function(event) {
+    var overlay = document.getElementById('overlay');
+    var overlayDP = document.getElementById('overlay_DP');
+    var overlayColor = document.getElementById('overlay_color');
 
+    // Check if any overlay is currently displayed
+    var isAnyOverlayVisible = (overlay.style.display !== 'none') ||
+                              (overlayDP.style.display !== 'none') ||
+                              (overlayColor.style.display !== 'none');
+
+    // Determine if the click was outside all overlays
+    var isClickInsideOverlay = overlay.contains(event.target) ||
+                               overlayDP.contains(event.target) ||
+                               overlayColor.contains(event.target);
+
+    if (isAnyOverlayVisible && isClickInsideOverlay) {
+      closeOverlay();
+    }
+  });
 
 });
 
