@@ -8,50 +8,23 @@
 <script src="d3.v7.js"></script>
 
 <link rel="stylesheet" href="font.css">
-<div class="navbar">
-  <div class="navbar-section navbar-left">
-    <img src="logo.png" alt="Logo" class="logo">
-    <div class="bottom-section">
-    <img src="NSF.png" alt="NSF Logo" class="nsf-logo">
-    <div class="supporting-text" style="padding-top:20px;">
-    <p>TILES Lab</p>
-    <p>GT-Visual Analytics Lab</p>
-    <p>CEISMC</p>
-  </div>
-</div>
-</div>
-<div class="navbar-section navbar-center">
-  <div class="nav-title">What is Air Quality Index?</div>
-  <br>
-  <div class="nav-text "style='padding-top: 2%;'>The Air Quality Index (AQI) is a numerical scale used to communicate how polluted the air is in a specific area.
-    It ranges from 0 to 500, with higher numbers indicating worse air quality.
-    The AQI value is determined by the highest concentrations of six pollutants.
+<div class = 'container' id = 'content'>
 
-    This exhibit explains how AQI is computed, and display the AQI data of Atlanta area in 2023. Let’s learn more about Air Quality by understanding and analyzing the AQI trend in Atlanta!</div>
-
-  <div class="nav-text" style='font-size:14px;padding-top: 5%;'>Data source: US Environmental Protection Agency. Air Quality System Data Mart [internet database] available via https://www.epa.gov/outdoor-air-quality-data. Accessed Mar 25th, 2024.</div>
+<div class="sidebar">
+  <img src="logo_new.png" alt="Logo" class="sidebar-logo">
+  <a href="index.html">AQI System</a>
+  <a href="video.html">AQI Video</a>
+  <a href="">Data Source</a>
+  <a href="">More</a>
 </div>
-<div class="navbar-section navbar-right">
-  <a href="index.html" >Snapshot</a>
-  <a href="visualizing.html">Decoding AQI</a>
-
-  <a href="calender.html"class = 'active'>Trend<i class="check-icon fas fa-check"></i></a>
-  <a href="video.html">Context</a>
-</div>
-</div>
-<div class = 'container' id = 'content' style ='height: 75vh;'>
-  <div class="right-div">
-    <div class="calendar-header" id="calendar-header" style="display:none">
-    <button id="back-to-year-btn">Back to Year</button>
-    <button id="prev-month-btn">❮</button>
-    <span id="calendar-title">August 2023</span>
-    <button id="next-month-btn">❯</button>
+<div style="width:93%;height:100%;flex-grow: 1;">
+  <div class="top-nav">
+    <a href="visualizing.html">Decoding Air Quality Index</a>
+    <a href="home_new.html"  class="active">Todays' AQI Score</a>
+    <a href="#AQICalendar">AQI Calendar</a>
   </div>
-    <div id = 'calendar'>
-    </div>
-    <!-- Content for right div -->
-  </div>
-  <div class="left-div" style="height: 100%;">
+  <div style="display: flex;padding-top:50px;">
+  <div class="left-div" >
     <div id="overlay" style="display:none; position:fixed; top:26%; left:50%; right:0; bottom:0; width:50%;background:rgba(0,0,0,0.1); z-index:100;">
       <!-- Content inside overlay -->
       <div style="position:relative; background:#fff; margin:10% auto; width:80%;border-radius: 15px;">
@@ -129,9 +102,15 @@
         <span id="close-icon-color" style="position:absolute; top:0; right:0; cursor:pointer; font-size:24px; font-weight:bold; padding:10px;">&times;</span>
       </div>
     </div>
+    <div id="explain_text" style="padding:2vh 4vw;">
+      <h1>2023 AQI Trends</h1>
+      <p>The Air Quality Index (AQI) is a numerical scale used to communicate how polluted the air is in a specific area. It ranges from 0 to 300, with higher numbers indicating worse air quality. The AQI is calculated based on the concentrations of six major pollutants: Particulate Matter.</p>
+      <h1>Data, Data, Data</h2>
+      <p>The Air Quality Index (AQI) is a numerical scale used to communicate how polluted the air is in a specific area. It ranges from 0 to 300, with higher numbers indicating worse air quality. The AQI is calculated based on the concentrations of six major pollutants: Particulate Matter.</p>
+    </div>
 
 
-    <div id = 'daily_chart'  style="position: relative;width: 100%;height: 100%;">
+    <div id = 'daily_chart'  style="height:100%;flex-grow: 1;display:none;">
 
     <div class="floating-legend-left" id="floating-legend-left">
 
@@ -146,8 +125,19 @@
     </div>
     </div>
 </div>
-
-
+<div class="right-div">
+  <div class="calendar-header" id="calendar-header" style="display:none">
+  <button id="back-to-year-btn">Back to Year</button>
+  <button id="prev-month-btn">❮</button>
+  <span id="calendar-title">August 2023</span>
+  <button id="next-month-btn">❯</button>
+</div>
+  <div id = 'calendar'>
+  </div>
+  <!-- Content for right div -->
+</div>
+</div>
+</div>
 </div>
 <script src = "set_up_calender.js"></script>
 <script src = "year_calender.js"></script>

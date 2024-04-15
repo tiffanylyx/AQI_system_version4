@@ -1,14 +1,14 @@
 // set the dimensions and margins of the graph
 const select_date = 193
 
-const scaleFactor = 1.15
+const scaleFactor = 0.97
 var container = d3.select('#daily_chart');
 var svg_color
 
 // Get the width of the container div
 var containerWidth = container.node().getBoundingClientRect().width;
 var containerHeight = container.node().getBoundingClientRect().height;
-const margin = {top: 0, right: 20, bottom: 0, left: 20},
+const margin = {top: 100, right: 20, bottom: 0, left: 20},
     width = containerWidth - margin.left - margin.right,
     height = containerHeight - margin.top - margin.bottom,
     innerRadius = 0,
@@ -460,7 +460,16 @@ for (i in data){
                 indicate = 1}
               else{indicate = -1}
             return `translate(${-indicate*textWidth*1.2},${indicate*(textHeight+15)})`})
-          }
+            .on('click',function(){
+              console.log("herere")
+              for(j in info){
+                if(info[j].Name==DP){
+                  return openOverlay(DP,info[j])
+                }
+              }
+            }
+            )
+}
 }
 
 date_text.text(text_to_display(date));
@@ -678,5 +687,6 @@ function showDivLayout() {
     content2.style.display = 'block';
   }
 }
+
 document.getElementById('overlay-content1').onclick = showDivLayout;
 document.getElementById('overlay-content2').onclick = showDivLayout; // If you want to switch back to the first div when the second one is clicked

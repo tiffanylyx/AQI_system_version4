@@ -965,7 +965,7 @@ for (i in data){
 }
 
 
-circle_bar.attr('transform', `translate(${width*0.65}, ${height*0.53}) scale(${0.85})`)
+circle_bar.attr('transform', `translate(${width*0.7}, ${height*0.53}) scale(${0.85})`)
 }
 
 function bar_height_bar(d, max, min){

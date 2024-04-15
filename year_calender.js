@@ -6,15 +6,15 @@ containerWidth = container.node().getBoundingClientRect().width;
 containerHeight = container.node().getBoundingClientRect().height;
 
 const months = d3.range(0, 12); // Array [0, 1, ..., 11] for months
-const gridWidth = containerWidth/3;
-const gridHeight = containerHeight/1.8;
+const gridWidth = (containerWidth)/3;
+const gridHeight = containerHeight/1.7;
 
-svg_calender.attr("width", gridWidth * 3) // 7 days for a week
-  .attr("height", gridHeight*4+80); // 6 rows to accommodate all days
+svg_calender.attr("width", containerWidth ) // 7 days for a week
+  .attr("height", gridHeight*4+40); // 6 rows to accommodate all days
 
 const year = 2023;
-const dayWidth = (gridWidth-50)/7;
-const dayHeight = gridHeight/7;
+const dayWidth = (gridWidth-40)/7;
+const dayHeight = gridHeight/7.5;
 const day_array = ['S','M','T','W','T','F', 'S']
 
 var svg_date;
@@ -34,13 +34,13 @@ function create_year(data, info){
   d3.select("#calendar-header").style("display","none")
   d3.select("#calendar").style("overflow-y","auto")
   const months = d3.range(0, 12); // Array [0, 1, ..., 11] for months
-  const gridWidth = containerWidth/3;
-  const gridHeight = containerHeight/1.8;
+  const gridWidth = (containerWidth-30)/3;
+  const gridHeight = containerHeight/1.7;
 
-  const dayWidth = (gridWidth-50)/7;
-  const dayHeight = gridHeight/7;
+const dayWidth = (gridWidth-40)/7;
+  const dayHeight = gridHeight/7.5;
   svg_calender.selectAll("*").remove()
-  svg_calender.attr("width", gridWidth * 3) // 7 days for a week
+  svg_calender.attr("width", containerWidth) // 7 days for a week
     .attr("height", gridHeight*4+80); // 6 rows to accommodate all days
 
   months.forEach(function(month, index) {
@@ -143,6 +143,15 @@ for(i in calendarArray){
     .style("opacity",0)
     .style("stroke", "black")
     .style("stroke-width", 0)
+    cell.append("text")
+      .attr("x", dayWidth / 2)
+      .attr("y", 10)
+      .attr("text-anchor", "middle")
+      .attr("dy", "0.35em") // Vertical alignment
+      .text(calendarArray[i])
+      .attr('class','note')
+      .attr("opacity",0.6)
+      .style("font-size",8)
   var data_for_day = []
   if(calendarArray[i]>0){
     data_for_day = monthData.filter(d => d.Date.getDate() === calendarArray[i])

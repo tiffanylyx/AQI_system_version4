@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-
-<meta charset="utf-8">
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="d3.v7.js"></script>
+<link rel="stylesheet" href="font.css">
 <head>
     <link rel="stylesheet" href="style.css">
 </head>
-<!-- Load d3.js -->
-<script src="d3.v7.js"></script>
-<script src="d3-arrow.js"></script>
+<title>Vertical Navigation Bar</title>
 
-<link rel="stylesheet" href="font.css">
+</head>
+<body>
 <div class = 'container' id = 'content'>
 
 <div class="sidebar">
@@ -18,42 +21,25 @@
   <a href="">Data Source</a>
   <a href="">More</a>
 </div>
-<div style="position: relative;width: 93%;height:100%;flex-grow: 1;">
-  <div class="top-nav">
-    <a href="visualizing.html">Decoding Air Quality Index</a>
-    <a href="home_new.html"  class="active">Todays' AQI Score</a>
-    <a href="#AQICalendar">AQI Calendar</a>
-  </div>
-<div id = 'bar_chart'  style="position: relative;width: 100%;height:100%">
-
-<div class="floating-legend" id="floating-legend">
-
-  <ul>
-    <li><span class="indicator good"></span>Good (0-50)</li>
-    <li><span class="indicator moderate"></span>Moderate (50-100)</li>
-    <li><span class="indicator unhealthy-sg"></span>Unhealthy for (100-150) <br>Sensitive Groups </li>
-    <li><span class="indicator unhealthy"></span>Unhealthy (150-200)</li>
-    <li><span class="indicator very-unhealthy"></span>Very Unhealthy (200-300)</li>
-    <li><span class="indicator hazardous"></span>Hazardous (300-500)</li>
-  </ul>
+<div style="width:93%;height:100%;flex-grow: 1;">
+<div class="top-nav">
+  <a href="visualizing.html">Decoding Air Quality Index</a>
+  <a href="home_new.html"  class="active">Todays' AQI Score</a>
+  <a href="calender_year.html">AQI Calendar</a>
 </div>
-<div class="navigation-container">
-  <!-- Previous Button -->
-  <button id="previousButton" class="round-button">&#8592;</button>
 
-  <!-- Progress dots container -->
-  <div class="progress-dots-container">
-      <span class="progress-dot" data-step="0"></span>
-      <span class="progress-dot" data-step="1"></span>
-      <span class="progress-dot" data-step="2"></span>
-      <span class="progress-dot" data-step="3"></span>
-      <span class="progress-dot" data-step="4"></span>
-      <span class="progress-dot" data-step="5"></span>
+<div id = 'daily_chart'  style="height:100%;flex-grow: 1;">
+
+  <div class="floating-legend" id ="floating-legend" >
+    <ul>
+      <li><span class="indicator good"></span>Good (0-50)</li>
+      <li><span class="indicator moderate"></span>Moderate (50-100)</li>
+      <li><span class="indicator unhealthy-sg"></span>Unhealthy for (100-150) <br>Sensitive Groups </li>
+      <li><span class="indicator unhealthy"></span>Unhealthy (150-200)</li>
+      <li><span class="indicator very-unhealthy"></span>Very Unhealthy (200-300)</li>
+      <li><span class="indicator hazardous"></span>Hazardous (300-500)</li>
+    </ul>
   </div>
-
-  <!-- Next Button -->
-  <button id="nextButton" class="round-button">&#8594;</button>
-</div>
 </div>
 </div>
 
@@ -102,16 +88,43 @@
     <span id="close-icon" style="position:absolute; top:0; right:0; cursor:pointer; font-size:24px; font-weight:bold; padding:10px;">&times;</span>
 
 </div>
+
 </div>
+<div id="overlay_DP" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:100;">
+  <div id="overlay2" style="position:relative; background:#fff; margin:10% auto; padding:20px; width:65%;height:70%">
+      <div id="overlay-content-DP" style="position:relative; background:#fff; margin:10% auto; padding:20px; width:90%;">
+        <h2 style="text-align:center; margin-bottom:20px;">Driver Pollutant</h2>
+        <div class="triangle"id = 'DP'>  <div class="exclamation-mark">!</div></div>
+
+        <div style="display:flex; justify-content:space-between;">
+          <div class="center-container">
+            <p>The driver pollutant is indicated with this symbol. </p>
+            <br>
+
+            <p>The driver pollutant is the pollutant  highest AQI value. This pollutant determines the overall AQI for the day. </p>
+            <br>
+            <p>In Atlanta, GA it is usually PM 2.5 or Ozone.</p>
+
+          </div>
+
+        </div>
+      </div>
+    <span id="close-icon-DP" style="position:absolute; top:0; right:0; cursor:pointer; font-size:24px; font-weight:bold; padding:10px;">&times;</span>
+  </div>
+</div>
+<div id="overlay_color" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:100;">
+  <div id="overlay3" style="position:relative; background:#fff; margin:10% auto;width:65%;height:70%">
+
+      <div id="overlay-content-color" style="position:relative; background:#fff; padding:0px; width:95%;height:100%">
+        <h2 style="text-align:center; margin-bottom:20px;padding-top:20px;">Color Legend</h2>
+
+      </div>
+    <span id="close-icon-color" style="position:absolute; top:0; right:0; cursor:pointer; font-size:24px; font-weight:bold; padding:10px;">&times;</span>
+  </div>
+</div>
+</div>
+</body>
+</html>
 
 
-
-
-
-<script src = "set_up_bar.js"></script>
-<script>
-    // Prevent the context menu (right-click menu) from appearing.
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-    }, false);
-</script>
+<script src = "set_up.js"></script>
