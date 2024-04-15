@@ -96,9 +96,9 @@ content {
 }
 .floating-div-left {
     position: fixed;
-    top: 29%;
-    left:70%;
-    width:14%;
+    top: 16%;
+    left:9%;
+    width:13%;
     padding:6px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -220,15 +220,15 @@ content {
 }
 .floating-legend-left {
   position: fixed;
-  top: 29%;
-  left:90%;
+  top: 16%;
+  left:34%;
   display: block; /* Change from flex to block to allow the default list styling */
   padding: 16px;
   background-color: #F5F6F6;
   border-radius: 8px;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   font-size: 14px;
-  width: 9%; /* Ensure the width is as per content */
+  width: 12%; /* Ensure the width is as per content */
   max-width: 90%; /* Optional: to ensure it doesn't get too wide */
 }
 
@@ -263,6 +263,7 @@ content {
   width: 70%;
   padding-left:70px;
   padding-right:30px;
+  padding-top:20px;
   box-sizing: border-box; /* Padding included in the width */
   border-left: 1px  dashed #aeaeae;
 }
@@ -304,7 +305,7 @@ content {
     /* Set a max height if desired, or let it expand to the height of its content */
 }
 .semi-title {
-  font-size: 18px;
+  font-size: 20px;
   font-family: sans-serif;
   font-weight: 500;
 }
@@ -516,8 +517,7 @@ p {
   }
 
   .sidebar a {
-    height: 7vw; /* Make height equal to width */
-    padding: 10px 15px;
+    padding: 40px 15px;
     text-decoration: none;
     font-size: 18px;
     color: #353535;
@@ -525,10 +525,15 @@ p {
     align-items: flex-end; /* Align text to the bottom */
     justify-content: center; /* Center text horizontally */
     box-sizing: border-box; /* Include padding in the element's total width and height */
+
 }
 
   .sidebar a:hover {
-    background-color: #575757;
+    background-color: #E2EEFF;
+  }
+  .sidebar a.active {
+    background-color: #E2EEFF;
+    color:#3273D1;
   }
   /* Style for the navigation bar */
    .top-nav {

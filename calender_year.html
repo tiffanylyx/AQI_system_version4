@@ -10,24 +10,35 @@
 <link rel="stylesheet" href="font.css">
 <div class = 'container' id = 'content'>
 
-<div class="sidebar">
-  <img src="logo_new.png" alt="Logo" class="sidebar-logo">
-  <a href="index.html">AQI System</a>
-  <a href="video.html">AQI Video</a>
-  <a href="">Data Source</a>
-  <a href="">More</a>
-</div>
+  <div class="sidebar">
+    <img src="logo_new.png" alt="Logo" class="sidebar-logo">
+    <a href="index.html"  class="active" style="text-align:center; display:block;">
+      <img src="icon/home.svg" style="width:40%;margin-top:20px;margin-bottom:20px;" >
+      <br>AQI System 
+    </a>
+    <a href="" style="text-align:center; display:block;">
+      <img src="icon/video.svg" style="width:40%;margin-top:20px;margin-bottom:20px;" >
+      <br>AQI Video</a>
+    <a href="" style="text-align:center; display:block;">
+      <img src="icon/data.svg"  style="width:35%;margin-top:20px;margin-bottom:20px;" >
+      <br>    
+      Data Source</a>
+    <a href="" style="text-align:center; display:block;">
+      <img src="icon/more.svg" style="width:40%;margin-top:20px;margin-bottom:20px;" >
+      <br>    
+      More</a>
+  </div>
 <div style="width:93%;height:100%;flex-grow: 1;">
   <div class="top-nav">
     <a href="visualizing.html">Decoding Air Quality Index</a>
-    <a href="home_new.html"  class="active">Todays' AQI Score</a>
-    <a href="#AQICalendar">AQI Calendar</a>
+    <a href="index.html" >Todays' AQI Score</a>
+    <a href="calender_year.html" class="active">AQI Calendar</a>
   </div>
   <div style="display: flex;padding-top:50px;">
-  <div class="left-div" >
-    <div id="overlay" style="display:none; position:fixed; top:26%; left:50%; right:0; bottom:0; width:50%;background:rgba(0,0,0,0.1); z-index:100;">
+  <div class="left-div" id="left-div" >
+    <div id="overlay" style="display:none; position:fixed; top:12vh; left:7.5%; right:0; bottom:0; width:40.5vw;background:rgba(0,0,0,0.1); z-index:100;">
       <!-- Content inside overlay -->
-      <div style="position:relative; background:#fff; margin:10% auto; width:80%;border-radius: 15px;">
+      <div style="position:relative; background:#fff; margin:10% auto; width:90%;border-radius: 15px;">
           <div id="overlay-content1">
             <h2 style="text-align:left; margin-bottom:20px;">Particulate Matter (PM2.5 & PM10)</h2>
             <div style="display:flex; justify-content:space-between;">
@@ -125,7 +136,7 @@
     </div>
     </div>
 </div>
-<div class="right-div">
+<div class="right-div" id = "right-div">
   <div class="calendar-header" id="calendar-header" style="display:none">
   <button id="back-to-year-btn">Back to Year</button>
   <button id="prev-month-btn">❮</button>

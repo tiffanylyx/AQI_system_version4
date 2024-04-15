@@ -30,12 +30,22 @@ Promise.all([
 
 });
 function create_year(data, info){
+  d3.select("#daily_chart").style("display","none")  
+  d3.select("#explain_text").style("display","block")   
+  d3.select("#right-div").style("width","70%")
+  d3.select("#left-div").style("width","30%")  
+  container = d3.select('#calendar');
+
+  // Get the width of the container div
+  containerWidth = container.node().getBoundingClientRect().width;
+  containerHeight = container.node().getBoundingClientRect().height;
+  
+  const gridWidth = (containerWidth)/3;
+  const gridHeight = containerHeight/1.7;
   const day_array = ['S','M','T','W','T','F', 'S']
   d3.select("#calendar-header").style("display","none")
   d3.select("#calendar").style("overflow-y","auto")
-  const months = d3.range(0, 12); // Array [0, 1, ..., 11] for months
-  const gridWidth = (containerWidth-30)/3;
-  const gridHeight = containerHeight/1.7;
+
 
 const dayWidth = (gridWidth-40)/7;
   const dayHeight = gridHeight/7.5;
@@ -81,6 +91,7 @@ const dayWidth = (gridWidth-40)/7;
         .attr("dy", "0.35em") // Vertical alignment
         .text(d => d)
         .attr('class','note')
+        .style("font-size","16px")
 
       svg_header.append("text")
         .attr("x", (gridWidth-30) / 2)
@@ -132,7 +143,7 @@ for(i in calendarArray){
   cell = svg_date.append("g")
   .attr("transform", function(){
     const x = (i % 7) * dayWidth; // Calculate x based on the day of the week
-    const y = (Math.floor(i / 7)) * dayHeight-5; // Calculate y based on the week
+    const y = (Math.floor(i / 7)) * dayHeight+10; // Calculate y based on the week
     return `translate(${x}, ${y})`;
   });
   cell.append("rect")
@@ -155,22 +166,37 @@ for(i in calendarArray){
   var data_for_day = []
   if(calendarArray[i]>0){
     data_for_day = monthData.filter(d => d.Date.getDate() === calendarArray[i])
-    create_rosa_small(data_for_day[0].Date_org,data_for_day,cell,info,0.11,dayWidth,dayHeight,'False')
+    create_rosa_small(data_for_day[0].Date_org,data_for_day,cell,info,0.13,dayWidth,dayHeight,'False')
   }
 
 }
 }
 function create_select_month(svg_calender,select_month,data,info){
+  d3.select("#right-div").style("width","50vw")
+  d3.select("#left-div").style("width","40vw")  
+  d3.select("#daily_chart").style("display","block")  
   const day_array = ['Sun','Mon','Tue','Wed','Thu','Fri', 'Sat']
   d3.select("#calendar-header").style("display","block")
   d3.select("#calendar").style("overflow-y","hidden")
   d3.select('#calendar-title')
   .text(new Date(year, select_month)
   .toLocaleString('en-us', { month: 'long' }) + " " + year)
+  d3.select("#daily_chart").style("display","block")  
+  d3.select("#explain_text").style("display","none")   
+  container = d3.select('#calendar');  
+  // Get the width of the container div
+containerWidth = container.node().getBoundingClientRect().width;
+containerHeight = container.node().getBoundingClientRect().height;
 
-  size = 0.27
+  const gridWidth = (containerWidth)/3;
+  const gridHeight = containerHeight/1.7;
+  
+  svg_calender.attr("width", containerWidth ) // 7 days for a week
+    .attr("height", gridHeight*4+40); // 6 rows to accommodate all days
+  
+  size = 0.32
   const dayWidth = containerWidth/7;
-  const dayHeight = containerHeight/7.5;
+  const dayHeight = containerHeight/7;
   svg_calender.attr("width", containerWidth) // 7 days for a week
     .attr("height", containerHeight); // 6 row
 
@@ -242,7 +268,7 @@ function create_select_month(svg_calender,select_month,data,info){
       .attr("height", dayHeight - 0.5)
       .style("fill", function(){
         if(calendarArray[i]>0){
-          return "#F5F6F6"
+          return "#ffffff"
         }
         else{
           return "#eeeeee"

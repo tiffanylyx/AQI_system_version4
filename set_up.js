@@ -1,14 +1,14 @@
 // set the dimensions and margins of the graph
 const select_date = 193
 
-const scaleFactor = 0.97
+const scaleFactor = 1.3
 var container = d3.select('#daily_chart');
 var svg_color
 
 // Get the width of the container div
 var containerWidth = container.node().getBoundingClientRect().width;
 var containerHeight = container.node().getBoundingClientRect().height;
-const margin = {top: 100, right: 20, bottom: 0, left: 20},
+const margin = {top: 50, right: 20, bottom: 0, left: 20},
     width = containerWidth - margin.left - margin.right,
     height = containerHeight - margin.top - margin.bottom,
     innerRadius = 0,
