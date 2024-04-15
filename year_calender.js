@@ -1,3 +1,5 @@
+d3.select("#right-div").style("width","70%")
+d3.select("#left-div").style("width","30%")  
 const svg_calender = d3.select('#calendar').append('svg')
 container = d3.select('#calendar');
 
@@ -46,8 +48,7 @@ function create_year(data, info){
   d3.select("#calendar-header").style("display","none")
   d3.select("#calendar").style("overflow-y","auto")
 
-
-const dayWidth = (gridWidth-40)/7;
+  const dayWidth = (gridWidth-40)/7;
   const dayHeight = gridHeight/7.5;
   svg_calender.selectAll("*").remove()
   svg_calender.attr("width", containerWidth) // 7 days for a week
@@ -58,12 +59,10 @@ const dayWidth = (gridWidth-40)/7;
       monthGroup = svg_calender.append('g')
           .attr('transform', 'translate(' + (index % 3) * gridWidth + ',' + Math.floor(index / 3) * gridHeight + ')');
 
-
       svg_header= monthGroup.append('g')
       svg_date = monthGroup.append('g').attr("class",month)
       svg_header.attr('transform', `translate(0, ${10})`);
       svg_date.attr('transform', `translate(0, ${40+dayHeight / 2})`);
-
 
 
       const cells_day = svg_header.selectAll("g")
@@ -112,12 +111,10 @@ const dayWidth = (gridWidth-40)/7;
           console.log('Month ' + (month + 1) + ' clicked');
           // Logic to display the detailed view for the month
       });
-
-
 })
 }
 function create_calender(svg_date,select_month,data,info){
-console.log(svg_date.attr("class"))
+
 // Filter for the month of February
 const monthData = data.filter(d => d.Date.getMonth() === select_month); // Month is zero-indexed, 1 = February
 
@@ -150,7 +147,7 @@ for(i in calendarArray){
     .attr('id','edge')
     .attr("width", dayWidth - 1) // Subtract 1 for grid gap
     .attr("height", dayHeight - 1)
-    .style("fill", "#F5F6F6")
+    .style("fill", "#ffffff")
     .style("opacity",0)
     .style("stroke", "black")
     .style("stroke-width", 0)
@@ -222,7 +219,7 @@ containerHeight = container.node().getBoundingClientRect().height;
     .attr("width", dayWidth - 0.5) // Subtract 1 for grid gap
     .attr("height", dayHeight/2 )
     .style("fill", "none")
-    .style("stroke", "#E4E4E7")
+    .style("stroke", "#ffffff")
     .style("stroke-width",1)
 
   // Add text labels for each day
@@ -263,7 +260,14 @@ containerHeight = container.node().getBoundingClientRect().height;
       return `translate(${x}, ${y})`;
     });
     cell.append("rect")
-      .attr('id','edge')
+      .attr('id',function(){
+        if(calendarArray[i]>0){
+          return "edge"
+        }
+        else{
+          return "empty"
+        }
+      })
       .attr("width", dayWidth -0.5) // Subtract 1 for grid gap
       .attr("height", dayHeight - 0.5)
       .style("fill", function(){
@@ -397,7 +401,7 @@ if(click=='True'){
 
 group.on("click", function(){
   create_rosa(date,data,info)
-    svg_calender.selectAll('#edge').style('fill',"#F5F6F6")
+    svg_calender.selectAll('#edge').style('fill',"#ffffff")
   group.select('#edge').style('fill',"#DCEBFE")
 })}
 }
