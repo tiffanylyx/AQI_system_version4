@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
 const select_date = 193
-const scaleFactor = 1
+const scaleFactor = 0.95
 const container = d3.select('#bar_chart');
 
 // Get the width of the container div
@@ -964,7 +964,7 @@ for (i in data){
 }
 
 
-circle_bar.attr('transform', `translate(${width*0.7}, ${height*0.53}) scale(${0.85})`)
+circle_bar.attr('transform', `translate(${width*0.7}, ${height*0.45}) scale(${scaleFactor})`)
 }
 
 function bar_height_bar(d, max, min){
