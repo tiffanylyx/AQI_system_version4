@@ -128,8 +128,8 @@ Promise.all([
       { func: create_number, args: [date,data_for_day,info] },
       { func: color_code, args: [date,data_for_day,info] },
       { func: create_bar, args: [date,data_for_day,info] },
-      { func: move_bar, args: [date, data_for_day, info,120] },
-      { func: stack, args: [120] },
+      { func: move_bar, args: [date, data_for_day, info,30] },
+      { func: stack, args: [30] },
       { func: add_rosa, args: [date,data_for_day,info] },
   ];
 
@@ -208,7 +208,7 @@ function initial(date, data, info){
   .text("happy")
   .attr('x',0)
   .attr("dy", 0.5)
-  .attr('y',-height*0.35).style("text-anchor","middle").style("font-size",'24px').style("font-weight",500)
+  .attr('y',-height*0.4).style("text-anchor","middle").style("font-size",'24px').style("font-weight",500)
   bbox = explain_text.node().getBBox();
   textWidth = bbox.width;
   textHeight = bbox.height;
@@ -226,7 +226,7 @@ function initial(date, data, info){
     .enter()
     .append('g')
     .attr("transform", function(d,i) {
-      return `translate(${(i-5/2)*(padding_bar+barwidth)-50},0)`;
+      return `translate(${(i-5/2)*(padding_bar+barwidth)-50},-150)`;
     })
 
   // Append a rect to each group
@@ -551,7 +551,6 @@ function stack(distance){
 function add_rosa(date,data,info){
   explain_text
   .text('We can further arrange the bars in to a circle by rounding the x-axis. Now the daily AQI is represented in the flower-like shape.')
-  .attr('y',-height*0.35)
   .call(wrapText, text_length)
   bbox = explain_text.node().getBBox();
   textWidth = bbox.width;
