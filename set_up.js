@@ -638,14 +638,8 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('close-icon-DP').addEventListener('click', closeOverlay);
   document.getElementById('close-icon-color').addEventListener('click', closeOverlay);
   document.getElementById('floating-legend').addEventListener('click', function(){
-    document.getElementById('overlay_color').style.display = 'block';
-    container = d3.select("#overlay-content-color")
-    containerWidth = container.node().getBoundingClientRect().width;
-    console.log(containerWidth)
-    containerHeight = container.node().getBoundingClientRect().height;
-    console.log(containerHeight)
     event.stopPropagation();
-    create_color(containerWidth,containerHeight)
+    document.getElementById('overlay_color').style.display = 'block';
   });
   // Close the overlay when clicking outside
   document.addEventListener('click', function(event) {

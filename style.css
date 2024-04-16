@@ -163,7 +163,7 @@ content {
   left:80vw;
   display: block; /* Change from flex to block to allow the default list styling */
   padding: 16px;
-  background-color: #F5F6F6;
+  background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   font-size: 14px;
@@ -224,7 +224,7 @@ content {
   left:34%;
   display: block; /* Change from flex to block to allow the default list styling */
   padding: 16px;
-  background-color: #F5F6F6;
+  background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   font-size: 14px;
