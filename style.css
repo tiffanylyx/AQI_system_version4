@@ -341,19 +341,6 @@ content {
   cursor: pointer; /* Add a pointer on hover */
 }
 
-/* Overlay content */
-.overlay-content {
-  position: relative;
-  top: 50%;
-  width: 80%;
-  text-align: center;
-  margin-top: -50px; /* Adjust this value to offset the content's height */
-  margin: auto;
-  padding: 20px;
-  background: white;
-  border-radius: 5px;
-  cursor: default;
-}
 
 /* Button to close the overlay */
 .closebtn {
