@@ -60,14 +60,15 @@ function create_year(data, info){
   months.forEach(function(month, index) {
 
       monthGroup = svg_calender.append('g')
-          .attr('transform', 'translate(' + (index % 3) * gridWidth + ',' + Math.floor(index / 3) * gridHeight + ')');
+          .attr('transform', 'translate(' + ((index % 3) * gridWidth+10) + ',' + (Math.floor(index / 3) * gridHeight +10)+ ')');
 
       svg_header= monthGroup.append('g')
       svg_date = monthGroup.append('g').attr("class",month)
       svg_header.attr('transform', `translate(0, ${10})`);
       svg_date.attr('transform', `translate(0, ${40+dayHeight / 2})`);
 
-
+  
+            
       const cells_day = svg_header.selectAll("g")
         .data(day_array)
         .enter()
@@ -105,7 +106,7 @@ function create_year(data, info){
 
       create_calender(svg_date,month,data,info)
       monthGroup.append("rect")
-      .style("fill","white")
+      .attr("fill","white")
       .style("opacity",0)
       .attr("width",gridWidth)
       .attr("height",gridHeight)
@@ -114,6 +115,25 @@ function create_year(data, info){
           console.log('Month ' + (month + 1) + ' clicked');
           // Logic to display the detailed view for the month
       });
+
+      monthGroup.on("mouseover",function(){
+        svg_calender.append("rect")
+        .attr("class","month_edge")
+        .attr("width",gridWidth-40)
+        .attr("height",gridHeight)
+        .attr("fill","none")
+        .attr("stroke","black")
+        .attr("x",((index % 3) * gridWidth+10))
+        .attr("y",(Math.floor(index / 3) * gridHeight ))
+        .attr("rx",10)
+        .attr("ry",10)        
+      })
+      .on("mouseout",function(){
+        svg_calender.selectAll(".month_edge").remove()
+
+      })
+
+
 })
 }
 function create_calender(svg_date,select_month,data,info){

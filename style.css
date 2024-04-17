@@ -260,7 +260,7 @@ content {
 
 .right-div {
   width: 70%;
-  padding-left:70px;
+  padding-left:30px;
   padding-right:30px;
   padding-top:20px;
   box-sizing: border-box; /* Padding included in the width */
