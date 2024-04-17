@@ -554,6 +554,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var content2 = document.getElementById('overlay-content2');
     content1.style.display = 'block';
     content2.style.display = 'none';
+    var note_card = document.getElementById('note_card');  
+    note_card.textContent = "1/2"
   }
 
   // Set up the close icon event listener
@@ -598,13 +600,17 @@ document.addEventListener('DOMContentLoaded', function() {
 function showDivLayout() {
   var content1 = document.getElementById('overlay-content1');
   var content2 = document.getElementById('overlay-content2');
+  var note_card = document.getElementById('note_card');  
+  
   // Toggle between showing content1 and content2
   if (content1.style.display === 'none') {
     content1.style.display = 'block';
     content2.style.display = 'none';
+    note_card.textContent = "1/2"
   } else {
     content1.style.display = 'none';
     content2.style.display = 'block';
+    note_card.textContent = "2/2"
   }
 }
 document.getElementById('overlay-content1').onclick = showDivLayout;

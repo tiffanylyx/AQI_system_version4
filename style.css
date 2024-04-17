@@ -313,7 +313,19 @@ content {
   font-family: sans-serif;
   color:#777777;
 }
-
+#note_card {
+  font-size: 12px;
+  font-family: sans-serif;
+  color:#777777;
+  position: absolute;
+  bottom: 0px; /* 50px from the bottom edge */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  width: 100%; /* Ensure it spans the full width of the container */
+  text-align: center; /* Center the text if it wraps */
+}
 /* Overlay styles */
 .overlay {
   position: fixed; /* Sit on top of the page content */
@@ -400,6 +412,7 @@ p {
   padding-bottom:10px;
   border-bottom: 60px solid #003E93;
   border-radius: 15px;
+  height:50vh;
 }
 #overlay-content1:after {
     content: "Tap to see more information 👆"; /* The text you want to display */
@@ -428,6 +441,7 @@ p {
   padding-bottom:0px;
   border-bottom: 60px solid #003E93;
   border-radius: 15px;
+  height:50vh;
 }
 #overlay-content2:after {
     content: "Tap to see more information 👆"; /* The text you want to display */
