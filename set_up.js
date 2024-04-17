@@ -1,5 +1,5 @@
 // set the dimensions and margins of the graph
-const select_date = 193
+const select_date = 228
 
 const scaleFactor = 1.4
 var container = d3.select('#daily_chart');
@@ -8,7 +8,7 @@ var svg_color
 // Get the width of the container div
 var containerWidth = container.node().getBoundingClientRect().width;
 var containerHeight = container.node().getBoundingClientRect().height;
-const margin = {top: 50, right: 20, bottom: 0, left: 20},
+const margin = {top: 0, right: 20, bottom: 0, left: 20},
     width = containerWidth - margin.left - margin.right,
     height = containerHeight - margin.top - margin.bottom,
     innerRadius = 0,
@@ -462,7 +462,7 @@ for (i in data){
               if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
                 indicate = 1}
               else{indicate = -1}
-            return `translate(${textWidth*0.4},${indicate*(textHeight+20)})`})
+            return `translate(${-indicate*textWidth*0.9},${indicate*(textHeight+20)})`})
             .on('click',function(){
               event.stopPropagation();
               var overlay_DP = document.getElementById('overlay_DP');
