@@ -23,11 +23,11 @@ const buttun_line_padding = 80
 // Sample data
 const data = [
   { Type: 'NO2', Value: 78 },
-  { Type: 'O3', Value: 94 },
   { Type: 'CO', Value: 117 },
   { Type: 'PM10', Value: 50 },
-  { Type: 'PM2.5', Value: 117 },
+  { Type: 'O3', Value: 94 },
   { Type: 'SO2', Value: 195 },
+  { Type: 'PM2.5', Value: 117 },
 ];
 const types = ['NO2','O3','CO','PM10','PM2.5','SO2']
 const rank = [0,50,100,150,200,300,500]
@@ -439,10 +439,17 @@ floatingDiv.style("border-top", "10px solid "+color_fill(AQI_value))
 }
 
 
-function bar_height(d, max, min){
-  return 3.5*Math.pow(d,0.7)+barwidth
+function bar_height_2(d, max, min){
+  return 4.5*Math.pow(d,0.65)+barwidth
 }
-
+function bar_height(d, max, min){
+  var res;
+  if(d<151){
+    res =  d;}
+  else if (d<301){res= 200+(d-200)/2;}
+  else if (d<501){res = 200+(300-200)/2+(d-300)/4;}
+  return res*0.85+barwidth
+}
 function color_fill(d){
   if(d<51){
     return '#34B274';}

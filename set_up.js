@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
 const select_date = 193
 
-const scaleFactor = 1.3
+const scaleFactor = 1.4
 var container = d3.select('#daily_chart');
 var svg_color
 
@@ -25,11 +25,11 @@ const buttun_line_padding = 80
 // Sample data
 const data = [
   { Type: 'NO2', Value: 78 },
-  { Type: 'O3', Value: 94 },
   { Type: 'CO', Value: 117 },
   { Type: 'PM10', Value: 50 },
-  { Type: 'PM2.5', Value: 117 },
+  { Type: 'O3', Value: 94 },
   { Type: 'SO2', Value: 195 },
+  { Type: 'PM2.5', Value: 117 },
 ];
 const rank = [0,50,100,150,200,300,500]
 // Create a scale for the angles
@@ -46,7 +46,7 @@ const radiusScale = d3.scaleLinear()
 // Function to calculate rotation for each bar
 const calculateRotation = d => (angleScale(d.Type) * 180 / Math.PI-90)
 
-const barwidth = 40
+const barwidth = 30
 
 let AQI_value = 0
 let DP
@@ -488,8 +488,16 @@ floatingDiv.style("border-top", "10px solid "+color_fill(AQI_value))
 }
 
 
-function bar_height(d, max, min){
+function bar_height_2(d, max, min){
   return 4.5*Math.pow(d,0.65)+barwidth
+}
+function bar_height(d, max, min){
+  var res;
+  if(d<151){
+    res =  d;}
+  else if (d<301){res= 200+(d-200)/2;}
+  else if (d<501){res = 200+(300-200)/2+(d-300)/4;}
+  return res*0.85+barwidth
 }
 
 function color_fill(d){

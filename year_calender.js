@@ -1,3 +1,6 @@
+const today = new Date();
+const dayOfMonth = today.getDate();
+console.log(dayOfMonth);
 d3.select("#right-div").style("width","70%")
 d3.select("#left-div").style("width","30%")  
 const svg_calender = d3.select('#calendar').append('svg')
@@ -163,7 +166,7 @@ for(i in calendarArray){
   var data_for_day = []
   if(calendarArray[i]>0){
     data_for_day = monthData.filter(d => d.Date.getDate() === calendarArray[i])
-    create_rosa_small(data_for_day[0].Date_org,data_for_day,cell,info,0.13,dayWidth,dayHeight,'False')
+    create_rosa_small(data_for_day[0].Date_org,data_for_day,cell,info,0.17,dayWidth,dayHeight,'False')
   }
 
 }
@@ -191,7 +194,7 @@ containerHeight = container.node().getBoundingClientRect().height;
   svg_calender.attr("width", containerWidth ) // 7 days for a week
     .attr("height", gridHeight*4+40); // 6 rows to accommodate all days
   
-  size = 0.32
+  size = 0.35
   const dayWidth = containerWidth/7;
   const dayHeight = containerHeight/7;
   svg_calender.attr("width", containerWidth) // 7 days for a week
@@ -271,7 +274,10 @@ containerHeight = container.node().getBoundingClientRect().height;
       .attr("width", dayWidth -0.5) // Subtract 1 for grid gap
       .attr("height", dayHeight - 0.5)
       .style("fill", function(){
-        if(calendarArray[i]>0){
+        if(calendarArray[i]==dayOfMonth){
+          return "#DCEBFE"
+        }
+        else if(calendarArray[i]>0){
           return "#ffffff"
         }
         else{
@@ -296,7 +302,11 @@ containerHeight = container.node().getBoundingClientRect().height;
       data_for_day = monthData.filter(d => d.Date.getDate() === calendarArray[i])
       create_rosa_small(data_for_day[0].Date_org,data_for_day,cell,info,size,dayWidth,dayHeight,'True')
     }
+    
+
 }
+data_for_day = monthData.filter(d => d.Date.getDate() === dayOfMonth)
+create_rosa((1+select_month).toString()+"/"+dayOfMonth+"/2023",data_for_day,info)
 d3.select('#prev-month-btn').on('click', function() {
     // Decrement the month and update year if needed
     select_month--;
@@ -334,7 +344,7 @@ d3.select('#back-to-year-btn').on('click', function() {
 })
 }
 function create_rosa_small(date,data,group,info,size,width,height,click){
-  barwidth = 40
+  barwidth = 25
   AQI_value = 0
 const circle_bar = group.append('g').attr("id",'circle_bar').attr("transform",`translate(${width/2}, ${height*0.55})`)
 var layer2 = circle_bar.append('g').attr("id",'layer2');
@@ -407,8 +417,16 @@ group.on("click", function(){
 }
 
 
+function bar_height_2(d, max, min){
+  return 4.5*Math.pow(d,0.65)+barwidth
+}
 function bar_height(d, max, min){
-  return 3.5*Math.pow(d,0.7)+barwidth
+  var res;
+  if(d<151){
+    res =  d;}
+  else if (d<301){res= 200+(d-200)/2;}
+  else if (d<501){res = 200+(300-200)/2+(d-300)/4;}
+  return res*0.85+barwidth
 }
 
 function color_fill(d){

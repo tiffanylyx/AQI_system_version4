@@ -228,7 +228,7 @@ content {
   border-radius: 8px;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   font-size: 14px;
-  width: 12%; /* Ensure the width is as per content */
+  width: 12.5%; /* Ensure the width is as per content */
   max-width: 90%; /* Optional: to ensure it doesn't get too wide */
 }
 
