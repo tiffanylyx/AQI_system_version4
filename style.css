@@ -402,7 +402,7 @@ p {
   padding-bottom:10px;
   border-bottom: 60px solid #003E93;
   border-radius: 15px;
-  height:35vh;
+  height:40vh;
 }
 #overlay-content1:after {
     content: "Tap to see more information 👆"; /* The text you want to display */
@@ -428,7 +428,7 @@ p {
   padding-bottom:0px;
   border-bottom: 60px solid #003E93;
   border-radius: 15px;
-  height:35vh;
+  height:40vh;
 }
 #overlay-content2:after {
     content: "Tap to see more information 👆"; /* The text you want to display */
