@@ -59,6 +59,16 @@ const csvFile2 = 'info.csv';
 var explain_text
 var text_box
 var back = 0
+let timer; // Declare a variable to hold the reference to the timeout
+
+function resetTimer() {
+  clearTimeout(timer); // Clear the existing timer
+  timer = setTimeout(() => {
+    document.getElementById('nextButton').click(); // Programmatically click the next button
+  }, 5000); // Set a new timer for 45 seconds
+}
+// Initialize the timer when the page loads
+resetTimer();
 // Load both files concurrently
 Promise.all([
   d3.csv(csvFile1),
@@ -159,17 +169,6 @@ Promise.all([
   // Run the updateProgressIndicator function initially to set the first step active
   updateProgressIndicator();
 
-  let timer; // Declare a variable to hold the reference to the timeout
-
-  function resetTimer() {
-    clearTimeout(timer); // Clear the existing timer
-    timer = setTimeout(() => {
-      document.getElementById('nextButton').click(); // Programmatically click the next button
-    }, 10000); // Set a new timer for 45 seconds
-  }
-  // Initialize the timer when the page loads
-  resetTimer();
-
   // Modified event listener for the next button
   document.getElementById('nextButton').addEventListener('click', () => {
     if (currentIndex < functionsArray.length - 1) { // Check if currentIndex is less than the last index
@@ -208,7 +207,7 @@ function initial(date, data, info){
   .text("happy")
   .attr('x',0)
   .attr("dy", 0.5)
-  .attr('y',-height*0.4).style("text-anchor","middle").style("font-size",'24px').style("font-weight",500)
+  .attr('y',-height*0.35).style("text-anchor","middle").style("font-size",'24px').style("font-weight",500)
   bbox = explain_text.node().getBBox();
   textWidth = bbox.width;
   textHeight = bbox.height;
@@ -830,6 +829,7 @@ for (i in data){
         }
       })
       .style("font-weight", "bold")
+      .style("font-family","Arial")
       .style('opacity',0)
       .transition()
       .delay(function() {
@@ -848,8 +848,8 @@ for (i in data){
   text_group.insert('rect', 'text') // Insert rectangle before the text element
       .attr('x', bbox.x - padding_h / 2)
       .attr('y', bbox.y - padding_v / 2)
-      .attr('rx', textHeight / 2) // Rounded corners
-      .attr('ry', textHeight / 2) // Rounded corners
+      .attr('rx', textHeight / 4) // Rounded corners
+      .attr('ry', textHeight / 4) // Rounded corners
       .attr('width', textWidth + padding_h)
       .attr('height', textHeight + padding_v)
       .style('fill', function(){
@@ -951,7 +951,7 @@ for (i in data){
             if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
               indicate = 1}
             else{indicate = -1}
-            return `translate(${-textWidth*2.3},${indicate*(textHeight+15)})`})
+            return `translate(${1.5*textWidth},${indicate*(textHeight+15)})`})
             .style("opacity",0)
                 .transition()
                 .delay(function() {
@@ -1114,3 +1114,5 @@ function showDivLayout() {
 }
 document.getElementById('overlay-content1').onclick = showDivLayout;
 document.getElementById('overlay-content2').onclick = showDivLayout; // If you want to switch back to the first div when the second one is clicked
+document.addEventListener('click', function(event) {
+  resetTimer()})

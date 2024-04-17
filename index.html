@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="d3.v7.js"></script>
+<link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+
 <link rel="stylesheet" href="font.css">
 <head>
     <link rel="stylesheet" href="style.css">
@@ -40,6 +42,16 @@
 </div>
 
 <div id = 'daily_chart'  style="height:100%;flex-grow: 1;">
+  <div id = "text_index" style = "position: fixed;padding-top:60px;padding-left:30vh;width:60vw;">
+    <h1>Air Quality Index of April 14, 2024 </h1>
+    <p>
+      The Air Quality Index (AQI) is a numerical scale used to communicate how polluted the air is in a specific area.
+      It ranges from 0 to 500, with higher numbers indicating worse air quality.
+      The AQI value is determined by the highest concentrations of six pollutants.
+
+      This exhibit explains how AQI is computed, and display the AQI data of Atlanta area in 2023. Let’s learn more about Air Quality by understanding and analyzing the AQI trend in Atlanta!
+    </p>
+  </div>
 
   <div class="floating-legend" id ="floating-legend" >
     <ul>
@@ -56,7 +68,7 @@
 
 <div id="overlay" style="display:none; position:fixed; top:12%; left:7.5%; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:100;">
   <!-- Content inside overlay -->
-  <div style="position:relative; background:#fff; margin:15% auto; width:40%;border-radius: 15px;">
+  <div style="position:relative; background:#fff; margin:10% auto; width:50%;border-radius: 15px;">
       <div id="overlay-content1">
         <h2 style="text-align:left; margin-bottom:20px;">Particulate Matter (PM2.5 & PM10)</h2>
         <div style="display:flex; justify-content:space-between;">
@@ -70,9 +82,9 @@
           </div>
         </div>
 
-        <p class = "note" style = "display: flex; justify-content: center; align-items: center;font-size:12px"> 1/2 </p>
+        <p class = "note" style = "display: flex; justify-content: center; align-items: center;font-size:12px;padding-top:20px;"> 1/2 </p>
       </div>
-      <div id="overlay-content2" style="font-family: Arial, sans-serif;">
+      <div id="overlay-content2">
         <p id = 'p-title' class = 'note'>Nitrogen Dioxide</p>
           <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; align-items: left;">
             <div style="grid-column: 1; text-align: left;padding-right:15px;">
@@ -93,9 +105,9 @@
 
           </div>
         </div>
-        <p class = "note" style = "display: flex; justify-content: center; align-items: center;font-size:12px"> 2/2 </p>
+        <p class = "note" style = "display: flex; justify-content: center; align-items: center;font-size:12px;padding-top:100px;"> 2/2 </p>
       </div>
-    <span id="close-icon" style="position:absolute; top:0; right:0; cursor:pointer; font-size:24px; font-weight:bold; padding:10px;">&times;</span>
+    <span id="close-icon" style="color:#888888;position:absolute; top:0; right:0; cursor:pointer; font-size:24px; padding-top:10px;padding-right:24px;">&times;</span>
 
 </div>
 

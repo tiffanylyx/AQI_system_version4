@@ -323,6 +323,7 @@ for (i in data){
       }
     })
     .style("font-weight", "bold")
+    .style("font-family","Arial")
   // Calculate text dimensions
   const bbox = text.node().getBBox();
   const textWidth = bbox.width;
@@ -333,8 +334,8 @@ for (i in data){
   text_group.insert('rect', 'text') // Insert rectangle before the text element
       .attr('x', bbox.x - padding_h / 2)
       .attr('y', bbox.y - padding_v / 2)
-      .attr('rx', textHeight / 2) // Rounded corners
-      .attr('ry', textHeight / 2) // Rounded corners
+      .attr('rx', textHeight / 4) // Rounded corners
+      .attr('ry', textHeight / 4) // Rounded corners
       .attr('width', textWidth + padding_h)
       .attr('height', textHeight + padding_v)
       .style('fill', function(){

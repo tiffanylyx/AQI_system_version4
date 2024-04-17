@@ -1,7 +1,7 @@
 body, html {
-  font-family: Arial, sans-serif;
+  font-family: Inter, sans-serif;
   overflow: hidden;
-  background-color:#fffff;]
+  background-color:#ffffff;
   margin: 0;
   padding: 0;
   height: 100%; /* This ensures the html and body are full height */
@@ -80,14 +80,14 @@ content {
 
 .floating-div {
     position: fixed;
-    top: 20vh;
+    top: 16vh;
     left:80vw;
     background-color: #ffffff;
     width:14%;
     padding:6px;
 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(81,81,81, 0.25);
+    border-radius: 8px;
     font-family: sans-serif;
     display: flex;
     flex-direction: column;
@@ -101,8 +101,8 @@ content {
     width:13%;
     padding:6px;
     background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(81,81,81, 0.25);
+    border-radius: 8px;
     font-family: sans-serif;
     display: flex;
     flex-direction: column;
@@ -118,15 +118,14 @@ content {
 
 }
 .date-text {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 20px;
   padding-top: 16px;
   padding-bottom: 16px;
   width:100%;
     font-size: 18px;
     font-weight: 400;
     margin: 2px 0;
-    border-bottom: 1px solid #aaaaaa;
+    border-bottom: 1px solid #e2e2e2;
 
 }
 .text-info {
@@ -159,13 +158,13 @@ content {
 
 .floating-legend {
   position: fixed;
-  top: 45vh;
+  top: 34vh;
   left:80vw;
   display: block; /* Change from flex to block to allow the default list styling */
   padding: 16px;
   background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(81,81,81, 0.25);
   font-size: 14px;
   width:14%; /* Ensure the width is as per content */
   max-width: 90%; /* Optional: to ensure it doesn't get too wide */
@@ -226,7 +225,7 @@ content {
   padding: 16px;
   background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(81,81,81, 0.25);
   font-size: 14px;
   width: 12.5%; /* Ensure the width is as per content */
   max-width: 90%; /* Optional: to ensure it doesn't get too wide */
@@ -574,7 +573,6 @@ p {
    }
 
    #explain_text {
-     font-family: 'Arial', sans-serif;
      background-color: #ffffff; /* White background */
      padding: 20px; /* Padding inside the div */
    }

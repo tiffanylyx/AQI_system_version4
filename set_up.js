@@ -46,7 +46,7 @@ const radiusScale = d3.scaleLinear()
 // Function to calculate rotation for each bar
 const calculateRotation = d => (angleScale(d.Type) * 180 / Math.PI-90)
 
-const barwidth = 30
+const barwidth = 20
 
 let AQI_value = 0
 let DP
@@ -171,7 +171,7 @@ const bars = layer3
   })
   .attr("stroke-width", function(d){
     if(d.Type==DP){
-      return 6
+      return 4
     }
     else{ return 0}
   })
@@ -180,7 +180,7 @@ const bars = layer3
 const circle = layer3.append('circle')
 .attr('cx', 0)
 .attr('cy', 0)
-.attr('r',barwidth)
+.attr('r',barwidth*0.7)
 .attr("fill","white")
 
 const AQI_mark =  layer2.append('circle')
@@ -286,10 +286,10 @@ for (i in data){
       }
     })
     .style("font-size",'16px')
-  text.append("tspan")
+  text.append("tspan").attr("y", 2)
   .text(data[i].Value)
   .style("font-size", "30px") // Smaller font size for the AQI range
-    .attr("dx", "0.3em").style('fill',function(){
+  .attr("dx", "0.3em").style('fill',function(){
       if(data[i].Type==DP){
         if((AQI_value<101)&&(AQI_value>50)){
           return 'Black'
@@ -302,7 +302,9 @@ for (i in data){
         return color_fill(data[i].Value)
       }
     })
+
     .style("font-weight", "bold")
+    .style("font-family","Arial")
 
   // Calculate text dimensions
   const bbox = text.node().getBBox();
@@ -352,8 +354,8 @@ for (i in data){
   text_group.insert('rect', 'text') // Insert rectangle before the text element
       .attr('x', bbox.x - padding_h / 2)
       .attr('y', bbox.y - padding_v / 2)
-      .attr('rx', textHeight / 2) // Rounded corners
-      .attr('ry', textHeight / 2) // Rounded corners
+      .attr('rx', textHeight / 4) // Rounded corners
+      .attr('ry', textHeight / 4) // Rounded corners
       .attr('width', textWidth + padding_h)
       .attr('height', textHeight + padding_v)
       .style('fill',function(){
@@ -382,7 +384,7 @@ for (i in data){
               }
 
             } )
-  .style('filter', 'url(#drop-shadow)');
+  //.style('filter', 'url(#drop-shadow)');
   text_group.on('click',function(event){
     event.stopPropagation();
     text = d3.select(this).select('text').text().split(' ')
@@ -414,13 +416,13 @@ for (i in data){
   text.raise();
 
       if(data[i].Type==DP){
-      DP_group = text_group.append("g")
-          .attr("text-anchor", "middle").attr("transform", function(){
-            var indicate = 1
-            if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
-              indicate = 1}
-            else{indicate = -1}
-          return `translate(${-indicate*70},${indicate*50})`})
+        DP_group = text_group.append("g")
+        .attr("text-anchor", "middle").attr("transform", function(){
+          var indicate = 1
+          if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
+            indicate = 1}
+          else{indicate = -1}
+        return `translate(${-indicate*70},${indicate*50})`})
       DP_info = DP_group.append("text").attr("x",106).attr("y",10);
         DP_group.append("path")
         .attr("d", "M 0,-12.5 L -14,12.5 H 14 Z") // Triangle path with the tip centered at (0,0)
@@ -454,20 +456,18 @@ for (i in data){
         const bbox = DP_group.node().getBBox();
         const textWidth = bbox.width;
         const textHeight = bbox.height;
+        
         DP_group.attr("text-anchor", "middle").attr("transform", function(){
               var indicate = 1
               if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
                 indicate = 1}
               else{indicate = -1}
-            return `translate(${-indicate*textWidth*1.2},${indicate*(textHeight+15)})`})
+            return `translate(${textWidth*0.4},${indicate*(textHeight+20)})`})
             .on('click',function(){
-              console.log("herere")
-              for(j in info){
-                if(info[j].Name==DP){
-                  return openOverlay(DP,info[j])
-                }
-              }
-            }
+              event.stopPropagation();
+              var overlay_DP = document.getElementById('overlay_DP');
+            // Show the overlay
+            overlay_DP.style.display = 'block';}
             )
 }
 }
@@ -489,7 +489,7 @@ floatingDiv.style("border-top", "10px solid "+color_fill(AQI_value))
 
 
 function bar_height_2(d, max, min){
-  return 4.5*Math.pow(d,0.65)+barwidth
+  return 4.5*Math.pow(d,0.65)+barwidth*0.7
 }
 function bar_height(d, max, min){
   var res;
