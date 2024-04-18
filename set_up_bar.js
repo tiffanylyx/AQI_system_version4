@@ -1,5 +1,5 @@
 // set the dimensions and margins of the graph
-const select_date = 193
+const select_date = 228
 const scaleFactor = 0.95
 const container = d3.select('#bar_chart');
 
@@ -44,9 +44,10 @@ const radiusScale = d3.scaleLinear()
 // Function to calculate rotation for each bar
 const calculateRotation = d => (angleScale(d.Type) * 180 / Math.PI-90)
 
-var barwidth = 120
-var padding_bar = 80
-var text_length = 900
+var barwidth = 140
+var padding_bar = 120
+var padding_text = 460
+var text_length = 140*6 + 120*5 - padding_text
 
 let AQI_value = 0
 let DP
@@ -60,15 +61,15 @@ var explain_text
 var text_box
 var back = 0
 let timer; // Declare a variable to hold the reference to the timeout
-
-function resetTimer() {
+var len = 8000
+function resetTimer(duration) {
   clearTimeout(timer); // Clear the existing timer
   timer = setTimeout(() => {
     document.getElementById('nextButton').click(); // Programmatically click the next button
-  }, 5000); // Set a new timer for 45 seconds
+  }, duration); // Set a new timer for 45 seconds
+  console.log(duration)
 }
-// Initialize the timer when the page loads
-resetTimer();
+resetTimer(len)
 // Load both files concurrently
 Promise.all([
   d3.csv(csvFile1),
@@ -139,7 +140,7 @@ Promise.all([
       { func: color_code, args: [date,data_for_day,info] },
       { func: create_bar, args: [date,data_for_day,info] },
       { func: move_bar, args: [date, data_for_day, info,30] },
-      { func: stack, args: [30] },
+      { func: stack, args: [30,info] },
       { func: add_rosa, args: [date,data_for_day,info] },
   ];
 
@@ -174,12 +175,15 @@ Promise.all([
     if (currentIndex < functionsArray.length - 1) { // Check if currentIndex is less than the last index
       currentIndex++;} // Increment currentIndex}
     else if (currentIndex==functionsArray.length-1){
-      console.log("here")
       currentIndex = 0
     }
       runFunctionAtIndex();
       updateProgressIndicator(); // Call this function to update the visual progress indicator
-    resetTimer(); // Reset the timer each time the next button is clicked
+    if(currentIndex==functionsArray.length-1){
+      console.log("hhhhh")
+      len = 15000
+    }
+    
   });
 
   // Modified event listener for the previous button
@@ -189,14 +193,15 @@ Promise.all([
       runFunctionAtIndex();
       updateProgressIndicator(); // Call this function to update the visual progress indicator
     }
-    resetTimer(); // Reset the timer each time the previous button is clicked
+    
   });
 
 })
 
 function initial(date, data, info){
-  barwidth = 120
-  padding_bar = 100
+  len = 8000
+  barwidth = 140
+  padding_bar = 120
   explain_group.selectAll("*").remove()
   info_group.selectAll("*").remove()
   bars_group.selectAll("*").remove()
@@ -212,11 +217,11 @@ function initial(date, data, info){
   textWidth = bbox.width;
   textHeight = bbox.height;
   text_box = explain_group.insert('rect', 'text') // Insert rectangle before the text element
-      .attr('x', -600)
+      .attr('x', -text_length/2-padding_text/2+20)
       .attr('y', bbox.y - padding_v / 2)
       .attr('rx', textHeight / 2) // Rounded corners
       .attr('ry', textHeight / 2) // Rounded corners
-      .attr('width', 1220)
+      .attr('width', text_length+padding_text)
       .attr('height', textHeight + padding_v)
       .attr("fill",'#E2EEFF')
   barGroups = bars_group
@@ -232,8 +237,8 @@ function initial(date, data, info){
   bars = barGroups.append('rect')
     .attr('x', 0)
     .attr('y', -40)
-    .attr('rx', barwidth / 8) // Rounded corners
-    .attr('ry', barwidth / 8) // Rounded corners
+    .attr('rx', 8) // Rounded corners
+    .attr('ry', 8) // Rounded corners
     .attr('width', barwidth)
     .attr('height', 0)
     .attr('fill','white')
@@ -281,7 +286,7 @@ textWidth = bbox.width;
 textHeight = bbox.height;
 text_box
     .attr('y', bbox.y - padding_v / 2)
-    .attr('width', 1220)
+    .attr('width', text_length+padding_text)
     .attr('height', textHeight + padding_v)
 
   // Append a rect to each group
@@ -293,9 +298,8 @@ text_box
   barGroups.on('click',function(event){
     event.stopPropagation();
     text = d3.select(this).select('text').text()
-
     for(i in info){
-      if(info[i].Name===text){
+      if(info[i].Full===text){
         openOverlay(text,info[i])
       }
     }
@@ -373,7 +377,8 @@ labels2
   return i * 100; // Delay each subsequent bar by an additional 100ms
 })
 .duration(800)
-.attr('y',d => 68-bar_height_bar(d.Value, outerRadius, innerRadius ))
+.attr('y',d => 36-bar_height_bar(d.Value, outerRadius, innerRadius ))
+.attr("fill","black")
 info_group.selectAll("*").remove()
 }
 function move_bar(date, data, info,distance){
@@ -386,8 +391,8 @@ text_box
     .attr('y', bbox.y - padding_v / 2)
     .attr('height', textHeight + padding_v)
 info_group.selectAll("*").remove()
-  barwidth = 120
-  padding_bar = 100
+  barwidth = 140
+  padding_bar = 120
   barGroups
   .transition()
   .delay(function(d,i) {
@@ -486,7 +491,7 @@ info_group
 
 }
 
-function stack(distance){
+function stack(distance,info){
   back = 1
   console.log('stack')
   explain_text.text(function(){
@@ -501,7 +506,7 @@ function stack(distance){
       .attr('height', textHeight + padding_v)
 
   d3.select('#bar_chart').select('svg').select('#circle_bar').remove()
-  barwidth = 50
+  barwidth = 30
   barwidth_bar = 70
   padding_bar = 20
   move_x = 350
@@ -519,7 +524,15 @@ function stack(distance){
   .attr("transform", function(d,i) {
       return `translate(${(i-5/2)*(padding_bar+barwidth_bar)-move_x},0)`;
     })
-
+  barGroups.on('click',function(event){
+      event.stopPropagation();
+      text = d3.select(this).select('text').text()
+      for(i in info){
+        if(info[i].Name===text){
+          openOverlay(text,info[i])
+        }
+      }
+    })
 
   bars
   .transition()
@@ -528,8 +541,6 @@ function stack(distance){
   })
   .duration(800)
   .attr('width',barwidth_bar)
-  .attr('rx', barwidth_bar / 5) // Rounded corners
-  .attr('ry', barwidth_bar / 5) // Rounded corners
 
   labels1.attr("x", barwidth_bar / 2).style('font-size',14).text(d => d.Type)
   labels2.attr("x", barwidth_bar / 2).style('font-size',14)
@@ -635,6 +646,7 @@ function add_rosa(date,data,info){
 }
 //create_rosa(data)
 function create_rosa(date,data,info){
+
 
 circle_bar = d3.select('#bar_chart').select('svg').append('g').attr("id",'circle_bar').attr("transform",`translate(${width*0.6}, ${height / 2})`)
 var layer1 = circle_bar.append('g').attr("id",'layer1');
@@ -877,7 +889,22 @@ for (i in data){
       })
       .duration(800)
       .style('opacity',1)
-
+  text_group.on('click',function(event){
+        event.stopPropagation();
+        text = d3.select(this).select('text').text().split(' ')
+        text.pop();
+        var newtext = text.join(' ')
+    
+        var a = newtext.split('(')
+        a.pop()
+        newtext = a.join(' ')
+    
+        for(i in info){
+          if(info[i].Full===newtext.slice(0, -1)){
+            openOverlay(newtext,info[i])
+          }
+        }
+      })
   text_group = layer3.append("g")
       .attr("transform",  function(){
         var indicate = 1
@@ -968,7 +995,12 @@ circle_bar.attr('transform', `translate(${width*0.7}, ${height*0.45}) scale(${sc
 }
 
 function bar_height_bar(d, max, min){
-  return 6*Math.pow(d,0.65)+barwidth/2
+  var res;
+  if(d<151){
+    res =  d;}
+  else if (d<301){res= 200+(d-200)/2;}
+  else if (d<501){res = 200+(300-200)/2+(d-300)/4;}
+  return res*1.5
 }
 function bar_height_2(d, max, min){
   return 4.5*Math.pow(d,0.65)+barwidth
@@ -1121,4 +1153,4 @@ function showDivLayout() {
 document.getElementById('overlay-content1').onclick = showDivLayout;
 document.getElementById('overlay-content2').onclick = showDivLayout; // If you want to switch back to the first div when the second one is clicked
 document.addEventListener('click', function(event) {
-  resetTimer()})
+  resetTimer(len)})
