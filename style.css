@@ -56,25 +56,21 @@ content {
   font-family:sans-serif;
 }
 .pullution-axis{
-  font-size: 22px;
+  font-size: 12px;
   font-weight: 500;
-  font-family:sans-serif;
 }
 .pullution-value{
   font-size: 22px;
   font-weight: 500;
-  font-family:sans-serif;
 }
 
 .legend{
   font-size: 22px;
-  font-family:sans-serif;
 }
 .rosa_text{
   font-size:26px;
   font-weight:600;
   text-anchor:middle;
-  font-family:sans-serif;
 }
 
 
@@ -164,7 +160,9 @@ content {
   top: 34.5vh;
   left:80vw;
   display: block; /* Change from flex to block to allow the default list styling */
-  padding: 16px;
+  padding-top: 20px;
+  padding-left:24px;
+  padding-bottom:10px; 
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(81,81,81, 0.25);
@@ -225,7 +223,9 @@ content {
   top: 16%;
   left:34%;
   display: block; /* Change from flex to block to allow the default list styling */
-  padding: 16px;
+  padding-top: 20px;
+  padding-left:24px;
+  padding-bottom:10px; 
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(81,81,81, 0.25);
@@ -321,7 +321,7 @@ content {
   font-family: sans-serif;
   color:#777777;
   position: absolute;
-  bottom: 0px; /* 50px from the bottom edge */
+  bottom: 40px; /* 50px from the bottom edge */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -402,7 +402,7 @@ p {
   padding-bottom:10px;
   border-bottom: 60px solid #003E93;
   border-radius: 15px;
-  height:42vh;
+  height:43vh;
 }
 #overlay-content1:after {
     content: "Tap to see more information 👆"; /* The text you want to display */
@@ -428,8 +428,9 @@ p {
   padding-bottom:0px;
   border-bottom: 60px solid #003E93;
   border-radius: 15px;
-  height:42vh;
+  height:43vh;
 }
+
 #overlay-content2:after {
     content: "Tap to see more information 👆"; /* The text you want to display */
     position: absolute;
@@ -509,10 +510,9 @@ p {
 
   .sidebar-logo {
     display: block;
-    margin: 0 auto;
-    width: 95%; /* Adjust size as needed */
+    width: 90%; /* Adjust size as needed */
     height: auto;
-    padding: 10px;
+    padding-top:50px;
 
   }
 
@@ -593,7 +593,7 @@ p {
      margin-top: 0;
      margin-bottom: 40px; /* Space after the paragraph */
    }
-   
+
    .header-container {
     display: flex;
     align-items: center; /* Aligns the image and the text vertically */

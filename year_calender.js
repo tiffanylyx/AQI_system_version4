@@ -116,22 +116,7 @@ function create_year(data, info){
           // Logic to display the detailed view for the month
       });
 
-      monthGroup.on("mouseover",function(){
-        svg_calender.append("rect")
-        .attr("class","month_edge")
-        .attr("width",gridWidth-40)
-        .attr("height",gridHeight)
-        .attr("fill","none")
-        .attr("stroke","black")
-        .attr("x",((index % 3) * gridWidth+10))
-        .attr("y",(Math.floor(index / 3) * gridHeight ))
-        .attr("rx",10)
-        .attr("ry",10)        
-      })
-      .on("mouseout",function(){
-        svg_calender.selectAll(".month_edge").remove()
 
-      })
 
 
 })

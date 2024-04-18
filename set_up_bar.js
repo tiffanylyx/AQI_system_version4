@@ -19,7 +19,7 @@ const svg = d3.select('#bar_chart').append('svg')
   .append('g')
   .attr('transform', `translate(${width / 2}, ${height / 2})`);
 const barHeight = outerRadius - innerRadius;
-const buttun_line_padding = 80
+const buttun_line_padding = 120
 // Sample data
 const org_data  = [
   { Type: 'NO2', Value: '26.6 ppb' },
@@ -52,10 +52,10 @@ const radiusScale = d3.scaleLinear()
 // Function to calculate rotation for each bar
 const calculateRotation = d => (angleScale(d.Type) * 180 / Math.PI-90)
 
-var barwidth = 140
+var barwidth = 160
 var padding_bar = 120
 var padding_text = 460
-var text_length = 140*6 + 120*5 - padding_text
+var text_length = barwidth*6 + padding_bar*5 - padding_text
 
 let AQI_value = 0
 let DP
@@ -215,7 +215,7 @@ Promise.all([
 })
 function raw_number(data,info){
   len = 8000
-  barwidth = 140
+  barwidth = 160
   padding_bar = 120
   explain_group.selectAll("*").remove()
   info_group.selectAll("*").remove()
@@ -224,10 +224,12 @@ function raw_number(data,info){
 
   explain_text = explain_group
   .append('text')
-  .text("happy")
+  explain_text
   .attr('x',0)
   .attr("dy", 0.5)
-  .attr('y',-height*0.35).style("text-anchor","middle").style("font-size",'24px').style("font-weight",500)
+  .attr('y',-height*0.35).style("text-anchor","middle")
+  .style("font-size",'24px')
+  
   bbox = explain_text.node().getBBox();
   textWidth = bbox.width;
   textHeight = bbox.height;
@@ -245,7 +247,7 @@ function raw_number(data,info){
     .enter()
     .append('g')
     .attr("transform", function(d,i) {
-      return `translate(${(i-5/2)*(padding_bar+barwidth)-50},-150)`;
+      return `translate(${(i-5/2)*(padding_bar+barwidth)-50},-60)`;
     })
 
   // Append a rect to each group
@@ -293,8 +295,19 @@ function raw_number(data,info){
 function create_number(date, data, info){
   raw_number(data,info)
 
-  explain_text.text('On August 24, 2023, which marked the highest value of Atlanta\'s Air Quality Index for the whole 2023, the levels of different pollutants in the air detected by the sensors of EPA were recorded as follows.')
-.call(wrapText, text_length);
+  explain_text.append('tspan')
+.text('On August 24, 2023, which marked the highest value of Atlanta\'s Air Quality Index for the whole ')
+
+explain_text.append('tspan')
+  .text('2023')
+  .style("font-family", "Arial")
+        .style('font-weight', 'bold')
+        .style('fill', 'black');  // just for emphasis
+// Add the rest of the text
+explain_text.append('tspan')
+.text(', the levels of different pollutants in the air detected by the sensors of EPA were recorded as follows.');
+explain_text.call(wrapText, text_length);
+
 bbox = explain_text.node().getBBox();
 textWidth = bbox.width;
 textHeight = bbox.height;
@@ -346,14 +359,14 @@ function change_AQI(){
   .attr('stroke-width', 2);
 // 使用过渡动画来绘制横线
 line.transition()
-  .duration(1000) // 过渡时间，1000毫秒 = 1秒
+  .duration(500) // 过渡时间，1000毫秒 = 1秒
   .attr('x2', barwidth) // 根据文本宽度调整终点的 x 坐标
   line.transition()
-  .delay(1500)
+  .delay(700)
   .style('opacity', 0); // 根据文本宽度调整终点的 x 坐标  
 
   labels2.transition()
-  .delay(1500) // 这里的延迟需要比横线的动画时间长一些
+  .delay(700) // 这里的延迟需要比横线的动画时间长一些
   .on('start', function() {
     d3.select(this).text(function(d) {
       return d.Value; // Assuming each datum has a label property
@@ -361,7 +374,6 @@ line.transition()
   });
   }
 else{
-  console.log("here")
   labels2.text(function(d) {
     return d.Value; // Assuming each datum has a label property
   })
@@ -443,7 +455,7 @@ labels2
   return i * 100; // Delay each subsequent bar by an additional 100ms
 })
 .duration(800)
-.attr('y',d => 36-bar_height_bar(d.Value, outerRadius, innerRadius ))
+.attr('y',d => 30-bar_height_bar(d.Value, outerRadius, innerRadius ))
 .attr("fill","black")
 info_group.selectAll("*").remove()
 }
@@ -457,7 +469,7 @@ text_box
     .attr('y', bbox.y - padding_v / 2)
     .attr('height', textHeight + padding_v)
 info_group.selectAll("*").remove()
-  barwidth = 140
+  barwidth = 160
   padding_bar = 120
   barGroups
   .transition()
@@ -530,6 +542,7 @@ arrow= d3.arrow1()
    .id("my-arrow-9")
 info_group.call(arrow);
 AQI_y = distance+50-bar_height_bar(AQI_value, outerRadius, innerRadius )
+/*
 AQI_line_0 = info_group
 .append("polyline")
       .attr("marker-end", `url(#${arrow.id()})`)
@@ -539,7 +552,17 @@ AQI_line_0 = info_group
       .attr("fill", color_fill(AQI_value))
       .attr("stroke-width", 5)
       .attr("opacity",1)
-
+*/
+AQI_line_0 = info_group
+.append("line")
+     .attr("x1",(5/2)*(padding_bar+barwidth)-50+barwidth)
+     .attr("x2",(-5/2)*(padding_bar+barwidth)-75)
+     .attr("y1",AQI_y)
+     .attr("y2",AQI_y)
+      .attr("stroke", color_fill(AQI_value)) // arrow.attr can also be used as a getter
+      .attr("fill", color_fill(AQI_value))
+      .attr("stroke-width", 5)
+      .attr("opacity",1)
 AQI_text_0 = info_group.append("text")
 .attr("class","sub_title")
 .attr("x",0)
@@ -549,7 +572,7 @@ AQI_text_0 = info_group.append("text")
 .attr('fill',color_fill(AQI_value))
 .attr("opacity",1)
 info_group
-.attr("transform", `translate(0,-600)`)
+.attr("transform", `translate(0,-900)`)
 .transition()
   .delay(1000)
   .duration(1500)
@@ -574,8 +597,8 @@ function stack(distance,info){
   d3.select('#bar_chart').select('svg').select('#circle_bar').remove()
   barwidth = 30
   barwidth_bar = 70
-  padding_bar = 20
-  move_x = 350
+  padding_bar = 30
+  move_x = 520
 
 
   barGroups
@@ -610,12 +633,19 @@ function stack(distance,info){
 
   labels1.attr("x", barwidth_bar / 2).style('font-size',14).text(d => d.Type)
   labels2.attr("x", barwidth_bar / 2).style('font-size',14)
-
+  /*
   AQI_line_0
   .transition()
   .duration(800)
   .attr("points", [[(5/2)*(padding_bar+barwidth_bar)-move_x+barwidth_bar, AQI_y],
   [(-5/2)*(padding_bar+barwidth_bar)-move_x, AQI_y]])
+  */
+  AQI_line_0
+      .transition()
+      .duration(800)
+       .attr("x1",(5/2)*(padding_bar+barwidth_bar)-move_x+barwidth_bar)
+       .attr("x2",(-5/2)*(padding_bar+barwidth_bar)-move_x)
+
 
   AQI_text_0
   .transition()
@@ -715,6 +745,8 @@ function create_rosa(date,data,info){
 
 
 circle_bar = d3.select('#bar_chart').select('svg').append('g').attr("id",'circle_bar').attr("transform",`translate(${width*0.6}, ${height / 2})`)
+
+
 var layer1 = circle_bar.append('g').attr("id",'layer1');
 var layer2 = circle_bar.append('g').attr("id",'layer2');
 var layer3 = circle_bar.append('g').attr("id",'layer3');
@@ -813,7 +845,7 @@ const lines = layer1.append("g")
       .attr("opacity",0.5)
       .attr("r", d=>bar_height(d,outerRadius,innerRadius));
 
-  yTick.append("text")
+      yTick.append("text")
       .data(rank)
       .attr("y", function(d) { return -bar_height(d,outerRadius,innerRadius) })
       .attr("dy", "0.35em")
@@ -822,7 +854,6 @@ const lines = layer1.append("g")
       .attr("stroke-width", 3)
       .text(d => d)
       .attr("class","pullution-axis")
-      .style("font-size","14")
 
 
 
@@ -833,16 +864,14 @@ const lines = layer1.append("g")
       .attr("dy", "0.35em")
       .text(d => d)
       .attr("class","pullution-axis")
-      .style("fill", "#002A62")
-      .style("font-size","16")
-      .style("font-weight","300")
+      .style("fill", "#003E93")
+      .style("opacity",0.4)
 
 // Draw the button background
 const padding_h = 30;
 const padding_v = 10;
 // Add the text to the SVG first to measure it
 for (i in data){
-  console.log(data[i])
   text_group = layer3.append("g")
       .attr("text-anchor", "middle")
       .attr("transform",  function(){
@@ -955,22 +984,7 @@ for (i in data){
       })
       .duration(800)
       .style('opacity',1)
-  text_group.on('click',function(event){
-        event.stopPropagation();
-        text = d3.select(this).select('text').text().split(' ')
-        text.pop();
-        var newtext = text.join(' ')
-    
-        var a = newtext.split('(')
-        a.pop()
-        newtext = a.join(' ')
-    
-        for(i in info){
-          if(info[i].Full===newtext.slice(0, -1)){
-            openOverlay(newtext,info[i])
-          }
-        }
-      })
+
   text_group = layer3.append("g")
       .attr("transform",  function(){
         var indicate = 1
@@ -992,49 +1006,41 @@ for (i in data){
     return `translate(${-indicate*70},${indicate*50})`})
 
     DP_info = DP_group.append("text").attr("x",80).attr("y",10);
-      DP_group.append("path")
-      .attr("d", "M 0,-12.5 L -14,12.5 H 14 Z") // Triangle path with the tip centered at (0,0)
-      .attr("fill", color_fill(AQI_value))
-      .style("opacity",0)
-      .transition()
-      .delay(function() {
-        return i * 1000; // Delay each subsequent bar by an additional 100ms
-      })
-      .duration(800)
-      .style("opacity",1)
-    // Draw the exclamation mark using rectangles for simplicity
-    DP_group.append("rect")
-      .attr("x", -1.5) // X position (centered at 0,0)
-      .attr("y", -7) // Y position (above the bottom)
-      .attr("width", 3) // Width of the exclamation mark
-      .attr("height", 12) // Height of the exclamation mark's stick
-      .attr("fill", "#fff") // Fill with white color
-      .style("opacity",0)
-      .transition()
-      .delay(function() {
-        return i * 1000; // Delay each subsequent bar by an additional 100ms
-      })
-      .duration(800)
-      .style("opacity",1)
+    DP_info = DP_group.append("text").attr("x",106).attr("y",5);
+    DP_group.append("path")
+    .attr("d", "M0,-7 L10,-7 L20,0 L10,7 L-5,7 L-5,-7 Z") // Triangle path with the tip centered at (0,0)
+    .attr("fill", color_fill(AQI_value))
+    .style("opacity",0)
+    .transition()
+    .delay(function() {
+      return i * 1000; // Delay each subsequent bar by an additional 100ms
+    })
+    .duration(800)
+    .style("opacity",1)
+  // Draw the exclamation mark using rectangles for simplicity
 
-    DP_group.append("rect")
-      .attr("x", -1.5) // X position (centered at 0,0)
-      .attr("y", 7) // Y position (above the bottom)
-      .attr("width", 3) // Width of the exclamation mark's dot
-      .attr("height", 3) // Height of the exclamation mark's dot
-      .attr("fill", "#fff")
-      .style("opacity",0)
-      .transition()
-      .delay(function() {
-        return i * 1000; // Delay each subsequent bar by an additional 100ms
-      })
-      .duration(800)
-      .style("opacity",1)
+  DP_group.append("rect")
+    .attr("x", -1) // X position (centered at 0,0)
+    .attr("y", -2) // Y position (above the bottom)
+    .attr("width", 10) // Width of the exclamation mark
+    .attr("height", 3) // Height of the exclamation mark's stick
+    .attr("fill", "#fff") // Fill with white color
+    .style("opacity",0)
+    .transition()
+    .delay(function() {
+      return i * 1000; // Delay each subsequent bar by an additional 100ms
+    })
+    .duration(800)
+    .style("opacity",1)
 
-      DP_info.append("tspan")
-      .text(" Driver Pollutant")
-      .style("font-weight", "bold")
-      .style("fill", color_fill(AQI_value))
+    // Append the text "Driver Pollutant"
+    DP_info.append("tspan")
+    .attr("dx", "-20")
+    .attr("dy", "1")        
+    .text(" Driver Pollutant")
+    .style("font-weight", "bold")
+    .style("fill", color_fill(AQI_value)); // Style the text color
+
 
       const bbox = DP_group.node().getBBox();
       const textWidth = bbox.width;
@@ -1044,7 +1050,7 @@ for (i in data){
             if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
               indicate = 1}
             else{indicate = -1}
-            return `translate(${1.5*textWidth},${indicate*(textHeight+15)})`})
+            return `translate(${-1.52*textWidth},${indicate*(textHeight+15)})`})
             .style("opacity",0)
                 .transition()
                 .delay(function() {
@@ -1058,6 +1064,12 @@ for (i in data){
 
 
 circle_bar.attr('transform', `translate(${width*0.7}, ${height*0.45}) scale(${scaleFactor})`)
+circle_bar.append("rect").attr("width",900).attr("height",700)
+.attr("x",-450).attr("y",-350).attr("fill","blue").attr("opacity",0)
+.on('click', function() {
+  // Redirect to another HTML page on the same domain
+  window.location.href = 'index.html';
+});
 }
 
 function bar_height_bar(d, max, min){
@@ -1171,6 +1183,8 @@ document.addEventListener('DOMContentLoaded', function() {
   function closeOverlay() {
     console.log('clos')
     document.getElementById('overlay').style.display = 'none';
+    document.getElementById('overlay_DP').style.display = 'none';
+    document.getElementById('overlay_color').style.display = 'none';
     var content1 = document.getElementById('overlay-content1');
     var content2 = document.getElementById('overlay-content2');
     content1.style.display = 'block';
@@ -1181,18 +1195,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Set up the close icon event listener
   document.getElementById('close-icon').addEventListener('click', closeOverlay);
+  document.getElementById('close-icon-DP').addEventListener('click', closeOverlay);
+  document.getElementById('close-icon-color').addEventListener('click', closeOverlay);
+  document.getElementById('floating-legend').addEventListener('click', function(){
+    event.stopPropagation();
+    document.getElementById('overlay_color').style.display = 'block';
+  });
+
   // Close the overlay when clicking outside
   document.addEventListener('click', function(event) {
     var overlay = document.getElementById('overlay');
+    var overlayDP = document.getElementById('overlay_DP');
+    var overlayColor = document.getElementById('overlay_color');
     var content1 = document.getElementById('overlay-content1');
     var content2 = document.getElementById('overlay-content2');
+    var overlay2 = document.getElementById('overlay2');
+    var overlay3 = document.getElementById('overlay3');
 
     // Check if any overlay is currently displayed
-    var isAnyOverlayVisible = (overlay.style.display !== 'none')
+    var isAnyOverlayVisible = (overlay.style.display !== 'none') ||
+                              (overlayDP.style.display !== 'none') ||
+                              (overlayColor.style.display !== 'none');
 
     // Determine if the click was outside all overlays
     var isClickInsideOverlay = content1.contains(event.target) ||
-                               content2.contains(event.target)
+                               content2.contains(event.target) ||
+                               overlay2.contains(event.target) ||
+                               overlay3.contains(event.target)
+    console.log(isClickInsideOverlay,isAnyOverlayVisible,overlay.style.display !== 'none',overlayDP.style.display !== 'none',overlayColor.style.display !== 'none')
 
     if (!isClickInsideOverlay && isAnyOverlayVisible) {
       closeOverlay();
@@ -1220,3 +1250,8 @@ document.getElementById('overlay-content1').onclick = showDivLayout;
 document.getElementById('overlay-content2').onclick = showDivLayout; // If you want to switch back to the first div when the second one is clicked
 document.addEventListener('click', function(event) {
   resetTimer(len)})
+
+  document.getElementById('color_bar').addEventListener('click', function(){
+    event.stopPropagation();
+    document.getElementById('overlay_color').style.display = 'block';
+  });

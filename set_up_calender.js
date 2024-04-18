@@ -394,29 +394,34 @@ for (i in data){
               indicate = 1}
             else{indicate = -1}
           return `translate(${-indicate*70},${indicate*50})`})
-      DP_info = DP_group.append("text").attr("x",80).attr("y",10);
+      DP_info = DP_group.append("text").attr("x",106).attr("y",10);
         DP_group.append("path")
-        .attr("d", "M 0,-12.5 L -14,12.5 H 14 Z") // Triangle path with the tip centered at (0,0)
-        .attr("fill", color_fill(AQI_value));
+        .attr("d", "M-20,-7 L10,-7 L20,0 L10,7 L-5,7 L-5,-7 Z") // Triangle path with the tip centered at (0,0)
+        .attr("fill", color_fill(AQI_value))
       // Draw the exclamation mark using rectangles for simplicity
-      DP_group.append("rect")
-        .attr("x", -1.5) // X position (centered at 0,0)
-        .attr("y", -7) // Y position (above the bottom)
-        .attr("width", 3) // Width of the exclamation mark
-        .attr("height", 12) // Height of the exclamation mark's stick
-        .attr("fill", "#fff"); // Fill with white color
 
       DP_group.append("rect")
-        .attr("x", -1.5) // X position (centered at 0,0)
-        .attr("y", 7) // Y position (above the bottom)
-        .attr("width", 3) // Width of the exclamation mark's dot
-        .attr("height", 3) // Height of the exclamation mark's dot
+        .attr("x", -1) // X position (centered at 0,0)
+        .attr("y", -2) // Y position (above the bottom)
+        .attr("width", 10) // Width of the exclamation mark
+        .attr("height", 3) // Height of the exclamation mark's stick
         .attr("fill", "#fff"); // Fill with white color
+
         // Append the text "Driver Pollutant"
         DP_info.append("tspan")
+        .attr("dx", "10")
+        .attr("dy", "-4")        
         .text(" Driver Pollutant")
         .style("font-weight", "bold")
         .style("fill", color_fill(AQI_value)); // Style the text color
+
+        // Append the "Learn more" text
+        DP_info.append("tspan")
+        .attr("dx", "6")
+        .text("Learn more")
+        .style("font-size", "10px")
+        .style("text-decoration", "underline")
+        .style("fill", "blue") // Style the text to look like a link
 
         const bbox = DP_group.node().getBBox();
         const textWidth = bbox.width;
@@ -428,6 +433,12 @@ for (i in data){
                 indicate = 1}
               else{indicate = -1}
             return `translate(${-textWidth/2.5},${indicate*(textHeight+15)})`})
+            .on('click',function(){
+              event.stopPropagation();
+              var overlay_DP = document.getElementById('overlay_DP');
+            // Show the overlay
+            overlay_DP.style.display = 'block';}
+            )
           }
 }
 

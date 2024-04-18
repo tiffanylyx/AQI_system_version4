@@ -108,10 +108,6 @@ Promise.all([
     data_for_day.push({'Type':data_select[i].Type,'Value': parseInt(data_select[i].Value,10)})
   }
 
-  svg_color = d3.select("#overlay-content-color")
-  .append('svg')
-
-
   create_rosa(date,data_for_day,info)
   // The scaling factor, e.g., 2 would double size, 0.5 would halve it
 
@@ -218,6 +214,7 @@ const lines = layer1.append("g")
       .attr("stroke", "#003E93")
       .attr("opacity",0.5)
       .attr("r", d=>bar_height(d,outerRadius,innerRadius));
+
   yTick.append("text")
       .data(rank)
       .attr("y", function(d) { return -bar_height(d,outerRadius,innerRadius) })
@@ -227,8 +224,6 @@ const lines = layer1.append("g")
       .attr("stroke-width", 3)
       .text(d => d)
       .attr("class","pullution-axis")
-      .style("font-size","14")
-
 
 
   yTick.append("text")
@@ -238,10 +233,8 @@ const lines = layer1.append("g")
       .attr("dy", "0.35em")
       .text(d => d)
       .attr("class","pullution-axis")
-      .style("fill", "#002A62")
-      .style("opacity",0.8)
-      .style("font-size","16")
-      .style("font-weight","300")
+      .style("fill", "#003E93")
+      .style("opacity",0.4)
 
 // Draw the button background
 const padding_h = 30;
@@ -423,26 +416,24 @@ for (i in data){
             indicate = 1}
           else{indicate = -1}
         return `translate(${-indicate*70},${indicate*50})`})
-      DP_info = DP_group.append("text").attr("x",106).attr("y",10);
+
+      DP_info = DP_group.append("text").attr("x",106).attr("y",5);
         DP_group.append("path")
-        .attr("d", "M 0,-12.5 L -14,12.5 H 14 Z") // Triangle path with the tip centered at (0,0)
-        .attr("fill", color_fill(AQI_value));
+        .attr("d", "M-20,-7 L10,-7 L20,0 L10,7 L-5,7 L-5,-7 Z") // Triangle path with the tip centered at (0,0)
+        .attr("fill", color_fill(AQI_value))
       // Draw the exclamation mark using rectangles for simplicity
-      DP_group.append("rect")
-        .attr("x", -1.5) // X position (centered at 0,0)
-        .attr("y", -7) // Y position (above the bottom)
-        .attr("width", 3) // Width of the exclamation mark
-        .attr("height", 12) // Height of the exclamation mark's stick
-        .attr("fill", "#fff"); // Fill with white color
 
       DP_group.append("rect")
-        .attr("x", -1.5) // X position (centered at 0,0)
-        .attr("y", 7) // Y position (above the bottom)
-        .attr("width", 3) // Width of the exclamation mark's dot
-        .attr("height", 3) // Height of the exclamation mark's dot
+        .attr("x", -1) // X position (centered at 0,0)
+        .attr("y", -2) // Y position (above the bottom)
+        .attr("width", 10) // Width of the exclamation mark
+        .attr("height", 3) // Height of the exclamation mark's stick
         .attr("fill", "#fff"); // Fill with white color
+
         // Append the text "Driver Pollutant"
         DP_info.append("tspan")
+        .attr("dx", "6")
+        .attr("dy", "1")        
         .text(" Driver Pollutant")
         .style("font-weight", "bold")
         .style("fill", color_fill(AQI_value)); // Style the text color
@@ -452,6 +443,7 @@ for (i in data){
         .attr("dx", "6")
         .text("Learn more")
         .style("font-size", "10px")
+        .style("text-decoration", "underline")
         .style("fill", "blue") // Style the text to look like a link
         const bbox = DP_group.node().getBBox();
         const textWidth = bbox.width;
@@ -647,10 +639,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('close-icon').addEventListener('click', closeOverlay);
   document.getElementById('close-icon-DP').addEventListener('click', closeOverlay);
   document.getElementById('close-icon-color').addEventListener('click', closeOverlay);
-  document.getElementById('floating-legend').addEventListener('click', function(){
-    event.stopPropagation();
-    document.getElementById('overlay_color').style.display = 'block';
-  });
   // Close the overlay when clicking outside
   document.addEventListener('click', function(event) {
     var overlay = document.getElementById('overlay');
@@ -697,3 +685,7 @@ function showDivLayout() {
 
 document.getElementById('overlay-content1').onclick = showDivLayout;
 document.getElementById('overlay-content2').onclick = showDivLayout; // If you want to switch back to the first div when the second one is clicked
+document.getElementById('floating-legend').addEventListener('click', function(){
+  event.stopPropagation();
+  document.getElementById('overlay_color').style.display = 'block';
+});

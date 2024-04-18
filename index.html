@@ -16,7 +16,10 @@
 <div class = 'container' id = 'content'>
 
   <div class="sidebar">
+    <a href="index.html" style="height: 11%;padding: 0px 15px;">
     <img src="logo_new.png" alt="Logo" class="sidebar-logo">
+  </a>
+  
     <a href="index.html"  class="active" style="text-align:center; display:block;">
       <img src="icon/home.svg" style="width:40%;margin-top:20px;margin-bottom:20px;" >
       <br>ContAQT Platform
@@ -44,14 +47,15 @@
   <div id = "text_index" style = "position: fixed;padding-top:60px;padding-left:10vh;width:60vw;top:9.5vh">
     <div class="header-container">
       <h1>Air Quality Index of August 24th, 2023</h1>
-      <img src="illustration/location.png" alt="Air Quality Icon" style = "padding-left:2vw;width:8vw;" >
+      <img src="illustration/location.png" alt="Air Quality Icon" style = "padding-left:1vw;width:8vw;padding-top:7px;" >
       
     </div>
     <p>
       The Air Quality Index (AQI) is a numerical scale used to communicate how polluted the air is in a specific area.
       It ranges from 0 to 500, with higher numbers indicating worse air quality.
-      The AQI value is determined by the highest concentrations of six pollutants.
+      <b><i>The AQI value is determined by the highest concentrations of six pollutants.</i></b>
       This chart shows the AQI value of August 24th, in 2023, the day that has the highest AQI value of the year.
+      Let’s learn more about Air Quality by understanding and analyzing the AQI trend in Atlanta!
 
      </p>
   </div>
@@ -112,21 +116,20 @@
 </div>
 
 </div>
-<div id="overlay_DP" style="display:none; position:fixed; top:0; left:7.5%; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:100;">
-  <div id="overlay2" style="position:relative; background:#fff; margin:15% auto; width:40%;border-radius: 15px;">
+<div id="overlay_DP" style="display:none; position:fixed; top:12%; left:7.5%; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:100;">
+  <div id="overlay2" style="position:relative; background:#fff; margin:10% auto; width:50%;border-radius: 15px;height:50vh;">
         <div style="display: flex; justify-content: center; align-items: center; padding:60px;">
-          <img src="illustration/DP.png" style="width:70%;">
+          <img src="illustration/DP_card.png" style="width:95%;">
         </div>
-    <span id="close-icon-DP" style="position:absolute; top:0; right:0; cursor:pointer; font-size:24px; font-weight:bold; padding:10px;">&times;</span>
+    <span id="close-icon-DP" style="color:#888888;position:absolute; top:0; right:0; cursor:pointer; font-size:24px; padding-top:10px;padding-right:24px;">&times;</span>
   </div>
 </div>
-<div id="overlay_color" style="display:none; position:fixed; top:0; left:7.5%; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:100;">
-  <div id="overlay3" style="position:relative; background:#fff; margin:15% auto; width:60%;border-radius: 15px;">
-     <h2 style="text-align:center; ;padding-top:40px;">Air Quality Index Category</h2>
+<div id="overlay_color" style="display:none; position:fixed; top:12%; left:7.5%; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:100;">
+  <div id="overlay3" style="position:relative; background:#fff; margin:10% auto; width:50%;border-radius: 15px;height:50vh;">
      <div style="display: flex; justify-content: center; align-items: center; padding-top: 40px;padding-bottom: 80px;">
-      <img src="illustration/color_range.png" style="width:80%;">
+      <img src="illustration/color.png" style="padding-top:20px;width:84%;">
     </div>
-    <span id="close-icon-color" style="position:absolute; top:0; right:0; cursor:pointer; font-size:24px; font-weight:bold; padding:10px;">&times;</span>
+    <span id="close-icon-color" style="position:absolute; top:0; right:0; cursor:pointer; font-size:24px; font-weight:bold; padding-top:10px;padding-right:24px;">&times;</span>
   </div>
 </div>
 </div>
