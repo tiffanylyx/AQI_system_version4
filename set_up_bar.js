@@ -21,6 +21,14 @@ const svg = d3.select('#bar_chart').append('svg')
 const barHeight = outerRadius - innerRadius;
 const buttun_line_padding = 80
 // Sample data
+const org_data  = [
+  { Type: 'NO2', Value: '26.6 ppb' },
+  { Type: 'CO', Value: '0.5 ppm' },
+  { Type: 'PM10', Value: '43 ug/m3' },
+  { Type: 'O3', Value: '0.081 ppm' },
+  { Type: 'SO2', Value: '0.4 ppb' },
+  { Type: 'PM2.5', Value: '25.5 ug/m3' }, 
+]
 const data = [
   { Type: 'NO2', Value: 78 },
   { Type: 'CO', Value: 117 },
@@ -51,6 +59,7 @@ var text_length = 140*6 + 120*5 - padding_text
 
 let AQI_value = 0
 let DP
+let next
 const info_group = svg.append('g')
 const bars_group = svg.append('g')
 const explain_group = svg.append('g')
@@ -117,7 +126,13 @@ Promise.all([
 
   var data_for_day = []
   for(i in data_select){
-    data_for_day.push({'Type':data_select[i].Type,'Value': parseInt(data_select[i].Value,10)})
+    var org
+    for(j in org_data){
+      if(data_select[i].Type==org_data[j].Type){
+        org = org_data[j].Value
+      }
+    }
+    data_for_day.push({'Type':data_select[i].Type,'Value': parseInt(data_select[i].Value,10),'Org_Val':org})
   }
   var bars
   var labels1, labels2
@@ -137,6 +152,7 @@ Promise.all([
   // Store the functions in an array
   const functionsArray = [
       { func: create_number, args: [date,data_for_day,info] },
+      { func: change_AQI, args: [date,data_for_day,info] },
       { func: color_code, args: [date,data_for_day,info] },
       { func: create_bar, args: [date,data_for_day,info] },
       { func: move_bar, args: [date, data_for_day, info,30] },
@@ -197,8 +213,7 @@ Promise.all([
   });
 
 })
-
-function initial(date, data, info){
+function raw_number(data,info){
   len = 8000
   barwidth = 140
   padding_bar = 120
@@ -243,8 +258,6 @@ function initial(date, data, info){
     .attr('height', 0)
     .attr('fill','white')
     .attr('stroke','black')
-
-
   // Now append a text element to each group
   labels1 = barGroups.append('text')
     .attr("x", barwidth / 2) // Position the text in the center of the rect
@@ -269,17 +282,18 @@ function initial(date, data, info){
     .attr("text-anchor", "middle") // Center the text
     .attr("dominant-baseline", "central") // Vertically center the text
     .text(function(d) {
-      return d.Value; // Assuming each datum has a label property
+      return d.Org_Val; // Assuming each datum has a label property
     })
     .attr("fill", 'black')
     .attr('class','sub_title')
     .style('opacity',0)
 
-  }
-function create_number(date, data, info){
-  initial(date, data, info)
+}
 
-  explain_text.text('There are six main pollutants in the air. Assume on this day, their pollutant levels are like the following.')
+function create_number(date, data, info){
+  raw_number(data,info)
+
+  explain_text.text('On August 24, 2023, which marked the highest value of Atlanta\'s Air Quality Index for the whole 2023, the levels of different pollutants in the air detected by the sensors of EPA were recorded as follows.')
 .call(wrapText, text_length);
 bbox = explain_text.node().getBBox();
 textWidth = bbox.width;
@@ -307,11 +321,63 @@ text_box
 
   labels1.style('opacity',1).attr("fill", 'black')
   labels2.style('opacity',1).attr("fill", 'black')
+  next = 1
 
 
 }
+function change_AQI(){
+  explain_text.text('For public communication purpose, instead of reporting the concentration, scientists first convert these raw numbers into a value range from 0 -- 500 based on a math equation.')
+  .call(wrapText, text_length);
+  bbox = explain_text.node().getBBox();
+  textWidth = bbox.width;
+  textHeight = bbox.height;
+  text_box
+      .attr('y', bbox.y - padding_v / 2)
+      .attr('width', text_length+padding_text)
+      .attr('height', textHeight + padding_v)
+  if(next==1){
+  // Now append a text element to each group
+  line = barGroups.append('line')
+  .attr('x1', 0)
+  .attr('y1', 0)
+  .attr('x2', 0) // 初始时设置与 x1 相同，使其不可见
+  .attr('y2', 0)
+  .attr('stroke', 'black')
+  .attr('stroke-width', 2);
+// 使用过渡动画来绘制横线
+line.transition()
+  .duration(1000) // 过渡时间，1000毫秒 = 1秒
+  .attr('x2', barwidth) // 根据文本宽度调整终点的 x 坐标
+  line.transition()
+  .delay(1500)
+  .style('opacity', 0); // 根据文本宽度调整终点的 x 坐标  
+
+  labels2.transition()
+  .delay(1500) // 这里的延迟需要比横线的动画时间长一些
+  .on('start', function() {
+    d3.select(this).text(function(d) {
+      return d.Value; // Assuming each datum has a label property
+    })
+  });
+  }
+else{
+  console.log("here")
+  labels2.text(function(d) {
+    return d.Value; // Assuming each datum has a label property
+  })
+}
+  // Append a rect to each group
+  bars.attr('height', 80).attr('y',-40)
+  .attr('fill','white')
+  .attr('stroke','black')
+  .attr('stroke-width',1)
+  .attr('opacity',1)
+  labels1.style('opacity',1).attr("fill", 'black')
+  labels2.style('opacity',1).attr("fill", 'black')
+}
 function color_code(date, data, info){
-  explain_text.text('We color-code the number according to their value to represent how harmful the pollution situation is to our life.')
+  next = 0
+  explain_text.text('And then color-code the number according to the new value to represent how harmful the pollution situation is to our life.')
 .call(wrapText, text_length);
 bbox = explain_text.node().getBBox();
 textWidth = bbox.width;
