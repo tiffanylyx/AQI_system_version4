@@ -1,7 +1,136 @@
+const csvFile1 = 'data_2023.csv';
+const csvFile2 = 'info.csv';
+
+function getFormattedDateTime() {
+    const now = new Date();
+    now.setHours(now.getHours()); // Subtract one hour
+
+
+    const months = ["January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"];
+    const month = months[now.getMonth()];
+
+    const date = now.getDate();
+    const suffix = ["th", "st", "nd", "rd"][
+        (date % 10 > 3) ? 0 : (date % 100 - date % 10 != 10) * date % 10
+    ];
+
+    const year = now.getFullYear();
+    let hour = now.getHours();
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12;
+    hour = hour ? hour : 12; // the hour '0' should be '12'
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+
+    return  `${month} ${date}${suffix}, ${year}, updated at ${hour}:00 ${ampm}`;
+}
+function getCurrentDate() {
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const day = String(today.getDate()).padStart(2, '0');
+    const year = today.getFullYear();
+    return month + '/' + day + '/' + year;
+}
+
+function getCurrentDateAndUTCHour() {
+    // Create a new Date object for the current date and time
+    var now = new Date();
+    now.setHours(now.getHours()); // Subtract one hour
+
+
+    // Fetch the year, month, and day
+    var year = now.getUTCFullYear(); // Get the year as a four digit number (yyyy)
+    var month = now.getUTCMonth() + 1; // Get the month as a number (0-11), add 1 to make it 1-12
+    var day = now.getUTCDate(); // Get the day as a number (1-31)
+
+    // Format the month and day to ensure two digits (e.g., '01' instead of '1')
+    month = month < 10 ? '0' + month : month;
+    day = day < 10 ? '0' + day : day;
+
+    // Combine into a date string in YYYY-MM-DD format
+    var date = year + '-' + month + '-' + day;
+
+    // Fetch UTC hour
+    var hoursUTC = now.getUTCHours();
+    hoursUTC = hoursUTC < 10 ? '0' + hoursUTC : hoursUTC; // Format the UTC hour to ensure two digits
+
+    return date+"T"+hoursUTC;
+}
+function calculateCOAqi(co) {
+    let aqi;
+    if (co >= 0 && co <= 4.4) {
+        aqi = linear(0, 50, 0, 4.4, co);
+    } else if (co > 4.4 && co <= 9.4) {
+        aqi = linear(51, 100, 4.5, 9.4, co);
+    } else if (co > 9.4 && co <= 12.4) {
+        aqi = linear(101, 150, 9.5, 12.4, co);
+    } else if (co > 12.4 && co <= 15.4) {
+        aqi = linear(151, 200, 12.5, 15.4, co);
+    } else if (co > 15.4 && co <= 30.4) {
+        aqi = linear(201, 300, 15.5, 30.4, co);
+    } else if (co > 30.4 && co <= 40.4) {
+        aqi = linear(301, 400, 30.5, 40.4, co);
+    } else if (co > 40.4 && co <= 50.4) {
+        aqi = linear(401, 500, 40.5, 50.4, co);
+    } else {
+        aqi = "Invalid CO level";
+    }
+    return aqi;
+}
+
+function linear(aqiHigh, aqiLow, concHigh, concLow, conc) {
+    const aqi = ((aqiHigh - aqiLow) / (concHigh - concLow)) * (conc - concLow) + aqiLow;
+    return Math.round(aqi);
+}
+// Call the function to display the date and UTC hour
+time = getCurrentDateAndUTCHour();
+
+var real_time_data = []
+url = "https://www.airnowapi.org/aq/data/?startDate="+time+"&endDate="+time+"&parameters=OZONE,PM25,PM10,CO,NO2,SO2&BBOX=-84.3,33.690,-84.2,33.691&dataType=B&format=application/json&verbose=1&monitorType=0&includerawconcentrations=1&API_KEY=BB66CD77-8E6B-465B-9AC0-AD602FBC8827"
+
+// Function to process and display all data
+function processData(csvData1, csvData2, apiData, info) {
+    let real_time_data = [];
+    for (let i in apiData) {
+        if (apiData[i].Parameter == 'OZONE') {
+            real_time_data.push({ 'Type': 'O3', 'Value': apiData[i].AQI });
+        }
+        else if (apiData[i].Parameter == 'CO'){
+            real_time_data.push({ 'Type': apiData[i].Parameter, 'Value': calculateCOAqi(apiData[i].RawConcentration) });
+        }
+        else{
+            real_time_data.push({ 'Type': apiData[i].Parameter, 'Value': apiData[i].AQI });
+        }
+    }
+    console.log("real_time_data",real_time_data);
+
+    // Assuming create_rosa is a function you've defined to do something with the data
+    document.getElementById('header-text').textContent = "Air Quality Index of " + getFormattedDateTime()
+    create_rosa(getCurrentDate(), real_time_data, info);
+    svg.attr('transform', `translate(${width / 2}, ${height / 2}) scale(${scaleFactor})`)
+
+}
+
+// Main function to load CSV and API data
+function loadDataAndProcess(csvFile1, csvFile2, url) {
+    Promise.all([
+        d3.csv(csvFile1),
+        d3.csv(csvFile2),
+        fetch(url).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.json();
+        })
+    ]).then(function([csvData1, csvData2, apiData]) {
+        processData(csvData1, csvData2, apiData, csvData2); // Assuming 'info' should come from csvData2
+    })
+}
+loadDataAndProcess(csvFile1, csvFile2, url)
 // set the dimensions and margins of the graph
 const select_date = 228
 
-const scaleFactor = 1.4
+
 var container = d3.select('#daily_chart');
 var svg_color
 
@@ -47,74 +176,15 @@ const radiusScale = d3.scaleLinear()
 const calculateRotation = d => (angleScale(d.Type) * 180 / Math.PI-90)
 
 const barwidth = 20
-
+const scaleFactor = screen.width/(8*bar_height(300))
 let AQI_value = 0
 let DP
 const circle_bar = svg.append('g')
 var layer1 = circle_bar.append('g');
 var layer2 = circle_bar.append('g');
 var layer3 = circle_bar.append('g');
-const csvFile1 = 'data_2023.csv';
-const csvFile2 = 'info.csv';
-
-// Load both files concurrently
-Promise.all([
-  d3.csv(csvFile1),
-  d3.csv(csvFile2)
-]).then(function([dataall, info]) {
-  console.log(info)
 
 
-
-  // Custom parsing function for "M/D/Y" format
-  function parseDate(dateString) {
-    const [month, day,year] = dateString.split('/');
-    const res  = new Date(year, month - 1, day)//.getDate()
-    return res;
-  }
-
-  var parseDate1 = d3.timeParse("%m/%d/%Y");
-
-  // Parse the date strings and replace them with Date objects
-  dataall.forEach(d => {
-
-    d.Date_org = d.Date;
-    //d.Date = parseDate(d.Date).getDate();
-    d.Date = parseDate1(d.Date);
-    //d.Month = parseDate(d.Date).getDate();
-  });
-
-  var data = [];
-  for(i in dataall){
-    //if(dataall[i].Month == select_month){
-      data.push(dataall[i]);
-    //}
-  }
-  data = data.slice(0,-1)
-  var allTime = [];
-  for(i in data){
-    if(!allTime.includes(data[i].Date_org)){allTime.push(data[i].Date_org);}
-  }
-  var date = allTime[select_date]
-
-  var data_select = [];
-  for(i in data){
-    if(data[i].Date_org===date){
-      data_select.push(data[i])
-    }
-  }
-  var data_for_day = []
-  for(i in data_select){
-    data_for_day.push({'Type':data_select[i].Type,'Value': parseInt(data_select[i].Value,10)})
-  }
-
-  create_rosa(date,data_for_day,info)
-  // The scaling factor, e.g., 2 would double size, 0.5 would halve it
-
-
-  // Apply the scaling transform to a group element that contains all other elements
-  svg.attr('transform', `translate(${width / 2}, ${height / 2}) scale(${scaleFactor})`)
-})
 const floatingDiv = d3.select('#daily_chart').append('div')
     .attr('class', 'floating-div');
 
@@ -433,7 +503,7 @@ for (i in data){
         // Append the text "Driver Pollutant"
         DP_info.append("tspan")
         .attr("dx", "6")
-        .attr("dy", "1")        
+        .attr("dy", "1")
         .text(" Driver Pollutant")
         .style("font-weight", "bold")
         .style("fill", color_fill(AQI_value)); // Style the text color
@@ -445,16 +515,16 @@ for (i in data){
         .style("font-size", "10px")
         .style("text-decoration", "underline")
         .style("fill", "blue") // Style the text to look like a link
-        const bbox = DP_group.node().getBBox();
+        const bbox = DP_info.node().getBBox();
         const textWidth = bbox.width;
         const textHeight = bbox.height;
-        
+
         DP_group.attr("text-anchor", "middle").attr("transform", function(){
               var indicate = 1
               if (Math.cos(Math.PI+angleScale(data[i].Type))>0){
                 indicate = 1}
               else{indicate = -1}
-            return `translate(${-indicate*textWidth*0.9},${indicate*(textHeight+20)})`})
+            return `translate(${-indicate*textWidth*0.3},${indicate*(textHeight+20)})`})
             .on('click',function(){
               event.stopPropagation();
               var overlay_DP = document.getElementById('overlay_DP');
@@ -631,7 +701,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var content2 = document.getElementById('overlay-content2');
     content1.style.display = 'block';
     content2.style.display = 'none';
-    var note_card = document.getElementById('note_card');  
+    var note_card = document.getElementById('note_card');
     note_card.textContent = "1/2"
   }
 
@@ -670,7 +740,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function showDivLayout() {
   var content1 = document.getElementById('overlay-content1');
   var content2 = document.getElementById('overlay-content2');
-  var note_card = document.getElementById('note_card');  
+  var note_card = document.getElementById('note_card');
   // Toggle between showing content1 and content2
   if (content1.style.display === 'none') {
     content1.style.display = 'block';
