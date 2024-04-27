@@ -1,11 +1,10 @@
 // set the dimensions and margins of the graph
 select_date = 193
-const scaleFactor = 1.1
 let container = d3.select('#daily_chart');
 
 // Get the width of the container div
-let containerWidth = 1000//container.node().getBoundingClientRect().width;
-let containerHeight = 1200//container.node().getBoundingClientRect().height;
+let containerWidth = screen.width*0.4//container.node().getBoundingClientRect().width;
+let containerHeight = screen.height*0.8//container.node().getBoundingClientRect().height;
 console.log(containerHeight)
 const margin = {top: -50, right: 0, bottom: 0, left: 0},
     width = containerWidth - margin.left - margin.right,
@@ -44,11 +43,11 @@ const radiusScale = d3.scaleLinear()
 
 // Function to calculate rotation for each bar
 const calculateRotation = d => (angleScale(d.Type) * 180 / Math.PI-90)
-
-var barwidth = 30
+var barwidth=30
 
 let AQI_value = 0
 let DP
+const scaleFactor = screen.width/(11*bar_height(300))
 const circle_bar = svg.append('g')
 var layer1 = circle_bar.append('g');
 var layer2 = circle_bar.append('g');
@@ -59,7 +58,7 @@ function parseDate(dateString) {
   const res  = new Date(year, month - 1, day)//.getDate()
   return res;
 }
-const csvFile1 = 'data_2023.csv';
+const csvFile1 = 'data_all.csv';
 const csvFile2 = 'info.csv';
 
 // Load both files concurrently
@@ -410,7 +409,7 @@ for (i in data){
         // Append the text "Driver Pollutant"
         DP_info.append("tspan")
         .attr("dx", "10")
-        .attr("dy", "-4")        
+        .attr("dy", "-4")
         .text(" Driver Pollutant")
         .style("font-weight", "bold")
         .style("fill", color_fill(AQI_value)); // Style the text color
@@ -460,7 +459,7 @@ function bar_height(d, max, min){
     res =  d;}
   else if (d<301){res= 200+(d-200)/2;}
   else if (d<501){res = 200+(300-200)/2+(d-300)/4;}
-  return res*0.85+barwidth
+  return res*0.7+barwidth
 }
 function color_fill(d){
   if(d<51){
@@ -565,7 +564,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var content2 = document.getElementById('overlay-content2');
     content1.style.display = 'block';
     content2.style.display = 'none';
-    var note_card = document.getElementById('note_card');  
+    var note_card = document.getElementById('note_card');
     note_card.textContent = "1/2"
   }
 
@@ -611,8 +610,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function showDivLayout() {
   var content1 = document.getElementById('overlay-content1');
   var content2 = document.getElementById('overlay-content2');
-  var note_card = document.getElementById('note_card');  
-  
+  var note_card = document.getElementById('note_card');
+
   // Toggle between showing content1 and content2
   if (content1.style.display === 'none') {
     content1.style.display = 'block';

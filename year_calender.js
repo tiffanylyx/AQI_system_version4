@@ -2,7 +2,7 @@ const today = new Date();
 const dayOfMonth = today.getDate();
 console.log(dayOfMonth);
 d3.select("#right-div").style("width","70%")
-d3.select("#left-div").style("width","30%")  
+d3.select("#left-div").style("width","30%")
 const svg_calender = d3.select('#calendar').append('svg')
 container = d3.select('#calendar');
 
@@ -17,7 +17,8 @@ const gridHeight = containerHeight/1.7;
 svg_calender.attr("width", containerWidth ) // 7 days for a week
   .attr("height", gridHeight*4+40); // 6 rows to accommodate all days
 
-const year = 2023;
+const year = [2019,2020,2021,2022,2023];
+const select_year = 2019;
 const dayWidth = (gridWidth-40)/7;
 const dayHeight = gridHeight/7.5;
 const day_array = ['S','M','T','W','T','F', 'S']
@@ -35,16 +36,16 @@ Promise.all([
 
 });
 function create_year(data, info){
-  d3.select("#daily_chart").style("display","none")  
-  d3.select("#explain_text").style("display","block")   
+  d3.select("#daily_chart").style("display","none")
+  d3.select("#explain_text").style("display","block")
   d3.select("#right-div").style("width","70%")
-  d3.select("#left-div").style("width","30%")  
+  d3.select("#left-div").style("width","30%")
   container = d3.select('#calendar');
 
   // Get the width of the container div
   containerWidth = container.node().getBoundingClientRect().width;
   containerHeight = container.node().getBoundingClientRect().height;
-  
+
   const gridWidth = (containerWidth)/3;
   const gridHeight = containerHeight/1.7;
   const day_array = ['S','M','T','W','T','F', 'S']
@@ -67,8 +68,8 @@ function create_year(data, info){
       svg_header.attr('transform', `translate(0, ${10})`);
       svg_date.attr('transform', `translate(0, ${40+dayHeight / 2})`);
 
-  
-            
+
+
       const cells_day = svg_header.selectAll("g")
         .data(day_array)
         .enter()
@@ -100,7 +101,7 @@ function create_year(data, info){
         .attr("x", (gridWidth-30) / 2)
         .attr("y", 5)
         .attr("text-anchor", "middle")
-        .text(new Date(year, month).toLocaleString('en-us', { month: 'long' }) + " " + year)
+        .text(new Date(select_year, month).toLocaleString('en-us', { month: 'long' }) + " " + select_year)
         .attr('class','semi-title')
 
 
@@ -123,14 +124,19 @@ function create_year(data, info){
 }
 function create_calender(svg_date,select_month,data,info){
 
-// Filter for the month of February
-const monthData = data.filter(d => d.Date.getMonth() === select_month); // Month is zero-indexed, 1 = February
+  const monthData = data.filter(d => {
+      const selectedDate = new Date(select_year, select_month, 1); // Creating a Date object for the selected year and month
+      const dataDate = new Date(d.Date); // Creating a Date object for the data's date
 
+      // Checking if the year and month of the data's date match the selected year and month
+      return dataDate.getFullYear() === selectedDate.getFullYear() &&
+             dataDate.getMonth() === selectedDate.getMonth();
+  });
 var data_for_day = []
 
 // Define the start date of the month and the number of days in July 2023
-const startDate = new Date(2023, select_month, 1); // Months are zero-indexed, 6 represents July
-const daysInMonth = new Date(2023, select_month+1, 0).getDate(); // Get the last day of July
+const startDate = new Date(select_year, select_month, 1); // Months are zero-indexed, 6 represents July
+const daysInMonth = new Date(select_year, select_month+1, 0).getDate(); // Get the last day of July
 
 // Get the day of the week for July 1st, 2023
 const startDay = startDate.getDay(); // For July 1st, 2023, this should be 6 (Saturday)
@@ -171,35 +177,35 @@ for(i in calendarArray){
   var data_for_day = []
   if(calendarArray[i]>0){
     data_for_day = monthData.filter(d => d.Date.getDate() === calendarArray[i])
-    create_rosa_small(data_for_day[0].Date_org,data_for_day,cell,info,0.17,dayWidth,dayHeight,'False')
+    create_rosa_small(data_for_day[0].Date_org,data_for_day,cell,info,screen.width/(65*bar_height(300)),dayWidth,dayHeight,'False')
   }
 
 }
 }
 function create_select_month(svg_calender,select_month,data,info){
   d3.select("#right-div").style("width","50vw")
-  d3.select("#left-div").style("width","40vw")  
-  d3.select("#daily_chart").style("display","block")  
+  d3.select("#left-div").style("width","40vw")
+  d3.select("#daily_chart").style("display","block")
   const day_array = ['Sun','Mon','Tue','Wed','Thu','Fri', 'Sat']
   d3.select("#calendar-header").style("display","block")
   d3.select("#calendar").style("overflow-y","hidden")
   d3.select('#calendar-title')
-  .text(new Date(year, select_month)
-  .toLocaleString('en-us', { month: 'long' }) + " " + year)
-  d3.select("#daily_chart").style("display","block")  
-  d3.select("#explain_text").style("display","none")   
-  container = d3.select('#calendar');  
+  .text(new Date(select_year, select_month)
+  .toLocaleString('en-us', { month: 'long' }) + " " + select_year)
+  d3.select("#daily_chart").style("display","block")
+  d3.select("#explain_text").style("display","none")
+  container = d3.select('#calendar');
   // Get the width of the container div
 containerWidth = container.node().getBoundingClientRect().width;
 containerHeight = container.node().getBoundingClientRect().height;
 
   const gridWidth = (containerWidth)/3;
   const gridHeight = containerHeight/1.7;
-  
+
   svg_calender.attr("width", containerWidth ) // 7 days for a week
     .attr("height", gridHeight*4+40); // 6 rows to accommodate all days
-  
-  size = 0.35
+
+  size = screen.width/(28*bar_height(300))
   const dayWidth = containerWidth/7;
   const dayHeight = containerHeight/7;
   svg_calender.attr("width", containerWidth) // 7 days for a week
@@ -239,14 +245,19 @@ containerHeight = container.node().getBoundingClientRect().height;
     .text(d => d)
     .attr('class','semi-title')
 
-  // Filter for the month of February
-  const monthData = data.filter(d => d.Date.getMonth() === select_month); // Month is zero-indexed, 1 = February
+  const monthData = data.filter(d => {
+      const selectedDate = new Date(select_year, select_month, 1); // Creating a Date object for the selected year and month
+      const dataDate = new Date(d.Date); // Creating a Date object for the data's date
 
+      // Checking if the year and month of the data's date match the selected year and month
+      return dataDate.getFullYear() === selectedDate.getFullYear() &&
+             dataDate.getMonth() === selectedDate.getMonth();
+  });
   var data_for_day = []
 
   // Define the start date of the month and the number of days in July 2023
-  const startDate = new Date(2023, select_month, 1); // Months are zero-indexed, 6 represents July
-  const daysInMonth = new Date(2023, select_month+1, 0).getDate(); // Get the last day of July
+  const startDate = new Date(select_year, select_month, 1); // Months are zero-indexed, 6 represents July
+  const daysInMonth = new Date(select_year, select_month+1, 0).getDate(); // Get the last day of July
 
   // Get the day of the week for July 1st, 2023
   const startDay = startDate.getDay(); // For July 1st, 2023, this should be 6 (Saturday)
@@ -307,7 +318,7 @@ containerHeight = container.node().getBoundingClientRect().height;
       data_for_day = monthData.filter(d => d.Date.getDate() === calendarArray[i])
       create_rosa_small(data_for_day[0].Date_org,data_for_day,cell,info,size,dayWidth,dayHeight,'True')
     }
-    
+
 
 }
 data_for_day = monthData.filter(d => d.Date.getDate() === dayOfMonth)
@@ -317,11 +328,11 @@ d3.select('#prev-month-btn').on('click', function() {
     select_month--;
     if (select_month < 0) {
         select_month = 11;
-        year--;
+        select_year--;
     }
-    if (year < 2023) {
+    if (select_year < 2019) {
         // Reset to the minimum limit
-        year = 2023;
+        select_year = 2019;
         select_month = 0;
     }
     create_select_month(svg_calender,select_month,data,info)
@@ -334,11 +345,11 @@ d3.select('#next-month-btn').on('click', function() {
     select_month++;
     if (select_month > 11) {
         select_month = 0;
-        year++;
+        select_year++;
     }
-    if (year > 2023) {
+    if (select_year > 2023) {
         // Reset to the maximum limit
-        year = 2023;
+        select_year = 2023;
         select_month = 11;
     }
       console.log(info)

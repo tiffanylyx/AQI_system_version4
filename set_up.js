@@ -137,7 +137,7 @@ var svg_color
 // Get the width of the container div
 var containerWidth = container.node().getBoundingClientRect().width;
 var containerHeight = container.node().getBoundingClientRect().height;
-const margin = {top: 0, right: 20, bottom: 0, left: 20},
+const margin = {top: -50, right: 20, bottom: 0, left: 20},
     width = containerWidth - margin.left - margin.right,
     height = containerHeight - margin.top - margin.bottom,
     innerRadius = 0,
@@ -176,7 +176,7 @@ const radiusScale = d3.scaleLinear()
 const calculateRotation = d => (angleScale(d.Type) * 180 / Math.PI-90)
 
 const barwidth = 20
-const scaleFactor = screen.width/(8*bar_height(300))
+const scaleFactor = screen.width/(7.5*bar_height(300))
 let AQI_value = 0
 let DP
 const circle_bar = svg.append('g')
