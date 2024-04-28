@@ -1,9 +1,9 @@
 const csvFile1 = 'data_2023.csv';
 const csvFile2 = 'info.csv';
-
+const types = ['NO2','O3','CO','PM10','PM2.5','SO2']
 function getFormattedDateTime() {
     const now = new Date();
-    now.setHours(now.getHours()); // Subtract one hour
+    now.setHours(now.getHours()-1); // Subtract one hour
 
 
     const months = ["January", "February", "March", "April", "May", "June",
@@ -35,7 +35,7 @@ function getCurrentDate() {
 function getCurrentDateAndUTCHour() {
     // Create a new Date object for the current date and time
     var now = new Date();
-    now.setHours(now.getHours()); // Subtract one hour
+    now.setHours(now.getHours()-1); // Subtract one hour
 
 
     // Fetch the year, month, and day
@@ -102,7 +102,7 @@ function processData(csvData1, csvData2, apiData, info) {
             real_time_data.push({ 'Type': apiData[i].Parameter, 'Value': apiData[i].AQI });
         }
     }
-    console.log("real_time_data",real_time_data);
+
 
     // Assuming create_rosa is a function you've defined to do something with the data
     document.getElementById('header-text').textContent = "Air Quality Index of " + getFormattedDateTime()
@@ -204,7 +204,21 @@ const DP_text = status.append('span')
     .attr('class', 'pollutant-text-right')
 
 //create_rosa(data)
-function create_rosa(date,data,info){
+function create_rosa(date,data_select,info){
+  var data = []
+  var typesArray = data_select.map(item => item.Type);
+
+  for(i in types){
+    if(typesArray.includes(types[i])){
+    data.push({'Type':types[i],
+    'Value': parseInt(data_select.find(item => item.Type === types[i]).Value,10)})
+  }
+  else{
+    data.push({'Type':types[i],
+    'Value': 'Missing'})
+  }
+}
+console.log(data)
 svg.selectAll("*").remove()
 
 const circle_bar = svg.append('g').attr("id",'circle_bar')
@@ -559,6 +573,9 @@ function bar_height(d, max, min){
     res =  d;}
   else if (d<301){res= 200+(d-200)/2;}
   else if (d<501){res = 200+(300-200)/2+(d-300)/4;}
+  else{
+    return 0
+  }
   return res*0.85+barwidth
 }
 
@@ -570,6 +587,9 @@ function color_fill(d){
   else if (d<201){return '#D3112E';}
   else if (d<301){return '#8854D0';}
   else if (d<501){return '#731425';}
+  else if (d=='Missing'){
+    return '#bbbbbb'
+  }
 }
 
 function color_type(d){

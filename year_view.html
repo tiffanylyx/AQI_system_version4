@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="d3.v7.js"></script>
+<link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+
+<link rel="stylesheet" href="font.css">
+<head>
+
+</head>
+<title>Vertical Navigation Bar</title>
+
+</head>
+<body>
+<div class = 'container' id = 'content'>
+</div>
+</body>
+</html>
+<style>
+    .heatmap rect {
+        stroke: #555;
+    }
+</style>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<script>
+  const svg = d3.select(".container").append("svg").attr("width",1200).attr("height",1800)
+      margin = {top: 20, right: 0, bottom: 30, left: 40},
+      width = +svg.attr("width") - margin.left - margin.right,
+      height = +svg.attr("height") - margin.top - margin.bottom,
+      gridSize = 15
+
+// Parse the date and create a new structure
+const dayFormat = d3.timeFormat("%w"), // Week day as decimal number
+      weekFormat = d3.timeFormat("%U"), // Week number of the year
+      parseDate = d3.timeParse("%m/%d/%Y");
+
+
+const years = [2014,2015,2016,2017,2018,2019,2020,2021,2022,2023]
+// Load the CSV file
+d3.csv("2014-2023.csv").then(data => {
+  for(i in years){
+    year = years[i]
+
+    const parseDate = d3.timeParse("%m/%d/%Y");
+    let filteredData = data.filter(d => parseDate(d.Date).getFullYear() == year);
+
+    // Parse and convert data types
+    filteredData.forEach(d => {
+        const parsedDate = new Date(d.Date); // Convert string to Date object
+        // Format date to MM/DD/YYYY
+        d.real_date = parsedDate
+        d.date = `${String(parsedDate.getMonth() + 1).padStart(2, '0')}/${String(parsedDate.getDate()).padStart(2, '0')}/${parsedDate.getFullYear()}`;
+        d.value = +d.Value; // Convert string to number
+    });
+    filteredData = filteredData.sort((a, b) => a.real_date - b.real_date);
+
+    // Group by date and find max value in each group
+    let groupedData = d3.rollups(filteredData, v => d3.max(v, d => d.value), d => d.date);
+    const group = svg.append("g").attr("transform",`translate(100,${50+160*i})`)
+    group.append("text").text(year).attr("x",0).attr("y",-10).attr("text-anchor","end").attr("font-size",20)
+
+    const cards = group.selectAll(".hour")
+        .data(groupedData)
+        .enter().append("rect")
+        .attr("x", d => weekFormat(parseDate(d[0])) * gridSize)
+        .attr("y", d => dayFormat(parseDate(d[0])) * gridSize)
+        .attr("rx", 4)
+        .attr("ry", 4)
+        .attr("class", "hour bordered")
+        .attr("width", gridSize)
+        .attr("height", gridSize)
+        .style("fill", d => color_fill(d[1]));
+
+
+
+    cards.append("title")
+        .text(d => `${d[0]}: ${d[1]}`);
+
+    const days = ["S", "M", "T", "W", "T", "F", "S"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+
+    // Create y-axis to show the days of the week
+    const yAxis = group.append("g")
+        .attr("class", "axis")
+
+yAxis.selectAll("text")
+    .data(days)
+    .enter().append("text")
+    .text(d => d)
+    .attr("x", 0)
+    .attr("y", (d, i) => i * gridSize + gridSize / 2)
+    .style("text-anchor", "end")
+    .attr("transform", "translate(-6," + gridSize / 3+ ")");
+
+
+            const parsedData = groupedData.map(d => ({
+              date: parseDate(d[0]),
+              value: d[1]
+            }));
+    count = 0
+    let date, month
+    for(i in groupedData){
+      if(i>1){
+        d = groupedData[i]
+        date = parseDate(d[0]);
+        month = date.getMonth();
+        if (month !== parseDate(groupedData[i-1][0]).getMonth()){
+          const dayOfWeek = date.getDay();
+          const week = +weekFormat(date);
+          const x = week * gridSize; // x position
+          const y = dayOfWeek * gridSize; // y position
+          group.append("text").text(months[count]).attr("x",x).attr("y",-4).attr("text-anchor","end")
+          group.append("line").attr("x1",x).attr("x2",x+gridSize).attr("y1",y).attr("y2",y).attr("stroke","black")
+          group.append("line").attr("x1",x).attr("x2",x).attr("y1",y).attr("y2",gridSize*7).attr("stroke","black")
+          group.append("line").attr("x1",x+gridSize).attr("x2",x+gridSize).attr("y1",y).attr("y2",0).attr("stroke","black")
+          count+=1
+        }
+
+      }
+}
+const dayOfWeek = date.getDay();
+const week = +weekFormat(date);
+const x = week * gridSize; // x position
+group.append("text").text(months[11]).attr("x",x).attr("y",-4).attr("text-anchor","end")
+
+for(i in groupedData){
+  groupedData[i] = [groupedData[i][0],groupedData[i][1],color_type(groupedData[i][1])]
+}
+const categoryCounts = countCategories(groupedData);
+
+const data1 = Object.entries(countCategories(groupedData)).map(([key, value]) => ({
+      label: key,
+      value: value
+  }));
+  var radius = 60
+
+  g = group.append("g").attr("transform", `translate(1000,50)`);
+
+  const pie = d3.pie()
+      .sort(null)
+      .value(d => d.value);
+
+  const path = d3.arc()
+      .outerRadius(radius - 10)
+      .innerRadius(radius / 2);  // Adjust innerRadius here for donut shape
+
+  const label = d3.arc()
+      .outerRadius(radius - 40)
+      .innerRadius(radius - 40);
+
+  const arc = g.selectAll(".arc")
+      .data(pie(data1))
+      .enter().append("g")
+        .attr("class", "arc");
+
+  arc.append("path")
+      .attr("d", path)
+      .attr("fill", d => color_fill2(d.data.label));
+
+  arc.append("text")
+      .attr("transform", d => `translate(${label.centroid(d)})`)
+      .attr("dy", "0.35em")
+      .text(d => d.data.label);
+
+  }
+
+}).catch(error => {
+    console.error('Error loading or processing data:', error);
+});
+const colorRanges = [
+  { threshold: 40, color: '#34B274' },
+  { threshold: 50, color: '#FDD000' },
+  { threshold: 90, color: '#FDD000' },
+  { threshold: 100, color: '#F4681A' },
+  { threshold: 140, color: '#F4681A' },
+  { threshold: 150, color: '#D3112E' },
+  { threshold: 190, color: '#D3112E' },
+  { threshold: 200, color: '#8854D0' },
+  { threshold: 280, color: '#8854D0' },
+  { threshold: 300, color: '#731425' },
+  { threshold: 500, color: '#731425' },
+  // ... Add other ranges here
+];
+
+// Create individual scales for each gradient range
+const scales = colorRanges.slice(0, -1).map((range, i) => {
+  const nextRange = colorRanges[i + 1];
+  return {
+    scale: d3.scaleLinear()
+             .domain([range.threshold, nextRange.threshold])
+             .range([range.color, nextRange.color]),
+    maxThreshold: nextRange.threshold
+  };
+});
+
+function color_fill(d) {
+  if (d === 'Missing') {
+    return '#bbbbbb'; // Missing data color
+  } else if (d < colorRanges[0].threshold) {
+    return colorRanges[0].color; // Use the first color below the first threshold
+  } else {
+    // Find the correct scale based on the value of d
+    const scale = scales.find(s => d < s.maxThreshold);
+    if (scale) {
+      return scale.scale(d); // Return the color for the value within the range
+    } else {
+      return colorRanges[colorRanges.length - 1].color; // Use the last color above the last threshold
+    }
+  }
+}
+function color_type(d){
+  if(d<51){
+    return 'Good';}
+  else if (d<101){return 'Moderate';}
+  else if (d<151){return 'Unhealthy for sensitive group';}
+  else if (d<201){return 'Unhealthy';}
+  else if (d<301){return 'Very Unhealthy';}
+  else if (d<501){return 'Hazardous';}
+}
+function color_fill2(d){
+  if(d=='Good'){
+    return '#34B274';}
+  else if (d=='Moderate'){return '#FDD000';}
+  else if (d=='Unhealthy for sensitive group'){return '#F4681A';}
+  else if (d=='Unhealthy'){return '#D3112E';}
+  else if (d=='Very Unhealthy'){return '#8854D0';}
+  else if (d=='Hazardous'){return '#731425';}
+  else if (d=='Missing'){
+    return '#bbbbbb'
+  }
+}
+function color_fill1(d){
+  if(d<51){
+    return '#34B274';}
+  else if (d<101){return '#FDD000';}
+  else if (d<151){return '#F4681A';}
+  else if (d<201){return '#D3112E';}
+  else if (d<301){return '#8854D0';}
+  else if (d<501){return '#731425';}
+  else if (d=='Missing'){
+    return '#bbbbbb'
+  }
+}
+// Function to count categories
+function countCategories(data) {
+    return data.reduce((acc, curr) => {
+        const category = curr[2]; // Assuming the category is always in the third element
+        acc[category] = (acc[category] || 0) + 1;
+        return acc;
+    }, {});
+}
+
+
+</script>
