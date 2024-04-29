@@ -1,6 +1,5 @@
 const today = new Date();
 const dayOfMonth = today.getDate();
-console.log(dayOfMonth);
 d3.select("#right-div").style("width","70%")
 d3.select("#left-div").style("width","30%")
 const svg_calender = d3.select('#calendar').append('svg')
@@ -17,8 +16,8 @@ const gridHeight = containerHeight/1.7;
 svg_calender.attr("width", containerWidth ) // 7 days for a week
   .attr("height", gridHeight*4+40); // 6 rows to accommodate all days
 
-const year = [2019,2020,2021,2022,2023];
-const select_year = 2019;
+const year = [2014,2015,2016,2017,2018,2019,2020,2021,2022,2023];
+const select_year = 2015;
 const dayWidth = (gridWidth-40)/7;
 const dayHeight = gridHeight/7.5;
 const day_array = ['S','M','T','W','T','F', 'S']
@@ -434,7 +433,7 @@ group.on("click", function(){
 
 
 function bar_height_2(d, max, min){
-  return 4.5*Math.pow(d,0.65)+barwidth
+  return d*0.7+barwidth
 }
 function bar_height(d, max, min){
   var res;

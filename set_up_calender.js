@@ -58,7 +58,7 @@ function parseDate(dateString) {
   const res  = new Date(year, month - 1, day)//.getDate()
   return res;
 }
-const csvFile1 = 'data_all.csv';
+const csvFile1 = '2014-2023.csv';
 const csvFile2 = 'info.csv';
 
 // Load both files concurrently
@@ -451,7 +451,7 @@ floatingDiv.style("border-top", "10px solid "+color_fill(AQI_value))
 
 
 function bar_height_2(d, max, min){
-  return 4.5*Math.pow(d,0.65)+barwidth
+  return d*0.7+barwidth
 }
 function bar_height(d, max, min){
   var res;

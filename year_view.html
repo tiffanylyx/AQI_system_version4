@@ -25,6 +25,7 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 
 <script>
+  const view_type = "DP"
   const svg = d3.select(".container").append("svg").attr("width",1200).attr("height",1800)
       margin = {top: 20, right: 0, bottom: 30, left: 40},
       width = +svg.attr("width") - margin.left - margin.right,
@@ -53,11 +54,19 @@ d3.csv("2014-2023.csv").then(data => {
         d.real_date = parsedDate
         d.date = `${String(parsedDate.getMonth() + 1).padStart(2, '0')}/${String(parsedDate.getDate()).padStart(2, '0')}/${parsedDate.getFullYear()}`;
         d.value = +d.Value; // Convert string to number
+        d.Type = d.Type
     });
     filteredData = filteredData.sort((a, b) => a.real_date - b.real_date);
 
     // Group by date and find max value in each group
-    let groupedData = d3.rollups(filteredData, v => d3.max(v, d => d.value), d => d.date);
+    let groupedData = d3.rollups(filteredData, (v) => {
+    // Finding the entry with the maximum 'value'
+    const maxEntry = v.reduce((prev, curr) => (prev.value > curr.value ? prev : curr), v[0]);
+    return {
+        Value: maxEntry.value,
+        Type: maxEntry.Type // Assuming 'type' is the attribute you want to retain
+    };
+}, d => d.date);
     const group = svg.append("g").attr("transform",`translate(100,${50+160*i})`)
     group.append("text").text(year).attr("x",0).attr("y",-10).attr("text-anchor","end").attr("font-size",20)
 
@@ -71,7 +80,13 @@ d3.csv("2014-2023.csv").then(data => {
         .attr("class", "hour bordered")
         .attr("width", gridSize)
         .attr("height", gridSize)
-        .style("fill", d => color_fill(d[1]));
+    if(view_type=="DP"){
+      cards.style("fill", d => DP_fill(d[1].Type));
+    }
+    else{
+      cards.style("fill", d => color_fill(d[1].Value));
+    }
+
 
 
 
@@ -96,10 +111,10 @@ yAxis.selectAll("text")
     .attr("transform", "translate(-6," + gridSize / 3+ ")");
 
 
-            const parsedData = groupedData.map(d => ({
-              date: parseDate(d[0]),
-              value: d[1]
-            }));
+const parsedData = groupedData.map(d => ({
+  date: parseDate(d[0]),
+  value: d[1]
+}));
     count = 0
     let date, month
     for(i in groupedData){
@@ -127,11 +142,12 @@ const x = week * gridSize; // x position
 group.append("text").text(months[11]).attr("x",x).attr("y",-4).attr("text-anchor","end")
 
 for(i in groupedData){
-  groupedData[i] = [groupedData[i][0],groupedData[i][1],color_type(groupedData[i][1])]
+  groupedData[i] = [groupedData[i][0],groupedData[i][1].Value,groupedData[i][1].Type,color_type(groupedData[i][1].Value)]
 }
-const categoryCounts = countCategories(groupedData);
+const categoryCounts = countCategories(groupedData,view_type);
+console.log(categoryCounts)
 
-const data1 = Object.entries(countCategories(groupedData)).map(([key, value]) => ({
+const data1 = Object.entries(countCategories(groupedData,view_type)).map(([key, value]) => ({
       label: key,
       value: value
   }));
@@ -155,10 +171,17 @@ const data1 = Object.entries(countCategories(groupedData)).map(([key, value]) =>
       .data(pie(data1))
       .enter().append("g")
         .attr("class", "arc");
+  if(view_type=="DP"){
+    arc.append("path")
+        .attr("d", path)
+        .attr("fill", d => DP_fill(d.data.label));
 
-  arc.append("path")
-      .attr("d", path)
-      .attr("fill", d => color_fill2(d.data.label));
+  }
+  else{
+    arc.append("path")
+        .attr("d", path)
+        .attr("fill", d => color_fill2(d.data.label));
+  }
 
   arc.append("text")
       .attr("transform", d => `translate(${label.centroid(d)})`)
@@ -195,7 +218,21 @@ const scales = colorRanges.slice(0, -1).map((range, i) => {
     maxThreshold: nextRange.threshold
   };
 });
+function DP_fill(d){
+  if(d=='O3'){
+    return "steelblue"
+  }
+  else if(d=='PM2.5'){
+    return "purple"
+  }
+  else if(d=='NO2'){
+    return "grey"
+  }
+  else if (d=='PM10'){
+    return "pink"
+  }
 
+}
 function color_fill(d) {
   if (d === 'Missing') {
     return '#bbbbbb'; // Missing data color
@@ -245,12 +282,22 @@ function color_fill1(d){
   }
 }
 // Function to count categories
-function countCategories(data) {
+function countCategories(data,countCategories) {
+  if(countCategories=='DP'){
     return data.reduce((acc, curr) => {
         const category = curr[2]; // Assuming the category is always in the third element
         acc[category] = (acc[category] || 0) + 1;
         return acc;
     }, {});
+  }
+  else{
+    return data.reduce((acc, curr) => {
+        const category = curr[3]; // Assuming the category is always in the third element
+        acc[category] = (acc[category] || 0) + 1;
+        return acc;
+    }, {});
+  }
+
 }
 
 
